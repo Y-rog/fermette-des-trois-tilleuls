@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Nos gîtes')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('gites')}"></nav>
+
+<div class="container py-4">
+    <span class="section-tag">Nos gîtes</span>
+    <h1 class="mb-2">Séjournez dans nos gîtes</h1>
+    <p class="mb-4 section-subtitle">
+        Consultez les disponibilités en direct et envoyez votre demande
+        de réservation — nous la validons rapidement.
+    </p>
+
+    <div class="row g-4">
+        <div class="col-12 col-md-6" th:each="gite : ${gites}">
+            <div class="card h-100">
+                <!-- Photo placeholder -->
+                <div class="img-card d-flex align-items-center
+                            justify-content-center text-muted">
+                    Photo à venir
+                </div>
+                <div class="card-body">
+                    <h2 class="h5 mb-1" th:text="${gite.name()}">
+                        Nom du gîte
+                    </h2>
+                    <p class="small text-muted mb-2">
+                        📍 <span th:text="${gite.location()}">Localisation</span>
+                        · jusqu'à
+                        <span th:text="${gite.capacity()}">0</span> pers.
+                        · <span th:text="${gite.bedrooms()}">0</span> chambres
+                    </p>
+                    <p class="small mb-3" th:text="${gite.description()}">
+                        Description
+                    </p>
+                    <a class="btn btn-fermette btn-sm"
+                       th:href="@{/gites/{id}(id=${gite.id()})}">
+                        Voir le calendrier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

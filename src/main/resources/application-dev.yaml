@@ -4,6 +4,9 @@ spring:
     username: ferme_user
     password: Fermedufay2026@
     driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: never
 
   jpa:
     hibernate:
