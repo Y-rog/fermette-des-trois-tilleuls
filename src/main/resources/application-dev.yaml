@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/fermedufay
+    url: jdbc:postgresql://localhost:5432/fermetroistilleuls
     username: ferme_user
     password: Fermedufay2026@
     driver-class-name: org.postgresql.Driver
