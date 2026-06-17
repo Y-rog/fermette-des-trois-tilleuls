@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.yrog</groupId>
-    <artifactId>ferme-du-fay</artifactId>
+    <artifactId>fermette-des-trois-tilleuls</artifactId>
+    <name>fermette-des-trois-tilleuls</name>
+    <description>Site de la Fermette des Trois Tilleuls</description>
     <version>0.0.1-SNAPSHOT</version>
-    <name>fermedufay</name>
-    <description>fermedufay</description>
     <url/>
     <licenses>
         <license/>

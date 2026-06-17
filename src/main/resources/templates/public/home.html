@@ -1,10 +1,258 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Ferme du Fay</title>
-</head>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Accueil')}"></head>
+
 <body>
-<h1>Bienvenue à la Ferme du Fay !</h1>
+
+<nav th:replace="~{fragments/navbar :: navbar('home')}"></nav>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section py-5">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-12 col-md-6">
+                <span class="hero-eyebrow">Bienvenue à la ferme</span>
+                <h1 class="display-4 fw-bold mb-3">
+                    Une parenthèse nature au cœur des pâtures
+                </h1>
+                <p class="lead mb-4">
+                    Écolodges, nuits en lit au pré, balades en compagnie
+                    de nos alpagas, gîtes pour vos séjours en famille,
+                    et les produits de notre ferme à emporter.
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3">
+                    <a th:href="@{/gites}"
+                       class="btn btn-fermette btn-lg">
+                        Découvrir les hébergements
+                    </a>
+                    <a th:href="@{/alpaca-walks}"
+                       class="btn btn-fermette-outline btn-lg">
+                        Réserver une balade
+                    </a>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <!-- Photo panoramique de la fermette -->
+                <img th:src="@{/img/placeholder.svg}"
+                     class="img-fluid rounded img-histoire"
+                     alt="Photo panoramique de la fermette"/>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Nos univers ===== -->
+<section class="py-5">
+    <div class="container">
+        <span class="section-tag">Nos univers</span>
+        <h2 class="section-title">Tout ce que propose la ferme</h2>
+        <p class="section-subtitle">
+            Cinq univers, une même envie : ralentir, dormir au grand air,
+            partager un moment avec nos animaux et repartir avec un peu
+            de la ferme.
+        </p>
+        <div class="row g-4">
+
+            <!-- Card Écolodges -->
+            <div class="col-12 col-md-4">
+                <div class="card h-100">
+                    <img th:src="@{/img/placeholder.svg}"
+                         class="img-card"
+                         alt="Écolodge / Lit au pré"/>
+                    <div class="card-body text-center p-3">
+                        <span class="badge-fermette-success mb-2 d-inline-block">
+                            Partenaire Un lit au pré
+                        </span>
+                        <h3 class="card-title mt-2">Écolodges &amp; lit au pré</h3>
+                        <p class="card-text">
+                            Dormir au cœur de la nature, sous les étoiles,
+                            dans un cadre confortable et insolite.
+                        </p>
+                        <a th:href="@{/#la-ferme}"
+                           class="btn btn-fermette">
+                            En savoir plus
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Balades -->
+            <div class="col-12 col-md-4">
+                <div class="card h-100">
+                    <img th:src="@{/img/placeholder.svg}"
+                         class="img-card"
+                         alt="Balade en alpagas"/>
+                    <div class="card-body text-center p-3">
+                        <span class="badge-fermette-warning mb-2 d-inline-block">
+                            Sur réservation
+                        </span>
+                        <h3 class="card-title mt-2">Balades en alpagas</h3>
+                        <p class="card-text">
+                            Choisissez un créneau, votre demande sera
+                            validée par notre équipe. Paiement sur place.
+                        </p>
+                        <a th:href="@{/alpaca-walks}"
+                           class="btn btn-fermette">
+                            Voir les créneaux
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Magasin -->
+            <div class="col-12 col-md-4">
+                <div class="card h-100">
+                    <img th:src="@{/img/placeholder.svg}"
+                         class="img-card"
+                         alt="Le magasin de la ferme"/>
+                    <div class="card-body text-center p-3">
+                        <span class="badge-fermette-success mb-2 d-inline-block">
+                            Vente directe
+                        </span>
+                        <h3 class="card-title mt-2">Le magasin de la ferme</h3>
+                        <p class="card-text">
+                            Nos produits fermiers en vente directe :
+                            fromages, laine d'alpaga, confitures et plus.
+                        </p>
+                        <a th:href="@{/shop}"
+                           class="btn btn-fermette">
+                            Découvrir le magasin
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== Nos gîtes ===== -->
+<section class="section-sable py-5" id="gites">
+    <div class="container">
+        <span class="section-tag">Nos gîtes</span>
+        <h2 class="section-title">Séjournez dans nos gîtes</h2>
+        <p class="section-subtitle">
+            Consultez les disponibilités en direct et envoyez votre
+            demande de réservation — nous la validons rapidement.
+        </p>
+        <div class="row g-4">
+
+            <!-- Gîte du Fay -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <img th:src="@{/img/placeholder.svg}"
+                         class="img-card"
+                         alt="Gîte du Fay"/>
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between
+                                    align-items-start mb-2">
+                            <h3 class="card-title mb-0">Gîte du Fay</h3>
+                            <span class="badge-fermette-success">
+                                Disponible
+                            </span>
+                        </div>
+                        <p class="card-text">
+                            Notre nouvelle maison, jusqu'à 6 personnes,
+                            vue sur les pâtures et à deux pas des alpagas.
+                        </p>
+                        <a th:href="@{/gites/1}"
+                           class="btn btn-fermette">
+                            Voir le calendrier
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gîte à Gournay -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <img th:src="@{/img/placeholder.svg}"
+                         class="img-card"
+                         alt="Gîte à Gournay"/>
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between
+                                    align-items-start mb-2">
+                            <h3 class="card-title mb-0">Gîte à Gournay</h3>
+                            <span class="badge-fermette-warning">
+                                Quelques dates libres
+                            </span>
+                        </div>
+                        <p class="card-text">
+                            Maison de charme à Gournay, disponible
+                            à la location en attendant sa vente.
+                        </p>
+                        <a th:href="@{/gites/2}"
+                           class="btn btn-fermette">
+                            Voir le calendrier
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== Notre histoire ===== -->
+<section class="py-5" id="la-ferme">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-12 col-md-6">
+                <span class="section-tag">Notre histoire</span>
+                <h2 class="section-title">
+                    La fermette des Trois Tilleuls, en quelques mots
+                </h2>
+                <p>
+                    Depuis plusieurs générations, notre famille cultive
+                    cette terre et y élève ses animaux. Aujourd'hui,
+                    nous ouvrons nos prés et nos granges pour partager
+                    ce mode de vie : produits locaux, hébergements
+                    respectueux de l'environnement et rencontres avec
+                    nos alpagas.
+                </p>
+                <a th:href="@{/#la-ferme}"
+                   class="btn btn-fermette">
+                    Visiter la ferme
+                </a>
+            </div>
+            <div class="col-12 col-md-6">
+                <img th:src="@{/img/placeholder.svg}"
+                     class="img-fluid rounded img-histoire"
+                     alt="Photos de la ferme et des animaux"/>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Contact ===== -->
+<section class="section-sable py-5" id="contact">
+    <div class="container">
+        <h2 class="text-center section-title">Nous rendre visite</h2>
+        <div class="row align-items-center g-4">
+            <div class="col-12 col-md-6">
+                <p><strong>Horaires :</strong> tous les jours, 9h – 18h</p>
+                <p><strong>Adresse :</strong> [Adresse complète]</p>
+                <p><strong>Accès :</strong> parking gratuit sur place</p>
+                <a href="#" class="btn btn-fermette">Itinéraire</a>
+            </div>
+            <div class="col-12 col-md-6">
+                <!-- Carte / accès à la fermette -->
+                <img th:src="@{/img/placeholder.svg}"
+                     class="img-fluid rounded img-histoire"
+                     alt="Carte / accès à la fermette"/>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fragment footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<!-- Scripts personnalisés -->
+<script th:src="@{/js/main.js}"></script>
+
 </body>
 </html>

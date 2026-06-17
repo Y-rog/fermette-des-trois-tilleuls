@@ -1,0 +1,241 @@
+/* ================================================
+   Fermette des Trois Tilleuls — styles custom
+   Palette : vert sauge, terracotta, crème, brun
+   ================================================ */
+
+/* ----- Variables de couleurs ----- */
+:root {
+    --ff-sauge:           #4A5D3F;
+    --ff-sauge-dark:      #38462F;
+    --ff-terracotta:      #C17A4D;
+    --ff-terracotta-dark: #A2603A;
+    --ff-creme:           #F6F1E7;
+    --ff-sable:           #EFE7D8;
+    --ff-brun:            #3A332A;
+    --ff-brun-light:      #6B6052;
+    --ff-mousse:          #A9BD8E;
+}
+
+/* ----- Global ----- */
+body {
+    background-color: var(--ff-creme);
+    color: var(--ff-brun);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ----- Navbar ----- */
+.navbar {
+    background-color: var(--ff-sauge-dark);
+    border-bottom: 3px solid var(--ff-terracotta);
+}
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: var(--ff-creme);
+}
+.nav-link {
+    color: rgba(246,241,231,0.85);
+}
+.nav-link:hover,
+.nav-link.active {
+    color: var(--ff-terracotta);
+}
+
+/* ----- Hero ----- */
+.hero-section {
+    background: linear-gradient(135deg,
+    var(--ff-sauge) 0%,
+    var(--ff-sauge-dark) 100%);
+    color: var(--ff-creme);
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+}
+.hero-section h1 {
+    color: var(--ff-creme);
+}
+.hero-section p {
+    color: rgba(246,241,231,0.85);
+}
+
+/* ----- Hero eyebrow ----- */
+.hero-eyebrow {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ff-creme);
+    margin-bottom: 1rem;
+}
+
+/* ----- Section tag ----- */
+.section-tag {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ff-terracotta-dark);
+    margin-bottom: 0.5rem;
+}
+
+/* ----- Section subtitle ----- */
+.section-subtitle {
+    color: var(--ff-brun-light);
+    margin-bottom: 2rem;
+    max-width: 560px;
+}
+
+/* ----- Section title ----- */
+.section-title {
+    color: var(--ff-sauge-dark);
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* ----- Sections ----- */
+.section-sable {
+    background-color: var(--ff-sable);
+}
+
+/* ----- Boutons personnalisés ----- */
+.btn-fermette {
+    background-color: var(--ff-terracotta);
+    border-color: var(--ff-terracotta);
+    color: white;
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 0.6rem 1.6rem;
+}
+.btn-fermette:hover {
+    background-color: var(--ff-terracotta-dark);
+    border-color: var(--ff-terracotta-dark);
+    color: white;
+}
+.btn-fermette-outline {
+    background-color: transparent;
+    border: 2px solid var(--ff-creme);
+    color: var(--ff-creme);
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 0.6rem 1.6rem;
+}
+.btn-fermette-outline:hover {
+    background-color: rgba(255,255,255,0.15);
+    color: var(--ff-creme);
+}
+
+/* ----- Cards ----- */
+.card {
+    border: 1px solid rgba(58,51,42,0.12);
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(58,51,42,0.08);
+    background-color: white;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+.card:hover {
+    transform: translateY(-4px);
+}
+.card-title {
+    color: var(--ff-sauge-dark);
+    font-weight: bold;
+}
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+/* Bouton toujours en bas de la card */
+.card-body .btn-fermette {
+    margin-top: auto;
+}
+
+/* ----- Badges ----- */
+.badge-fermette-success {
+    background-color: #E3ECDB;
+    color: var(--ff-sauge-dark);
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+.badge-fermette-warning {
+    background-color: #F6E4D5;
+    color: var(--ff-terracotta-dark);
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+
+/* ----- Images ----- */
+.img-card {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+    border-radius: 14px 14px 0 0;
+}
+.img-histoire {
+    height: 300px;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* ----- Formulaires ----- */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--ff-terracotta);
+    box-shadow: 0 0 0 0.2rem rgba(193,122,77,0.15);
+}
+
+/* ----- Footer ----- */
+.footer-fermette {
+    background-color: var(--ff-sauge-dark);
+    color: rgba(246,241,231,0.8);
+}
+.footer-fermette h5 {
+    color: var(--ff-creme);
+}
+.footer-fermette a {
+    color: rgba(246,241,231,0.7);
+    text-decoration: none;
+}
+.footer-fermette a:hover {
+    color: var(--ff-creme);
+}
+.footer-fermette hr {
+    border-color: rgba(246,241,231,0.15);
+}
+
+/* ----- Responsive mobile ----- */
+@media (max-width: 576px) {
+    .hero-section {
+        min-height: 300px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    .btn-fermette,
+    .btn-fermette-outline {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    .card {
+        margin-bottom: 1rem;
+    }
+    .img-histoire {
+        height: 200px;
+    }
+    .section-subtitle {
+        max-width: 100%;
+    }
+}

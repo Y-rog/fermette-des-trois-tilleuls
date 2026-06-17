@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<footer th:fragment="footer" class="footer-fermette mt-5 py-4">
+    <div class="container">
+        <div class="row gy-4">
+
+            <!-- Présentation -->
+            <div class="col-12 col-md-4">
+                <h5>🌿 Fermette des Trois Tilleuls</h5>
+                <p>Gîtes au calme, balades en alpagas
+                    et produits de la ferme.</p>
+            </div>
+
+            <!-- Navigation -->
+            <div class="col-12 col-md-4">
+                <h5>Navigation</h5>
+                <ul class="list-unstyled">
+                    <li><a th:href="@{/gites}">Nos gîtes</a></li>
+                    <li><a th:href="@{/alpaca-walks}">Balades alpagas</a></li>
+                    <li><a th:href="@{/shop}">Magasin</a></li>
+                    <li><a th:href="@{/#contact}">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-12 col-md-4">
+                <h5>Contact</h5>
+                <p>
+                    📍 [Adresse de la fermette]<br/>
+                    📞 [Téléphone]<br/>
+                    ✉️ [Email]<br/>
+                    🕘 Ouvert tous les jours de 9h à 18h
+                </p>
+            </div>
+
+        </div>
+
+        <hr/>
+
+        <!-- Copyright -->
+        <p class="text-center mb-0">
+            &copy; 2026 Fermette des Trois Tilleuls
+            — Tous droits réservés
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>

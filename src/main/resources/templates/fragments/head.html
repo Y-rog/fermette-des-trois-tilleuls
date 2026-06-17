@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${title} + ' — Fermette des Trois Tilleuls'">
+        Fermette des Trois Tilleuls
+    </title>
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Styles personnalisés -->
+    <link th:href="@{/css/custom.css}" rel="stylesheet"/>
+</head>
+</html>

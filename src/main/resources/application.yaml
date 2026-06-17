@@ -1,6 +1,6 @@
 spring:
   application:
-    name: fermedufay
+    name: fermette-trois-tilleuls
   profiles:
     active: dev
   jpa:

@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FermedufayApplication {
+public class fermetteDesTroisTilleulsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FermedufayApplication.class, args);
+        SpringApplication.run(fermetteDesTroisTilleulsApplication.class, args);
     }
 
 }

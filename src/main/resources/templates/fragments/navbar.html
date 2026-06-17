@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+    Fragment navbar
+    Paramètre active : nom de la page courante
+    ex: navbar('home'), navbar('gites'), navbar('alpaca')
+-->
+<nav th:fragment="navbar(active)"
+     class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+
+        <!-- Logo / Nom de la fermette -->
+        <a class="navbar-brand" th:href="@{/}">
+            🌿 Fermette des Trois Tilleuls
+        </a>
+
+        <!-- Bouton hamburger mobile -->
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navMenu"
+                aria-controls="navMenu"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Liens de navigation -->
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto gap-lg-2">
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:classappend="${active == 'home'} ? ' active'"
+                       th:href="@{/}">
+                        Accueil
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:classappend="${active == 'gites'} ? ' active'"
+                       th:href="@{/gites}">
+                        Nos gîtes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:classappend="${active == 'alpaca'} ? ' active'"
+                       th:href="@{/alpaca-walks}">
+                        Balades alpagas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:classappend="${active == 'shop'} ? ' active'"
+                       th:href="@{/shop}">
+                        Magasin
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:classappend="${active == 'contact'} ? ' active'"
+                       th:href="@{/#contact}">
+                        Contact
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+
+</body>
+</html>
