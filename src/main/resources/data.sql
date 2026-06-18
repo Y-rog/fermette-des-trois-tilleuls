@@ -15,3 +15,23 @@ VALUES (
            'Gournay',
            5, 2, null, true
        );
+
+INSERT INTO activities (name, description, date, time, active)
+VALUES (
+           'Balade en alpagas',
+           'Une heure de promenade accompagnée à travers les sentiers
+            de la fermette en compagnie de nos alpagas.',
+           '2026-07-15',
+           '10:00:00',
+           true
+       );
+
+INSERT INTO activities (name, description, date, time, active)
+VALUES (
+           'Balade en alpagas',
+           'Une heure de promenade accompagnée à travers les sentiers
+            de la fermette en compagnie de nos alpagas.',
+           '2026-07-15',
+           '14:00:00',
+           true
+       );

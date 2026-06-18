@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Activités')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('activities')}"></nav>
+
+<div class="container py-4">
+    <span class="section-tag">Nos activités</span>
+    <h1 class="mb-2">Balades en alpagas</h1>
+    <p class="mb-4" style="max-width: 560px;">
+        Choisissez une date et une heure, votre demande sera
+        validée par notre équipe. Paiement sur place.
+    </p>
+
+    <div class="row g-4">
+        <div class="col-12 col-md-4" th:each="activity : ${activities}">
+            <div class="card h-100">
+                <div class="img-card d-flex align-items-center
+                            justify-content-center text-muted">
+                    Photo à venir
+                </div>
+                <div class="card-body">
+                    <h2 class="h5 mb-1" th:text="${activity.name()}">
+                        Nom activité
+                    </h2>
+                    <p class="small text-muted mb-1">
+                        📅 <span th:text="${activity.date()}">Date</span>
+                        · 🕐 <span th:text="${activity.time()}">Heure</span>
+                    </p>
+                    <p class="small mb-3" th:text="${activity.description()}">
+                        Description
+                    </p>
+                    <a class="btn btn-fermette btn-sm"
+                       th:href="@{/activities/{id}(id=${activity.id()})}">
+                        Réserver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>
