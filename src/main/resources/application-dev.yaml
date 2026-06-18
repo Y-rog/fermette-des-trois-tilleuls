@@ -6,10 +6,12 @@ spring:
     driver-class-name: org.postgresql.Driver
   sql:
     init:
-      mode: never
+      mode: always
   mail:
     host: localhost
     port: 1025
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
 
 
   jpa:

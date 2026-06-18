@@ -1,15 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Admin Login</title>
-</head>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Espace admin')}"></head>
+
 <body>
-<h1>Admin Login</h1>
-<form th:action="@{/admin/login}" method="post">
-    <input type="text" name="username" placeholder="Username"/>
-    <input type="password" name="password" placeholder="Password"/>
-    <button type="submit">Login</button>
-</form>
+
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card p-5" style="max-width: 420px; width: 100%;">
+
+        <!-- Logo -->
+        <div class="text-center mb-4">
+            <span style="width:56px; height:56px; background:#4A5D3F;
+                         border-radius:50%; display:inline-flex;
+                         align-items:center; justify-content:center;
+                         color:#F6F1E7;">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                     width="32" height="32" aria-hidden="true">
+                    <g fill="currentColor">
+                        <path d="M52 8 C50 8 49 11 50 15 L53 24 L58 16 C59 12 56 8 52 8 Z"/>
+                        <path d="M62 10 C60 10 59 13 60 17 L62 25 L67 18 C68 14 66 10 62 10 Z"/>
+                        <ellipse cx="58" cy="28" rx="11" ry="10"/>
+                        <path d="M50 35 C46 42 46 52 52 58 L60 60 C58 50 60 40 64 33 C60 30 54 30 50 35 Z"/>
+                        <ellipse cx="42" cy="66" rx="26" ry="17"/>
+                        <rect x="22" y="76" width="6" height="18" rx="2"/>
+                        <rect x="34" y="78" width="6" height="18" rx="2"/>
+                        <rect x="48" y="78" width="6" height="18" rx="2"/>
+                        <rect x="58" y="76" width="6" height="18" rx="2"/>
+                        <path d="M68 60 C74 58 76 64 71 68 C68 70 65 67 68 60 Z"/>
+                    </g>
+                </svg>
+            </span>
+            <h1 class="h4 mt-3 mb-1">Espace admin</h1>
+            <p class="text-muted small">Fermette des Trois Tilleuls</p>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div th:if="${param.error}"
+             class="alert alert-danger mb-3 text-center small">
+            Identifiants incorrects — réessayez.
+        </div>
+
+        <!-- Formulaire -->
+        <form th:action="@{/admin/login}" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold small">
+                    Identifiant
+                </label>
+                <input type="text"
+                       class="form-control"
+                       name="username"
+                       placeholder="admin"
+                       autofocus
+                       required/>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold small">
+                    Mot de passe
+                </label>
+                <input type="password"
+                       class="form-control"
+                       name="password"
+                       placeholder="••••••••"
+                       required/>
+            </div>
+            <button type="submit" class="btn btn-fermette w-100">
+                Se connecter
+            </button>
+        </form>
+
+        <!-- Retour au site -->
+        <div class="text-center mt-3">
+            <a th:href="@{/}" class="text-muted small">
+                ← Retour au site
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
 </body>
 </html>

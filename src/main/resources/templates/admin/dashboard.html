@@ -17,12 +17,19 @@
                 Gérez les demandes de réservation de la fermette.
             </p>
         </div>
-        <form th:action="@{/admin/logout}" method="post">
-            <button type="submit" class="btn btn-outline-secondary btn-sm">
-                Déconnexion
-            </button>
-        </form>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/infos}"
+               class="btn btn-outline-secondary btn-sm">
+                ⚙️ Infos de la fermette
+            </a>
+            <form th:action="@{/admin/logout}" method="post">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">
+                    Déconnexion
+                </button>
+            </form>
+        </div>
     </div>
+
 
     <!-- ===== Réservations gîtes ===== -->
     <h2 class="h5 mb-3">🏠 Réservations gîtes</h2>

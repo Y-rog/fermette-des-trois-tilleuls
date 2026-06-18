@@ -33,4 +33,9 @@ public class FakeMailService implements MailService {
     public void sendBookingRejection(String email, String firstName) {
         log.info("📧 [FAKE MAIL] Refus envoyé à {} ({})", firstName, email);
     }
+
+    @Override
+    public void sendContactMessage(String nom, String email, String message) {
+        log.info("📧 [FAKE MAIL] Message de contact de {} ({}) : {}", nom, email, message);
+    }
 }

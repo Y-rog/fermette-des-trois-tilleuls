@@ -1,6 +1,8 @@
 package com.yrog.fermettetroistilleuls.controller;
 
+import com.yrog.fermettetroistilleuls.entity.FermetteInfo;
 import com.yrog.fermettetroistilleuls.service.AdminService;
+import com.yrog.fermettetroistilleuls.service.FermetteInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,9 +23,11 @@ public class AdminController {
 
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
     private final AdminService adminService;
+    private final FermetteInfoService fermetteInfoService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, FermetteInfoService fermetteInfoService) {
         this.adminService = adminService;
+        this.fermetteInfoService = fermetteInfoService;
     }
 
     /**
@@ -159,5 +163,24 @@ public class AdminController {
         model.addAttribute("booking", adminService.findActivityBookingById(id));
         model.addAttribute("type", "activity");
         return "admin/pending-confirm";
+    }
+
+    /**
+     * Affiche la page de modification des infos de la fermette.
+     */
+    @GetMapping("/infos")
+    public String getInfosPage(Model model) {
+        log.info("Accès à la page des infos de la fermette");
+        model.addAttribute("infos", fermetteInfoService.findInfo());
+        return "admin/infos";
+    }
+
+    /**
+     * Met à jour les infos de la fermette.
+     */
+    @PostMapping("/infos")
+    public String updateInfos(FermetteInfo infos) {
+        fermetteInfoService.updateInfo(infos);
+        return "redirect:/admin/dashboard";
     }
 }

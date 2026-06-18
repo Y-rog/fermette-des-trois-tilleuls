@@ -216,6 +216,14 @@ body {
 .footer-fermette hr {
     border-color: rgba(246,241,231,0.15);
 }
+/* ----- Lien espace réservé footer ----- */
+.footer-admin-link {
+    color: rgba(246,241,231,0.2);
+    font-size: 0.75rem;
+}
+.footer-admin-link:hover {
+    color: rgba(246,241,231,0.5);
+}
 
 /* ----- Responsive mobile ----- */
 @media (max-width: 576px) {

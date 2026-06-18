@@ -143,4 +143,34 @@ public class SmtpMailService implements MailService {
                 </html>
                 """.formatted(firstName);
     }
+
+    /**
+     * Envoie un message de contact à la ferme.
+     */
+    @Override
+    public void sendContactMessage(String nom, String email, String message) {
+        try {
+            MimeMessage msg = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(msg, true, "UTF-8");
+            helper.setFrom(from);
+            helper.setTo(from); // envoyé à la ferme elle-même
+            helper.setReplyTo(email); // répondre au client
+            helper.setSubject("Nouveau message de contact — " + nom);
+            helper.setText("""
+                <html>
+                <body style="font-family: Arial, sans-serif; color: #3A332A;">
+                    <h2 style="color: #4A5D3F;">Nouveau message de contact</h2>
+                    <p><strong>Nom :</strong> %s</p>
+                    <p><strong>Email :</strong> %s</p>
+                    <p><strong>Message :</strong></p>
+                    <p>%s</p>
+                </body>
+                </html>
+                """.formatted(nom, email, message), true);
+            mailSender.send(msg);
+            log.info("Message de contact envoyé depuis {}", email);
+        } catch (MessagingException e) {
+            log.error("Erreur envoi message de contact", e);
+        }
+    }
 }

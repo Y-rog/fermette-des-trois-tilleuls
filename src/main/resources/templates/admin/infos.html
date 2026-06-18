@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Infos de la fermette')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+<div class="container py-4" style="max-width: 640px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Informations de la fermette</h1>
+        <a th:href="@{/admin/dashboard}"
+           class="btn btn-outline-secondary btn-sm">
+            ← Retour
+        </a>
+    </div>
+
+    <div class="card p-4">
+        <form th:action="@{/admin/infos}" method="post">
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Adresse</label>
+                <input type="text" class="form-control"
+                       name="adresse"
+                       th:value="${infos.adresse}"
+                       required/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Téléphone</label>
+                <input type="text" class="form-control"
+                       name="telephone"
+                       th:value="${infos.telephone}"
+                       required/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Email</label>
+                <input type="email" class="form-control"
+                       name="email"
+                       th:value="${infos.email}"
+                       required/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Horaires</label>
+                <input type="text" class="form-control"
+                       name="horaires"
+                       th:value="${infos.horaires}"
+                       required/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Horaires boutique</label>
+                <input type="text" class="form-control"
+                       name="horairesBoutique"
+                       th:value="${infos.horairesBoutique}"/>
+            </div>
+
+            <button type="submit" class="btn btn-fermette w-100">
+                Enregistrer
+            </button>
+
+        </form>
+    </div>
+
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

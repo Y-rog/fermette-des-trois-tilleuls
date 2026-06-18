@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Contact')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('contact')}"></nav>
+
+<div class="container py-5">
+    <div class="row g-4">
+
+        <!-- Infos contact -->
+        <div class="col-12 col-md-5">
+            <span class="section-tag">Contact</span>
+            <h1 class="h3 mb-4">Nous contacter</h1>
+
+            <p class="mb-2">
+                📍 <span th:text="${fermette.adresse}"></span>
+            </p>
+            <p class="mb-2">
+                📞 <span th:text="${fermette.telephone}"></span>
+            </p>
+            <p class="mb-2">
+                ✉️ <span th:text="${fermette.email}"></span>
+            </p>
+            <p class="mb-4">
+                🕘 <span th:text="${fermette.horaires}"></span>
+            </p>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="col-12 col-md-7">
+            <div class="card p-4">
+                <h2 class="h5 mb-3">Envoyer un message</h2>
+                <form th:action="@{/contact}" method="post"
+                      th:object="${contactForm}">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Nom</label>
+                        <input type="text" class="form-control"
+                               th:field="*{nom}"
+                               placeholder="Votre nom"
+                               required/>
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('nom')}"
+                             th:errors="*{nom}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Email</label>
+                        <input type="email" class="form-control"
+                               th:field="*{email}"
+                               placeholder="votre@email.com"
+                               required/>
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}"></div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small">Message</label>
+                        <textarea class="form-control"
+                                  th:field="*{message}"
+                                  rows="5"
+                                  placeholder="Votre message..."
+                                  required></textarea>
+                        <div class="text-danger small"
+                             th:if="${#fields.hasErrors('message')}"
+                             th:errors="*{message}"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-fermette w-100">
+                        Envoyer le message
+                    </button>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

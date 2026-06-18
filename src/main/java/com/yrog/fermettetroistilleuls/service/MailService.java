@@ -23,4 +23,13 @@ public interface MailService {
      * @param firstName prénom du client
      */
     void sendBookingRejection(String email, String firstName);
+
+    /**
+     * Envoie un message de contact à la ferme.
+     *
+     * @param nom     nom de l'expéditeur
+     * @param email   email de l'expéditeur
+     * @param message message
+     */
+    void sendContactMessage(String nom, String email, String message);
 }

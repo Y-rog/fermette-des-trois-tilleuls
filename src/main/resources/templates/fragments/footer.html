@@ -28,10 +28,10 @@
             <div class="col-12 col-md-4">
                 <h5>Contact</h5>
                 <p>
-                    📍 [Adresse de la fermette]<br/>
-                    📞 [Téléphone]<br/>
-                    ✉️ [Email]<br/>
-                    🕘 Ouvert tous les jours de 9h à 18h
+                    📍 <span th:text="${fermette.adresse}"></span><br/>
+                    📞 <span th:text="${fermette.telephone}"></span><br/>
+                    ✉️ <span th:text="${fermette.email}"></span><br/>
+                    🕘 <span th:text="${fermette.horaires}"></span>
                 </p>
             </div>
 
@@ -41,6 +41,11 @@
         <p class="text-center mb-0">
             &copy; 2026 Fermette des Trois Tilleuls
             — Tous droits réservés
+        </p>
+        <p class="text-center mt-1">
+            <a th:href="@{/admin/login}" class="footer-admin-link">
+                Espace réservé
+            </a>
         </p>
     </div>
 </footer>
