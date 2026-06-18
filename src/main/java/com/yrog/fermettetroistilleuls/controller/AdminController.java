@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 /**
  * Contrôleur de l'espace administrateur.
  * Toutes les routes sont protégées par Spring Security.
@@ -29,6 +28,8 @@ public class AdminController {
 
     /**
      * Affiche la page de connexion admin.
+     *
+     * @return la vue de connexion
      */
     @GetMapping("/login")
     public String getLoginPage() {
@@ -77,6 +78,35 @@ public class AdminController {
     }
 
     /**
+     * Remet une réservation de gîte en attente.
+     *
+     * @param id identifiant de la réservation
+     * @return redirection vers le dashboard
+     */
+    @PostMapping("/gite-bookings/{id}/pending")
+    public String pendingGiteBooking(@PathVariable Long id) {
+        log.info("Remise en attente de la réservation gîte id={}", id);
+        adminService.pendingGiteBooking(id);
+        return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Affiche la page de confirmation avant
+     * de remettre une réservation gîte en attente.
+     *
+     * @param id    identifiant de la réservation
+     * @param model modèle Thymeleaf
+     * @return la vue de confirmation
+     */
+    @GetMapping("/gite-bookings/{id}/pending-confirm")
+    public String showGitePendingConfirm(@PathVariable Long id, Model model) {
+        log.info("Accès à la page de confirmation remise en attente gîte id={}", id);
+        model.addAttribute("booking", adminService.findGiteBookingById(id));
+        model.addAttribute("type", "gite");
+        return "admin/pending-confirm";
+    }
+
+    /**
      * Accepte une demande de réservation d'activité.
      *
      * @param id identifiant de la réservation
@@ -102,4 +132,32 @@ public class AdminController {
         return "redirect:/admin/dashboard";
     }
 
+    /**
+     * Remet une réservation d'activité en attente.
+     *
+     * @param id identifiant de la réservation
+     * @return redirection vers le dashboard
+     */
+    @PostMapping("/activity-bookings/{id}/pending")
+    public String pendingActivityBooking(@PathVariable Long id) {
+        log.info("Remise en attente de la réservation activité id={}", id);
+        adminService.pendingActivityBooking(id);
+        return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Affiche la page de confirmation avant
+     * de remettre une réservation activité en attente.
+     *
+     * @param id    identifiant de la réservation
+     * @param model modèle Thymeleaf
+     * @return la vue de confirmation
+     */
+    @GetMapping("/activity-bookings/{id}/pending-confirm")
+    public String showActivityPendingConfirm(@PathVariable Long id, Model model) {
+        log.info("Accès à la page de confirmation remise en attente activité id={}", id);
+        model.addAttribute("booking", adminService.findActivityBookingById(id));
+        model.addAttribute("type", "activity");
+        return "admin/pending-confirm";
+    }
 }

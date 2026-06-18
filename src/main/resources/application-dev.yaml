@@ -8,6 +8,7 @@ spring:
     init:
       mode: never
 
+
   jpa:
     hibernate:
       ddl-auto: update

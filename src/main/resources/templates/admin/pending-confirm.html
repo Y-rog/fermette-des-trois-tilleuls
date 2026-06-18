@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Confirmer la remise en attente')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card p-5" style="max-width: 580px; width: 100%;">
+
+        <!-- Icône avertissement -->
+        <div class="mx-auto mb-3 d-flex align-items-center
+                    justify-content-center rounded-circle"
+             style="width:64px; height:64px;
+                    background:#FFF3CD; color:#856404;
+                    font-size:1.6rem;">
+            ⚠️
+        </div>
+
+        <h1 class="h4 text-center mb-2">Remettre en attente ?</h1>
+
+        <div class="alert alert-warning mb-4">
+            <strong>Attention !</strong> Si un email de confirmation
+            ou de refus a déjà été envoyé au client, cette action
+            peut créer de la confusion. Contactez le client avant
+            de remettre la demande en attente.
+        </div>
+
+        <!-- Détails de la réservation gîte -->
+        <div th:if="${type == 'gite'}" class="card p-3 mb-4"
+             style="background: var(--ff-sable);">
+            <p class="mb-1">
+                <strong>Client :</strong>
+                <span th:text="${booking.firstName() + ' ' + booking.lastName()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Email :</strong>
+                <span th:text="${booking.email()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Gîte :</strong>
+                <span th:text="${booking.giteName()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Arrivée :</strong>
+                <span th:text="${booking.checkIn()}"></span>
+            </p>
+            <p class="mb-0">
+                <strong>Départ :</strong>
+                <span th:text="${booking.checkOut()}"></span>
+            </p>
+        </div>
+
+        <!-- Détails de la réservation activité -->
+        <div th:if="${type == 'activity'}" class="card p-3 mb-4"
+             style="background: var(--ff-sable);">
+            <p class="mb-1">
+                <strong>Client :</strong>
+                <span th:text="${booking.firstName() + ' ' + booking.lastName()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Email :</strong>
+                <span th:text="${booking.email()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Activité :</strong>
+                <span th:text="${booking.activityName()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Date :</strong>
+                <span th:text="${booking.activityDate()}"></span>
+            </p>
+            <p class="mb-0">
+                <strong>Heure :</strong>
+                <span th:text="${booking.activityTime()}"></span>
+            </p>
+        </div>
+
+        <!-- Boutons -->
+        <div class="d-flex gap-3 justify-content-center">
+
+            <!-- Annuler → retour dashboard -->
+            <a th:href="@{/admin/dashboard}"
+               class="btn btn-outline-secondary">
+                Annuler
+            </a>
+
+            <!-- Confirmer gîte -->
+            <form th:if="${type == 'gite'}"
+                  th:action="@{/admin/gite-bookings/{id}/pending(id=${booking.id()})}"
+                  method="post">
+                <button type="submit" class="btn btn-warning">
+                    Remettre en attente
+                </button>
+            </form>
+
+            <!-- Confirmer activité -->
+            <form th:if="${type == 'activity'}"
+                  th:action="@{/admin/activity-bookings/{id}/pending(id=${booking.id()})}"
+                  method="post">
+                <button type="submit" class="btn btn-warning">
+                    Remettre en attente
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

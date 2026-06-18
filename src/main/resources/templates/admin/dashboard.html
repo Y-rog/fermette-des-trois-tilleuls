@@ -32,10 +32,12 @@
             <thead class="table-light">
             <tr>
                 <th>Client</th>
+                <th>Téléphone</th>
                 <th>Gîte</th>
                 <th>Arrivée</th>
                 <th>Départ</th>
                 <th>Pers.</th>
+                <th>Message</th>
                 <th>Statut</th>
                 <th>Date demande</th>
                 <th>Actions</th>
@@ -49,10 +51,14 @@
                     <br/>
                     <small th:text="${booking.email()}"></small>
                 </td>
+                <td th:text="${booking.phone()}"></td>
                 <td th:text="${booking.giteName()}"></td>
                 <td th:text="${booking.checkIn()}"></td>
                 <td th:text="${booking.checkOut()}"></td>
                 <td th:text="${booking.nbGuests()}"></td>
+                <td>
+                    <small th:text="${booking.message()}"></small>
+                </td>
                 <td>
                         <span th:if="${booking.status().name() == 'PENDING'}"
                               class="badge bg-warning text-dark">En attente</span>
@@ -63,21 +69,27 @@
                 </td>
                 <td th:text="${#temporals.format(booking.createdAt(), 'dd/MM/yyyy HH:mm')}"></td>
                 <td th:if="${booking.status().name() == 'PENDING'}">
+                    <!-- Accepter gîte -->
                     <form th:action="@{/admin/gite-bookings/{id}/accept(id=${booking.id()})}"
                           method="post" class="d-inline">
                         <button type="submit" class="btn btn-success btn-sm">✓</button>
                     </form>
+                    <!-- Refuser gîte -->
                     <form th:action="@{/admin/gite-bookings/{id}/reject(id=${booking.id()})}"
                           method="post" class="d-inline">
                         <button type="submit" class="btn btn-danger btn-sm">✕</button>
                     </form>
                 </td>
                 <td th:unless="${booking.status().name() == 'PENDING'}">
-                    <span class="text-muted small">Traitée</span>
+                    <span class="text-muted small d-block">Traitée</span>
+                    <a th:href="@{/admin/gite-bookings/{id}/pending-confirm(id=${booking.id()})}"
+                       class="text-muted small">
+                        ↩ Remettre en attente
+                    </a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(giteBookings)}">
-                <td colspan="8" class="text-center text-muted py-4">
+                <td colspan="10" class="text-center text-muted py-4">
                     Aucune réservation de gîte pour le moment.
                 </td>
             </tr>
@@ -93,10 +105,12 @@
             <thead class="table-light">
             <tr>
                 <th>Client</th>
+                <th>Téléphone</th>
                 <th>Activité</th>
                 <th>Date</th>
                 <th>Heure</th>
                 <th>Pers.</th>
+                <th>Message</th>
                 <th>Statut</th>
                 <th>Date demande</th>
                 <th>Actions</th>
@@ -110,10 +124,14 @@
                     <br/>
                     <small th:text="${booking.email()}"></small>
                 </td>
+                <td th:text="${booking.phone()}"></td>
                 <td th:text="${booking.activityName()}"></td>
                 <td th:text="${booking.activityDate()}"></td>
                 <td th:text="${booking.activityTime()}"></td>
                 <td th:text="${booking.nbGuests()}"></td>
+                <td>
+                    <small th:text="${booking.message()}"></small>
+                </td>
                 <td>
                         <span th:if="${booking.status().name() == 'PENDING'}"
                               class="badge bg-warning text-dark">En attente</span>
@@ -124,21 +142,27 @@
                 </td>
                 <td th:text="${#temporals.format(booking.createdAt(), 'dd/MM/yyyy HH:mm')}"></td>
                 <td th:if="${booking.status().name() == 'PENDING'}">
+                    <!-- Accepter activité -->
                     <form th:action="@{/admin/activity-bookings/{id}/accept(id=${booking.id()})}"
                           method="post" class="d-inline">
                         <button type="submit" class="btn btn-success btn-sm">✓</button>
                     </form>
+                    <!-- Refuser activité -->
                     <form th:action="@{/admin/activity-bookings/{id}/reject(id=${booking.id()})}"
                           method="post" class="d-inline">
                         <button type="submit" class="btn btn-danger btn-sm">✕</button>
                     </form>
                 </td>
                 <td th:unless="${booking.status().name() == 'PENDING'}">
-                    <span class="text-muted small">Traitée</span>
+                    <span class="text-muted small d-block">Traitée</span>
+                    <a th:href="@{/admin/activity-bookings/{id}/pending-confirm(id=${booking.id()})}"
+                       class="text-muted small">
+                        ↩ Remettre en attente
+                    </a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(activityBookings)}">
-                <td colspan="8" class="text-center text-muted py-4">
+                <td colspan="10" class="text-center text-muted py-4">
                     Aucune réservation d'activité pour le moment.
                 </td>
             </tr>
