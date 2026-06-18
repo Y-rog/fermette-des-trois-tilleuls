@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.yrog</groupId>
-    <artifactId>fermette-des-trois-tilleuls</artifactId>
+    <artifactId>fermettetroistilleuls</artifactId>
     <name>fermette-des-trois-tilleuls</name>
     <description>Site de la Fermette des Trois Tilleuls</description>
     <version>0.0.1-SNAPSHOT</version>
