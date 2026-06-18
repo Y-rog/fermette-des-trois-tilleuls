@@ -1,10 +1,15 @@
 package com.yrog.fermettetroistilleuls.controller;
 
+import com.yrog.fermettetroistilleuls.service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 
 /**
  * Contrôleur de l'espace administrateur.
@@ -16,6 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
 
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
+    private final AdminService adminService;
+
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     /**
      * Affiche la page de connexion admin.
@@ -27,11 +37,69 @@ public class AdminController {
     }
 
     /**
-     * Affiche le tableau de bord admin.
+     * Affiche le tableau de bord admin avec toutes les réservations.
+     *
+     * @param model modèle Thymeleaf
+     * @return la vue du dashboard
      */
     @GetMapping("/dashboard")
-    public String getDashboardPage() {
+    public String getDashboardPage(Model model) {
         log.info("Accès au dashboard admin");
+        model.addAttribute("giteBookings", adminService.findAllGiteBookings());
+        model.addAttribute("activityBookings", adminService.findAllActivityBookings());
         return "admin/dashboard";
     }
+
+    /**
+     * Accepte une demande de réservation de gîte.
+     *
+     * @param id identifiant de la réservation
+     * @return redirection vers le dashboard
+     */
+    @PostMapping("/gite-bookings/{id}/accept")
+    public String acceptGiteBooking(@PathVariable Long id) {
+        log.info("Acceptation de la réservation gîte id={}", id);
+        adminService.acceptGiteBooking(id);
+        return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Refuse une demande de réservation de gîte.
+     *
+     * @param id identifiant de la réservation
+     * @return redirection vers le dashboard
+     */
+    @PostMapping("/gite-bookings/{id}/reject")
+    public String rejectGiteBooking(@PathVariable Long id) {
+        log.info("Refus de la réservation gîte id={}", id);
+        adminService.rejectGiteBooking(id);
+        return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Accepte une demande de réservation d'activité.
+     *
+     * @param id identifiant de la réservation
+     * @return redirection vers le dashboard
+     */
+    @PostMapping("/activity-bookings/{id}/accept")
+    public String acceptActivityBooking(@PathVariable Long id) {
+        log.info("Acceptation de la réservation activité id={}", id);
+        adminService.acceptActivityBooking(id);
+        return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Refuse une demande de réservation d'activité.
+     *
+     * @param id identifiant de la réservation
+     * @return redirection vers le dashboard
+     */
+    @PostMapping("/activity-bookings/{id}/reject")
+    public String rejectActivityBooking(@PathVariable Long id) {
+        log.info("Refus de la réservation activité id={}", id);
+        adminService.rejectActivityBooking(id);
+        return "redirect:/admin/dashboard";
+    }
+
 }
