@@ -1,8 +1,10 @@
 package com.yrog.fermettetroistilleuls.service;
 
+import com.yrog.fermettetroistilleuls.dto.ActivityBookingForm;
 import com.yrog.fermettetroistilleuls.dto.ActivityDto;
 import com.yrog.fermettetroistilleuls.exception.ResourceNotFoundException;
 import com.yrog.fermettetroistilleuls.repository.ActivityRepository;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -67,4 +69,5 @@ public class ActivityService {
                         new ResourceNotFoundException("Activité introuvable : " + id)
                 );
     }
+
 }

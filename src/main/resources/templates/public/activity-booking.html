@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Réserver une activité')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('activities')}"></nav>
+
+<div class="container py-4">
+
+    <!-- Fil d'ariane -->
+    <p class="small mb-3">
+        <a th:href="@{/activities}">Nos activités</a>
+        &nbsp;/&nbsp;
+        <strong th:text="${activity.name()}">Nom de l'activité</strong>
+    </p>
+
+    <div class="row g-4">
+
+        <!-- Infos activité -->
+        <div class="col-12 col-lg-7">
+
+            <!-- Photo placeholder -->
+            <div class="img-card d-flex align-items-center
+                        justify-content-center text-muted mb-4"
+                 style="height: 320px; border-radius: 14px;">
+                Photo à venir
+            </div>
+
+            <h1 class="mb-1" th:text="${activity.name()}">Nom de l'activité</h1>
+            <p class="small text-muted mb-3">
+                📅 <span th:text="${activity.date()}">Date</span>
+                · 🕐 <span th:text="${activity.time()}">Heure</span>
+            </p>
+            <p th:text="${activity.description()}">Description</p>
+        </div>
+
+        <!-- Formulaire réservation -->
+        <div class="col-12 col-lg-5">
+            <div class="card p-4">
+                <h3 class="h5 mb-3">Demande de réservation</h3>
+                <form th:action="@{/activities/booking}" method="post">
+
+                    <!-- Id de l'activité en champ caché -->
+                    <input type="hidden" name="activityId"
+                           th:value="${activity.id()}"/>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nom</label>
+                        <input type="text" class="form-control"
+                               name="firstName" required/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prénom</label>
+                        <input type="text" class="form-control"
+                               name="lastName" required/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control"
+                               name="email" required/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Téléphone</label>
+                        <input type="tel" class="form-control"
+                               name="phone"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de participants</label>
+                        <input type="number" class="form-control"
+                               name="nbGuests" min="1" value="1" required/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Message (optionnel)</label>
+                        <textarea class="form-control" name="message"
+                                  rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-fermette w-100">
+                        Envoyer la demande
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

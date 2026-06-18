@@ -70,7 +70,7 @@ public class ActivityBooking {
      */
     @Min(value = 1, message = "Le nombre de participants doit être d'au moins 1")
     @Column(nullable = false)
-    private int nbParticipants;
+    private int nbGuests;
 
     /**
      * Message optionnel du client.

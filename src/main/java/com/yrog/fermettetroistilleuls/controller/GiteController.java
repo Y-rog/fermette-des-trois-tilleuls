@@ -54,7 +54,7 @@ public class GiteController {
     public String getGiteBookingPage(@PathVariable Long id, Model model) {
         log.info("Accès au détail du gîte id={}", id);
         model.addAttribute("gite", giteService.findById(id));
-        return "public/gite-detail";
+        return "public/gite-booking";
     }
 
     /**
@@ -75,7 +75,7 @@ public class GiteController {
         if (result.hasErrors()) {
             log.warn("Formulaire de réservation invalide : {}", result.getAllErrors());
             model.addAttribute("gite", giteService.findById(form.getGiteId()));
-            return "public/gite-detail";
+            return "public/gite-booking";
         }
 
         // Sauvegarde de la réservation

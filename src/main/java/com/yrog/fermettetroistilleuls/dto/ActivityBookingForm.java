@@ -29,7 +29,7 @@ public class ActivityBookingForm {
     private String phone;
 
     @Min(value = 1, message = "Minimum 1 participant")
-    private int nbParticipants;
+    private int nbGuests;
 
     private String message;
 }
