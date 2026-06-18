@@ -5,6 +5,3 @@ spring:
     active: dev
   jpa:
     open-in-view: false
-  mail:
-    host: localhost
-    port: 1025
