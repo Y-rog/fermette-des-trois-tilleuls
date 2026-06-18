@@ -4,7 +4,7 @@ services:
   app:
     build: .
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/fermetroistilleuls
@@ -28,7 +28,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d fermetroistilleuls" ]
       interval: 10s
       timeout: 5s
       retries: 5
