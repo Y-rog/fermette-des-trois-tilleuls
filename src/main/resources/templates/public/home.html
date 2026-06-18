@@ -17,8 +17,8 @@
                     Une parenthèse nature au cœur des pâtures
                 </h1>
                 <p class="lead mb-4">
-                    Écolodges, nuits en lit au pré, balades en compagnie
-                    de nos alpagas, gîtes pour vos séjours en famille,
+                    Écolodges, nuits en lit au pré, activités en plein air
+                    avec nos alpagas, gîtes pour vos séjours en famille,
                     et les produits de notre ferme à emporter.
                 </p>
                 <div class="d-flex flex-column flex-sm-row gap-3">
@@ -26,14 +26,13 @@
                        class="btn btn-fermette btn-lg">
                         Découvrir les hébergements
                     </a>
-                    <a th:href="@{/alpaca-walks}"
+                    <a th:href="@{/activities}"
                        class="btn btn-fermette-outline btn-lg">
-                        Réserver une balade
+                        Voir nos activités
                     </a>
                 </div>
             </div>
             <div class="col-12 col-md-6">
-                <!-- Photo panoramique de la fermette -->
                 <img th:src="@{/img/placeholder.svg}"
                      class="img-fluid rounded img-histoire"
                      alt="Photo panoramique de la fermette"/>
@@ -77,24 +76,24 @@
                 </div>
             </div>
 
-            <!-- Card Balades -->
+            <!-- Card Activités -->
             <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <img th:src="@{/img/placeholder.svg}"
                          class="img-card"
-                         alt="Balade en alpagas"/>
+                         alt="Activités à la fermette"/>
                     <div class="card-body text-center p-3">
                         <span class="badge-fermette-warning mb-2 d-inline-block">
                             Sur réservation
                         </span>
-                        <h3 class="card-title mt-2">Balades en alpagas</h3>
+                        <h3 class="card-title mt-2">Nos activités</h3>
                         <p class="card-text">
-                            Choisissez un créneau, votre demande sera
+                            Choisissez une activité, votre demande sera
                             validée par notre équipe. Paiement sur place.
                         </p>
-                        <a th:href="@{/alpaca-walks}"
+                        <a th:href="@{/activities}"
                            class="btn btn-fermette">
-                            Voir les créneaux
+                            Voir les activités
                         </a>
                     </div>
                 </div>
@@ -211,9 +210,9 @@
                     respectueux de l'environnement et rencontres avec
                     nos alpagas.
                 </p>
-                <a th:href="@{/#la-ferme}"
+                <a th:href="@{/#contact}"
                    class="btn btn-fermette">
-                    Visiter la ferme
+                    Nous contacter
                 </a>
             </div>
             <div class="col-12 col-md-6">
@@ -237,7 +236,6 @@
                 <a href="#" class="btn btn-fermette">Itinéraire</a>
             </div>
             <div class="col-12 col-md-6">
-                <!-- Carte / accès à la fermette -->
                 <img th:src="@{/img/placeholder.svg}"
                      class="img-fluid rounded img-histoire"
                      alt="Carte / accès à la fermette"/>
@@ -246,12 +244,9 @@
     </div>
 </section>
 
-<!-- Fragment footer -->
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 
-<!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<!-- Scripts personnalisés -->
 <script th:src="@{/js/main.js}"></script>
 
 </body>
