@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/head :: head('Détail gîte')}"></head>
+<head th:replace="~{fragments/head :: head('Réserver un gîte')}"></head>
 
 <body>
 
@@ -16,24 +16,105 @@
         <strong th:text="${gite.name()}">Nom du gîte</strong>
     </p>
 
-    <div class="row g-4">
+    <div class="row g-4 align-items-start">
 
-        <!-- Infos gîte -->
+        <!-- Infos gîte + Calendrier -->
         <div class="col-12 col-lg-7">
+
             <!-- Photo placeholder -->
             <div class="img-card d-flex align-items-center
-                        justify-content-center text-muted mb-4"
-                 style="height: 320px; border-radius: 14px;">
+                        justify-content-center text-muted mb-4">
                 Photo à venir
             </div>
 
             <h1 class="mb-1" th:text="${gite.name()}">Nom du gîte</h1>
             <p class="small text-muted mb-3">
-                📍 <span th:text="${gite.location()}">Localisation</span>
-                · jusqu'à <span th:text="${gite.capacity()}">0</span> pers.
-                · <span th:text="${gite.bedrooms()}">0</span> chambres
+                📍 <span th:text="${gite.location()}"></span>
+                · jusqu'à <span th:text="${gite.capacity()}"></span> pers.
+                · <span th:text="${gite.bedrooms()}"></span> chambres
             </p>
-            <p th:text="${gite.description()}">Description</p>
+            <p class="mb-4" th:text="${gite.description()}"></p>
+
+            <!-- ===== Calendrier ===== -->
+            <h2 class="h5 mb-3">Disponibilités</h2>
+
+            <!-- Navigation mois -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a class="btn btn-outline-secondary btn-sm"
+                   th:href="@{/gites/{id}(id=${gite.id()},
+                             year=${calendar.month() == 1
+                                    ? calendar.year() - 1
+                                    : calendar.year()},
+                             month=${calendar.month() == 1
+                                     ? 12
+                                     : calendar.month() - 1})}">
+                    ‹
+                </a>
+                <strong th:text="${calendar.monthName() + ' ' + calendar.year()}">
+                </strong>
+                <a class="btn btn-outline-secondary btn-sm"
+                   th:href="@{/gites/{id}(id=${gite.id()},
+                             year=${calendar.month() == 12
+                                    ? calendar.year() + 1
+                                    : calendar.year()},
+                             month=${calendar.month() == 12
+                                     ? 1
+                                     : calendar.month() + 1})}">
+                    ›
+                </a>
+            </div>
+
+            <!-- Jours de la semaine -->
+            <div class="cal-grid mb-1">
+                <div class="dow">Lun</div>
+                <div class="dow">Mar</div>
+                <div class="dow">Mer</div>
+                <div class="dow">Jeu</div>
+                <div class="dow">Ven</div>
+                <div class="dow">Sam</div>
+                <div class="dow">Dim</div>
+            </div>
+
+            <!-- Grille des jours -->
+            <div class="cal-grid mb-3">
+
+                <!-- Cases vides avant le 1er jour -->
+                <div th:each="i : ${#numbers.sequence(1, calendar.firstDayOfWeek() - 1)}"
+                     class="cal-day empty"></div>
+
+                <!-- Jours du mois -->
+                <th:block th:each="day : ${#numbers.sequence(1, calendar.daysInMonth())}">
+                    <button th:if="${calendar.availabilities().get(day)?.name() == 'AVAILABLE'}"
+                            class="cal-day avail"
+                            th:text="${day}">
+                    </button>
+                    <button th:if="${calendar.availabilities().get(day)?.name() == 'RESERVED'
+                                 or calendar.availabilities().get(day)?.name() == 'UNAVAILABLE'}"
+                            class="cal-day unavail"
+                            th:text="${day}"
+                            disabled>
+                    </button>
+                    <button th:if="${calendar.availabilities().get(day) == null}"
+                            class="cal-day empty"
+                            th:text="${day}"
+                            disabled>
+                    </button>
+                </th:block>
+
+            </div>
+
+            <!-- Légende -->
+            <div class="cal-legend mb-4">
+                <span>
+                    <span class="dot" style="background:#E3ECDB;"></span>
+                    Disponible
+                </span>
+                <span>
+                    <span class="dot" style="background:#EFE7D8;"></span>
+                    Réservé / Indisponible
+                </span>
+            </div>
+
         </div>
 
         <!-- Formulaire réservation -->

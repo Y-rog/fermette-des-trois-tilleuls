@@ -23,6 +23,11 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(
+                                org.springframework.security.config.http.SessionCreationPolicy.ALWAYS
+                        )
+                )
                 .formLogin(form -> form
                         .loginPage("/admin/login")
                         .defaultSuccessUrl("/admin/dashboard")

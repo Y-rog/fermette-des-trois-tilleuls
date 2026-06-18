@@ -247,3 +247,58 @@ body {
         max-width: 100%;
     }
 }
+
+/* ----- Calendrier de disponibilités ----- */
+.cal-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    text-align: center;
+}
+.cal-grid .dow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ff-brun-light);
+    padding: 0.35rem 0;
+}
+.cal-day {
+    padding: 0.6rem 0;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    width: 100%;
+    text-align: center;
+}
+.cal-day.avail {
+    background: #E3ECDB;
+    color: var(--ff-sauge-dark);
+    font-weight: 600;
+}
+.cal-day.unavail {
+    background: var(--ff-sable);
+    color: var(--ff-brun-light);
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+.cal-day.empty {
+    background: transparent;
+    cursor: default;
+    color: var(--ff-brun-light);
+}
+.cal-legend {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 0.9rem;
+    font-size: 0.78rem;
+    color: var(--ff-brun-light);
+}
+.cal-legend .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: -1px;
+}

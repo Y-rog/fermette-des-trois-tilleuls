@@ -1,7 +1,9 @@
 package com.yrog.fermettetroistilleuls.service;
 
+import com.yrog.fermettetroistilleuls.dto.GiteAvailabilityDto;
 import com.yrog.fermettetroistilleuls.dto.GiteDto;
 import com.yrog.fermettetroistilleuls.exception.ResourceNotFoundException;
+import com.yrog.fermettetroistilleuls.repository.GiteAvailabilityRepository;
 import com.yrog.fermettetroistilleuls.repository.GiteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +21,11 @@ public class GiteService {
     private static final Logger log = LoggerFactory.getLogger(GiteService.class);
 
     private final GiteRepository giteRepository;
+    private final GiteAvailabilityRepository giteAvailabilityRepository;
 
-    public GiteService(GiteRepository giteRepository) {
+    public GiteService(GiteRepository giteRepository, GiteAvailabilityRepository giteAvailabilityRepository) {
         this.giteRepository = giteRepository;
+        this.giteAvailabilityRepository = giteAvailabilityRepository;
     }
 
     /**
@@ -64,4 +68,24 @@ public class GiteService {
                         new ResourceNotFoundException("Gîte introuvable : " + id)
                 );
     }
+
+    /**
+     * Retourne les disponibilités d'un gîte.
+     *
+     * @param giteId identifiant du gîte
+     * @return liste de GiteAvailabilityDto
+     */
+    @Transactional(readOnly = true)
+    public List<GiteAvailabilityDto> findAvailabilities(Long giteId) {
+        log.info("Récupération des disponibilités du gîte id={}", giteId);
+        return giteAvailabilityRepository.findByGiteIdOrderByDateAsc(giteId)
+                .stream()
+                .map(a -> new GiteAvailabilityDto(
+                        a.getDate(),
+                        a.getStatus()
+                ))
+                .toList();
+    }
+
+
 }
