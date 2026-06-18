@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Le magasin')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('shop')}"></nav>
+
+<div class="container py-4">
+
+    <!-- Hero magasin -->
+    <div class="row align-items-center g-4 mb-5">
+        <div class="col-12 col-md-6">
+            <span class="section-tag">Vente directe</span>
+            <h1 class="mb-3">Le magasin de la fermette</h1>
+            <p class="mb-4">
+                Découvrez nos produits fermiers en vente directe :
+                fromages, laine d'alpaga, confitures et bien plus.
+                Venez nous rendre visite !
+            </p>
+            <p class="mb-1">
+                <strong>Horaires :</strong> tous les jours, 9h – 18h
+            </p>
+            <p class="mb-1">
+                <strong>Adresse :</strong> [Adresse de la fermette]
+            </p>
+            <p class="mb-3">
+                <strong>Accès :</strong> parking gratuit sur place
+            </p>
+            <a href="#" class="btn btn-fermette">Itinéraire</a>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="img-card d-flex align-items-center
+                        justify-content-center text-muted"
+                 style="height: 300px; border-radius: 14px;">
+                Photo du magasin
+            </div>
+        </div>
+    </div>
+
+    <!-- Nos produits -->
+    <span class="section-tag">Nos produits</span>
+    <h2 class="mb-4">À retrouver sur place</h2>
+
+    <div class="row g-4">
+        <div class="col-12 col-md-4">
+            <div class="card h-100">
+                <div class="img-card d-flex align-items-center
+                            justify-content-center text-muted">
+                    Photo à venir
+                </div>
+                <div class="card-body">
+                    <h3 class="h5">🧀 Fromages fermiers</h3>
+                    <p class="small">
+                        Tommes, faisselles et fromages frais fabriqués
+                        avec le lait de notre troupeau.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card h-100">
+                <div class="img-card d-flex align-items-center
+                            justify-content-center text-muted">
+                    Photo à venir
+                </div>
+                <div class="card-body">
+                    <h3 class="h5">🧶 Laine d'alpaga</h3>
+                    <p class="small">
+                        Pelotes, chaussettes et écharpes tissées
+                        à partir de la laine de nos alpagas.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card h-100">
+                <div class="img-card d-flex align-items-center
+                            justify-content-center text-muted">
+                    Photo à venir
+                </div>
+                <div class="card-body">
+                    <h3 class="h5">🍯 Confitures &amp; miel</h3>
+                    <p class="small">
+                        Confitures maison et miel récolté
+                        sur les terres de la fermette.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>
