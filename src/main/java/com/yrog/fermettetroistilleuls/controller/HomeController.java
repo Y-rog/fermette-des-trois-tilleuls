@@ -1,5 +1,6 @@
 package com.yrog.fermettetroistilleuls.controller;
 
+import com.yrog.fermettetroistilleuls.service.GiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,12 +17,19 @@ public class HomeController {
 
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
 
+    private final GiteService giteService;
+
+    public HomeController(GiteService giteService) {
+        this.giteService = giteService;
+    }
+
     /**
-     * Affiche la page d'accueil.
+     * Affiche la page d'accueil avec la liste des gîtes.
      */
     @GetMapping
-    public String getHomePage() {
+    public String getHomePage(org.springframework.ui.Model model) {
         log.info("Accès à la page d'accueil");
+        model.addAttribute("gites", giteService.findAll());
         return "public/home";
     }
 

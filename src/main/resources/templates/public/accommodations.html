@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Nos hébergements')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('accommodations')}"></nav>
+
+<div class="container py-5">
+
+    <span class="section-tag">Nos hébergements</span>
+    <h1 class="mb-2">Où séjourner à la fermette</h1>
+    <p class="mb-5" style="max-width: 560px;">
+        Deux façons de dormir au cœur de la nature : nos gîtes
+        traditionnels ou nos écolodges insolites en partenariat
+        avec Un Lit au Pré.
+    </p>
+
+    <div class="row g-4">
+
+        <!-- Card Gîtes -->
+        <div class="col-12 col-md-6">
+            <div class="card h-100">
+                <div class="img-card d-flex align-items-center
+                            justify-content-center text-muted">
+                    Photo à venir
+                </div>
+                <div class="card-body text-center p-4">
+                    <span class="badge-fermette-success mb-2 d-inline-block">
+                        Réservation directe
+                    </span>
+                    <h2 class="card-title mt-2">Nos gîtes</h2>
+                    <p class="card-text">
+                        Maisons entières pour vos séjours en famille,
+                        jusqu'à 6 personnes. Consultez les disponibilités
+                        et réservez directement auprès de nous.
+                    </p>
+                    <a th:href="@{/gites}" class="btn btn-fermette">
+                        Voir nos gîtes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Écolodges -->
+        <div class="col-12 col-md-6">
+            <div class="card h-100">
+                <div class="img-card d-flex align-items-center
+                            justify-content-center text-muted">
+                    Photo à venir
+                </div>
+                <div class="card-body text-center p-4">
+                    <span class="badge-fermette-warning mb-2 d-inline-block">
+                        Partenaire Un Lit au Pré
+                    </span>
+                    <h2 class="card-title mt-2">Nos écolodges</h2>
+                    <p class="card-text">
+                        Six écolodges nichés au cœur d'une vallée paisible,
+                        entourés d'un bois et de nos alpagas. Réservation
+                        via notre partenaire Un Lit au Pré.
+                    </p>
+                    <a th:href="${fermette.ecolodgeUrl}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn btn-fermette">
+                        Réserver sur Un Lit au Pré
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

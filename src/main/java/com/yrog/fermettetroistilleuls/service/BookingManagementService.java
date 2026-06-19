@@ -2,17 +2,18 @@ package com.yrog.fermettetroistilleuls.service;
 
 import com.yrog.fermettetroistilleuls.dto.ActivityBookingDetailDto;
 import com.yrog.fermettetroistilleuls.dto.GiteBookingDetailDto;
-import com.yrog.fermettetroistilleuls.entity.ActivityBooking;
-import com.yrog.fermettetroistilleuls.entity.BookingStatus;
-import com.yrog.fermettetroistilleuls.entity.GiteBooking;
+import com.yrog.fermettetroistilleuls.entity.*;
 import com.yrog.fermettetroistilleuls.exception.ResourceNotFoundException;
 import com.yrog.fermettetroistilleuls.repository.ActivityBookingRepository;
+import com.yrog.fermettetroistilleuls.repository.GiteAvailabilityRepository;
 import com.yrog.fermettetroistilleuls.repository.GiteBookingRepository;
+import com.yrog.fermettetroistilleuls.repository.GiteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -28,13 +29,17 @@ public class BookingManagementService {
     private final GiteBookingRepository giteBookingRepository;
     private final ActivityBookingRepository activityBookingRepository;
     private final MailService mailService;
+    private final GiteRepository giteRepository;
+    private final GiteAvailabilityRepository giteAvailabilityRepository;
 
     public BookingManagementService(GiteBookingRepository giteBookingRepository,
                                     ActivityBookingRepository activityBookingRepository,
-                                    MailService mailService) {
+                                    MailService mailService, GiteRepository giteRepository, GiteAvailabilityRepository giteAvailabilityRepository) {
         this.giteBookingRepository = giteBookingRepository;
         this.activityBookingRepository = activityBookingRepository;
         this.mailService = mailService;
+        this.giteRepository = giteRepository;
+        this.giteAvailabilityRepository = giteAvailabilityRepository;
     }
 
     /**
@@ -165,8 +170,52 @@ public class BookingManagementService {
                         new ResourceNotFoundException("Réservation gîte introuvable : " + id));
         booking.setStatus(BookingStatus.ACCEPTED);
         giteBookingRepository.save(booking);
+
+        // Marquer les dates comme RESERVED dans le calendrier
+        markDatesAsReserved(booking.getGite().getId(), booking.getCheckIn(), booking.getCheckOut());
+
         mailService.sendBookingConfirmation(booking.getEmail(), booking.getFirstName());
         log.info("Réservation gîte {} acceptée", id);
+    }
+
+    /**
+     * Marque toutes les dates entre checkIn et checkOut
+     * comme RESERVED pour ce gîte, suite à l'acceptation
+     * d'une réservation.
+     *
+     * @param giteId   identifiant du gîte
+     * @param checkIn  date d'arrivée
+     * @param checkOut date de départ
+     */
+    private void markDatesAsReserved(Long giteId, LocalDate checkIn, LocalDate checkOut) {
+
+        Gite gite = giteRepository.findById(giteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Gîte introuvable"));
+
+        LocalDate current = checkIn;
+
+        while (!current.isAfter(checkOut)) {
+
+            GiteAvailability availability = giteAvailabilityRepository
+                    .findByGiteIdAndDate(giteId, current)
+                    .orElse(null);
+
+            if (availability != null) {
+                availability.setStatus(AvailabilityStatus.RESERVED);
+                giteAvailabilityRepository.save(availability);
+            } else {
+                GiteAvailability newAvailability = GiteAvailability.builder()
+                        .gite(gite)
+                        .date(current)
+                        .status(AvailabilityStatus.RESERVED)
+                        .build();
+                giteAvailabilityRepository.save(newAvailability);
+            }
+
+            current = current.plusDays(1);
+        }
+
+        log.info("Dates marquées RESERVED pour gîte {} du {} au {}", giteId, checkIn, checkOut);
     }
 
     /**

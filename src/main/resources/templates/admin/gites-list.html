@@ -37,6 +37,10 @@
                        class="btn btn-outline-secondary btn-sm">
                         Modifier
                     </a>
+                    <a th:href="@{/admin/gites/{id}/availabilities(id=${gite.id()})}"
+                       class="btn btn-outline-secondary btn-sm">
+                        📅 Disponibilités
+                    </a>
                     <form th:action="@{/admin/gites/{id}/delete(id=${gite.id()})}" method="post" class="d-inline">
                         <button type="submit"
                                 class="btn btn-outline-danger btn-sm"

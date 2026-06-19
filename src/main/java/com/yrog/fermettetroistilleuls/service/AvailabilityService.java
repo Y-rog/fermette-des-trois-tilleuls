@@ -51,6 +51,12 @@ public class AvailabilityService {
         if (existing.isPresent()) {
             GiteAvailability availability = existing.get();
 
+            // Sécurité : on ne touche jamais à une date RESERVED
+            if (availability.getStatus() == AvailabilityStatus.RESERVED) {
+                throw new IllegalStateException(
+                        "Impossible de modifier une date réservée : " + date);
+            }
+
             if (availability.getStatus() == AvailabilityStatus.AVAILABLE) {
                 availability.setStatus(AvailabilityStatus.UNAVAILABLE);
             } else {

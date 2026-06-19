@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Disponibilités')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">
+                Disponibilités — <span th:text="${gite.name()}"></span>
+            </h1>
+            <a th:href="@{/admin/gites}" class="text-muted small">
+                ← Retour aux gîtes
+            </a>
+        </div>
+    </div>
+
+    <div class="card p-3 mb-4" style="max-width: 480px;">
+
+        <!-- Navigation mois -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a class="btn btn-outline-secondary btn-sm"
+               th:href="@{/admin/gites/{id}/availabilities(id=${gite.id()},
+                         year=${calendar.month() == 1 ? calendar.year() - 1 : calendar.year()},
+                         month=${calendar.month() == 1 ? 12 : calendar.month() - 1})}">
+                ‹
+            </a>
+            <strong th:text="${calendar.monthName() + ' ' + calendar.year()}"></strong>
+            <a class="btn btn-outline-secondary btn-sm"
+               th:href="@{/admin/gites/{id}/availabilities(id=${gite.id()},
+                         year=${calendar.month() == 12 ? calendar.year() + 1 : calendar.year()},
+                         month=${calendar.month() == 12 ? 1 : calendar.month() + 1})}">
+                ›
+            </a>
+        </div>
+
+        <!-- Jours de la semaine -->
+        <div class="cal-grid mb-1">
+            <div class="dow">Lun</div>
+            <div class="dow">Mar</div>
+            <div class="dow">Mer</div>
+            <div class="dow">Jeu</div>
+            <div class="dow">Ven</div>
+            <div class="dow">Sam</div>
+            <div class="dow">Dim</div>
+        </div>
+
+        <!-- Grille des jours (cliquable) -->
+        <div class="cal-grid mb-3">
+
+            <div th:each="i : ${#numbers.sequence(1, calendar.firstDayOfWeek() - 1)}"
+                 class="cal-day empty"></div>
+
+            <th:block th:each="day : ${#numbers.sequence(1, calendar.daysInMonth())}">
+
+                <!-- AVAILABLE → cliquable pour bloquer -->
+                <form th:if="${calendar.availabilities().get(day)?.name() == 'AVAILABLE'}"
+                      th:action="@{/admin/gites/{id}/availabilities/toggle(id=${gite.id()})}"
+                      method="post" class="d-inline">
+                    <input type="hidden" name="year" th:value="${calendar.year()}"/>
+                    <input type="hidden" name="month" th:value="${calendar.month()}"/>
+                    <input type="hidden" name="day" th:value="${day}"/>
+                    <button type="submit" class="cal-day avail" th:text="${day}"></button>
+                </form>
+
+                <!-- RESERVED → PAS cliquable, juste affiché -->
+                <span th:if="${calendar.availabilities().get(day)?.name() == 'RESERVED'}"
+                      class="cal-day unavail"
+                      style="cursor:not-allowed; opacity:0.6;"
+                      th:text="${day}">
+</span>
+
+                <!-- UNAVAILABLE → cliquable pour rendre disponible -->
+                <form th:if="${calendar.availabilities().get(day)?.name() == 'UNAVAILABLE'}"
+                      th:action="@{/admin/gites/{id}/availabilities/toggle(id=${gite.id()})}"
+                      method="post" class="d-inline">
+                    <input type="hidden" name="year" th:value="${calendar.year()}"/>
+                    <input type="hidden" name="month" th:value="${calendar.month()}"/>
+                    <input type="hidden" name="day" th:value="${day}"/>
+                    <button type="submit" class="cal-day unavail" th:text="${day}"></button>
+                </form>
+
+                <!-- Pas de dispo renseignée → cliquable pour rendre disponible -->
+                <form th:if="${calendar.availabilities().get(day) == null}"
+                      th:action="@{/admin/gites/{id}/availabilities/toggle(id=${gite.id()})}"
+                      method="post" class="d-inline">
+                    <input type="hidden" name="year" th:value="${calendar.year()}"/>
+                    <input type="hidden" name="month" th:value="${calendar.month()}"/>
+                    <input type="hidden" name="day" th:value="${day}"/>
+                    <button type="submit" class="cal-day empty" th:text="${day}"></button>
+                </form>
+
+            </th:block>
+        </div>
+
+        <!-- Légende -->
+        <div class="cal-legend">
+            <span>
+                <span class="dot" style="background:#E3ECDB;"></span>
+                Disponible (cliquer pour bloquer)
+            </span>
+            <span>
+                <span class="dot" style="background:#EFE7D8;"></span>
+                Indisponible (cliquer pour rendre dispo)
+            </span>
+        </div>
+
+    </div>
+
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>
