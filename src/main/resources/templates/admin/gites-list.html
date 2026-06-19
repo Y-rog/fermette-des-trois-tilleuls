@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Gestion des gîtes')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">Gestion des gîtes</h1>
+            <a th:href="@{/admin/dashboard}" class="text-muted small">
+                ← Retour au dashboard
+            </a>
+        </div>
+        <a th:href="@{/admin/gites/new}" class="btn btn-fermette">
+            + Ajouter un gîte
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-md-6" th:each="gite : ${gites}">
+            <div class="card p-3">
+                <h3 class="h5 mb-1" th:text="${gite.name()}"></h3>
+                <p class="small text-muted mb-2">
+                    📍 <span th:text="${gite.location()}"></span>
+                    · <span th:text="${gite.capacity()}"></span> pers.
+                    · <span th:text="${gite.bedrooms()}"></span> chambres
+                </p>
+                <p class="small mb-3" th:text="${gite.description()}"></p>
+
+                <div class="d-flex gap-2">
+                    <a th:href="@{/admin/gites/{id}/edit(id=${gite.id()})}"
+                       class="btn btn-outline-secondary btn-sm">
+                        Modifier
+                    </a>
+                    <form th:action="@{/admin/gites/{id}/delete(id=${gite.id()})}" method="post" class="d-inline">
+                        <button type="submit"
+                                class="btn btn-outline-danger btn-sm"
+                                onclick="return confirm('Supprimer définitivement ce gîte ?')">
+                            Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(gites)}" class="col-12">
+            <p class="text-muted text-center py-4">
+                Aucun gîte pour le moment.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

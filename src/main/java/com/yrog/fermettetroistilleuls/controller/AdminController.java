@@ -1,12 +1,17 @@
 package com.yrog.fermettetroistilleuls.controller;
 
+import com.yrog.fermettetroistilleuls.dto.GiteDto;
+import com.yrog.fermettetroistilleuls.dto.GiteForm;
 import com.yrog.fermettetroistilleuls.entity.FermetteInfo;
 import com.yrog.fermettetroistilleuls.service.BookingManagementService;
 import com.yrog.fermettetroistilleuls.service.FermetteInfoService;
+import com.yrog.fermettetroistilleuls.service.GiteService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,11 +30,13 @@ public class AdminController {
 
     private final BookingManagementService bookingManagementService;
     private final FermetteInfoService fermetteInfoService;
+    private final GiteService giteService;
 
     public AdminController(BookingManagementService bookingManagementService,
-                           FermetteInfoService fermetteInfoService) {
+                           FermetteInfoService fermetteInfoService, GiteService giteService) {
         this.bookingManagementService = bookingManagementService;
         this.fermetteInfoService = fermetteInfoService;
+        this.giteService = giteService;
     }
 
     /**
@@ -185,4 +192,84 @@ public class AdminController {
         fermetteInfoService.updateInfo(infos);
         return "redirect:/admin/dashboard";
     }
+
+    /**
+     * Affiche la liste des gîtes pour l'admin
+     * avec boutons modifier/supprimer.
+     */
+    @GetMapping("/gites")
+    public String getGitesAdminPage(Model model) {
+        log.info("Accès à la gestion des gîtes");
+        model.addAttribute("gites", giteService.findAll());
+        return "admin/gites-list";
+    }
+
+    /**
+     * Affiche le formulaire de création d'un gîte.
+     */
+    @GetMapping("/gites/new")
+    public String showCreateGiteForm(Model model) {
+        model.addAttribute("giteForm", new GiteForm());
+        model.addAttribute("isEdit", false);
+        return "admin/gite-form";
+    }
+
+    /**
+     * Affiche le formulaire d'édition d'un gîte.
+     */
+    @GetMapping("/gites/{id}/edit")
+    public String showEditGiteForm(@PathVariable Long id, Model model) {
+        GiteDto gite = giteService.findById(id);
+
+        GiteForm form = new GiteForm();
+        form.setName(gite.name());
+        form.setLocation(gite.location());
+        form.setDescription(gite.description());
+        form.setCapacity(gite.capacity());
+        form.setBedrooms(gite.bedrooms());
+        form.setPhotoUrl(gite.photoUrl());
+
+        model.addAttribute("giteForm", form);
+        model.addAttribute("giteId", id);
+        model.addAttribute("isEdit", true);
+        return "admin/gite-form";
+    }
+
+    /**
+     * Traite le formulaire de création d'un gîte.
+     */
+    @PostMapping("/gites/new")
+    public String createGite(@Valid GiteForm form, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("isEdit", false);
+            return "admin/gite-form";
+        }
+        giteService.create(form);
+        return "redirect:/admin/gites";
+    }
+
+    /**
+     * Traite le formulaire d'édition d'un gîte.
+     */
+    @PostMapping("/gites/{id}/edit")
+    public String updateGite(@PathVariable Long id, @Valid GiteForm form,
+                             BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("giteId", id);
+            model.addAttribute("isEdit", true);
+            return "admin/gite-form";
+        }
+        giteService.update(id, form);
+        return "redirect:/admin/gites";
+    }
+
+    /**
+     * Supprime un gîte.
+     */
+    @PostMapping("/gites/{id}/delete")
+    public String deleteGite(@PathVariable Long id) {
+        giteService.delete(id);
+        return "redirect:/admin/gites";
+    }
+
 }
