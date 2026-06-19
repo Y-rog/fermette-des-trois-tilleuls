@@ -1,12 +1,19 @@
 package com.yrog.fermettetroistilleuls.controller;
 
+import com.yrog.fermettetroistilleuls.service.ArchiveService;
 import com.yrog.fermettetroistilleuls.service.BookingManagementService;
+import com.yrog.fermettetroistilleuls.service.CalendarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
 
 /**
  * Contrôleur principal de l'espace administrateur.
@@ -21,9 +28,13 @@ public class AdminController {
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
     private final BookingManagementService bookingManagementService;
+    private final CalendarService calendarService;
+    private final ArchiveService archiveService;
 
-    public AdminController(BookingManagementService bookingManagementService) {
+    public AdminController(BookingManagementService bookingManagementService, CalendarService calendarService, ArchiveService archiveService) {
         this.bookingManagementService = bookingManagementService;
+        this.calendarService = calendarService;
+        this.archiveService = archiveService;
     }
 
     /**
@@ -36,13 +47,62 @@ public class AdminController {
     }
 
     /**
-     * Affiche le tableau de bord admin avec toutes les réservations.
+     * Affiche le tableau de bord admin avec toutes les réservations
+     * et le calendrier multi-gîtes du mois courant.
+     *
+     * @param year  année du calendrier (optionnel, mois courant par défaut)
+     * @param month mois du calendrier (optionnel, mois courant par défaut)
+     * @param model modèle Thymeleaf
+     * @return la vue du dashboard
      */
     @GetMapping("/dashboard")
-    public String getDashboardPage(Model model) {
+    public String getDashboardPage(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
+            Model model) {
+
+        int currentYear  = (year  != null) ? year  : LocalDate.now().getYear();
+        int currentMonth = (month != null) ? month : LocalDate.now().getMonthValue();
+
         log.info("Accès au dashboard admin");
         model.addAttribute("giteBookings", bookingManagementService.findAllGiteBookings());
         model.addAttribute("activityBookings", bookingManagementService.findAllActivityBookings());
+        model.addAttribute("multiCalendar", calendarService.buildMultiGiteCalendar(currentYear, currentMonth));
         return "admin/dashboard";
+    }
+
+    /**
+     * Déclenche l'archivage des réservations terminées
+     * (gîtes et activités) et redirige vers le dashboard
+     * avec un message de confirmation.
+     *
+     * @param redirectAttributes attributs pour le message flash
+     * @return redirection vers le dashboard
+     */
+    @PostMapping("/archive")
+    public String archiveOldBookings(RedirectAttributes redirectAttributes) {
+        log.info("Déclenchement de l'archivage des réservations terminées");
+        int giteCount = archiveService.archiveOldGiteBookings();
+        int activityCount = archiveService.archiveOldActivityBookings();
+
+        redirectAttributes.addFlashAttribute("success",
+                giteCount + " réservation(s) gîte et " + activityCount
+                        + " réservation(s) activité archivée(s).");
+        return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Affiche l'historique complet des réservations archivées
+     * (gîtes et activités).
+     *
+     * @param model modèle Thymeleaf
+     * @return la vue de l'historique
+     */
+    @GetMapping("/history")
+    public String getHistoryPage(Model model) {
+        log.info("Accès à l'historique des réservations");
+        model.addAttribute("giteHistory", archiveService.findGiteBookingsHistory());
+        model.addAttribute("activityHistory", archiveService.findActivityBookingsHistory());
+        return "admin/history";
     }
 }

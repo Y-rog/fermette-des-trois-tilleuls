@@ -272,13 +272,13 @@ body {
     text-align: center;
 }
 .cal-day.avail {
-    background: #E3ECDB;
-    color: var(--ff-sauge-dark);
+    background: #C0DD97;
+    color: #173404;
     font-weight: 600;
 }
 .cal-day.unavail {
-    background: var(--ff-sable);
-    color: var(--ff-brun-light);
+    background: #F0997B;
+    color: #4A1B0C;
     text-decoration: line-through;
     cursor: not-allowed;
 }

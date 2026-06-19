@@ -20,4 +20,10 @@ public interface GiteBookingRepository extends JpaRepository<GiteBooking, Long> 
      * avec l'un des statuts donnés.
      */
     boolean existsByGiteIdAndStatusIn(Long giteId, List<BookingStatus> statuses);
+
+    /**
+     * Retourne toutes les réservations triées par statut
+     * (PENDING en premier) puis par date d'arrivée croissante.
+     */
+    List<GiteBooking> findAllByOrderByStatusAscCheckInAsc();
 }

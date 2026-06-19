@@ -1,9 +1,11 @@
 package com.yrog.fermettetroistilleuls.service;
 
 import com.yrog.fermettetroistilleuls.dto.GiteCalendarDto;
+import com.yrog.fermettetroistilleuls.dto.MultiGiteCalendarDto;
 import com.yrog.fermettetroistilleuls.entity.AvailabilityStatus;
 import com.yrog.fermettetroistilleuls.entity.GiteAvailability;
 import com.yrog.fermettetroistilleuls.repository.GiteAvailabilityRepository;
+import com.yrog.fermettetroistilleuls.repository.GiteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,9 +28,11 @@ public class CalendarService {
     private static final Logger log = LoggerFactory.getLogger(CalendarService.class);
 
     private final GiteAvailabilityRepository giteAvailabilityRepository;
+    private final GiteRepository giteRepository;
 
-    public CalendarService(GiteAvailabilityRepository giteAvailabilityRepository) {
+    public CalendarService(GiteAvailabilityRepository giteAvailabilityRepository, GiteRepository giteRepository) {
         this.giteAvailabilityRepository = giteAvailabilityRepository;
+        this.giteRepository = giteRepository;
     }
 
     /**
@@ -82,5 +87,60 @@ public class CalendarService {
                 year, month, monthName,
                 firstDayOfWeek, daysInMonth, availMap
         );
+    }
+
+    /**
+     * Construit le calendrier multi-gîtes pour le dashboard admin.
+     * Permet de visualiser l'occupation de tous les gîtes
+     * en un coup d'œil pour un mois donné.
+     *
+     * @param year  année du calendrier
+     * @param month mois du calendrier (1-12)
+     * @return MultiGiteCalendarDto prêt pour Thymeleaf
+     */
+    @Transactional(readOnly = true)
+    public MultiGiteCalendarDto buildMultiGiteCalendar(int year, int month) {
+        log.info("Construction du calendrier multi-gîtes {}/{}", month, year);
+
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        int daysInMonth = firstDay.lengthOfMonth();
+        LocalDate lastDay = firstDay.withDayOfMonth(daysInMonth);
+
+        String monthName = firstDay.getMonth()
+                .getDisplayName(TextStyle.FULL, Locale.FRENCH);
+        monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1);
+
+        List<MultiGiteCalendarDto.GiteCalendarRowDto> rows = giteRepository.findAll()
+                .stream()
+                .map(gite -> {
+
+                    Map<Integer, AvailabilityStatus> availMap =
+                            giteAvailabilityRepository.findByGiteIdOrderByDateAsc(gite.getId())
+                                    .stream()
+                                    .filter(a -> !a.getDate().isBefore(firstDay)
+                                            && !a.getDate().isAfter(lastDay))
+                                    .collect(Collectors.toMap(
+                                            a -> a.getDate().getDayOfMonth(),
+                                            GiteAvailability::getStatus
+                                    ));
+
+                    return new MultiGiteCalendarDto.GiteCalendarRowDto(
+                            gite.getId(),
+                            gite.getName(),
+                            availMap
+                    );
+                })
+                .toList();
+
+        List<String> dayLetters = new java.util.ArrayList<>();
+        for (int day = 1; day <= daysInMonth; day++) {
+            LocalDate date = LocalDate.of(year, month, day);
+            String letter = date.getDayOfWeek()
+                    .getDisplayName(TextStyle.NARROW, Locale.FRENCH);
+            dayLetters.add(letter);
+        }
+
+        return new MultiGiteCalendarDto(year, month, monthName, daysInMonth, dayLetters, rows);
+
     }
 }

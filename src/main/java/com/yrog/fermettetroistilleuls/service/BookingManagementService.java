@@ -43,16 +43,16 @@ public class BookingManagementService {
     }
 
     /**
-     * Retourne toutes les réservations de gîtes
-     * triées par statut (PENDING en premier)
-     * puis par date de création décroissante.
+     * Retourne toutes les réservations de gîtes triées par statut
+     * (PENDING en premier, pour traitement prioritaire) puis par
+     * date d'arrivée croissante (les prochaines arrivées en premier).
      *
      * @return liste de GiteBookingDetailDto
      */
     @Transactional(readOnly = true)
     public List<GiteBookingDetailDto> findAllGiteBookings() {
         log.info("Récupération de toutes les réservations de gîtes");
-        return giteBookingRepository.findAllByOrderByStatusAscCreatedAtDesc()
+        return giteBookingRepository.findAllByOrderByStatusAscCheckInAsc()
                 .stream()
                 .map(booking -> new GiteBookingDetailDto(
                         booking.getId(),

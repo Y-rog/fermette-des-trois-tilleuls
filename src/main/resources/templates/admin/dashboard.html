@@ -8,6 +8,113 @@
 <nav th:replace="~{fragments/admin-navbar :: adminNavbar}"></nav>
 
 <div class="container py-4">
+    <!-- Message de succès (ex: archivage effectué) -->
+    <div th:if="${success}" class="alert alert-success mb-3">
+        <span th:text="${success}"></span>
+    </div>
+
+    <!-- ===== Calendrier multi-gîtes ===== -->
+    <h2 class="h5 mb-3">📅 Vue d'ensemble des disponibilités</h2>
+
+    <div class="card p-3 mb-5">
+
+        <!-- Navigation mois -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a class="btn btn-outline-secondary btn-sm"
+               th:href="@{/admin/dashboard(
+                     year=${multiCalendar.month() == 1 ? multiCalendar.year() - 1 : multiCalendar.year()},
+                     month=${multiCalendar.month() == 1 ? 12 : multiCalendar.month() - 1})}">
+                ‹
+            </a>
+            <strong th:text="${multiCalendar.monthName() + ' ' + multiCalendar.year()}"></strong>
+            <a class="btn btn-outline-secondary btn-sm"
+               th:href="@{/admin/dashboard(
+                     year=${multiCalendar.month() == 12 ? multiCalendar.year() + 1 : multiCalendar.year()},
+                     month=${multiCalendar.month() == 12 ? 1 : multiCalendar.month() + 1})}">
+                ›
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-2" style="font-size: 0.78rem;">
+                <thead>
+                <tr>
+                    <th style="min-width: 130px;"></th>
+                    <th th:each="letter : ${multiCalendar.dayLetters()}"
+                        class="text-center text-muted"
+                        style="min-width: 28px; font-weight: 400; font-size: 0.65rem;"
+                        th:text="${letter}">
+                    </th>
+                </tr>
+                <tr>
+                    <th style="min-width: 130px;">Gîte</th>
+                    <th th:each="day : ${#numbers.sequence(1, multiCalendar.daysInMonth())}"
+                        class="text-center" style="min-width: 28px;"
+                        th:text="${day}">
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row : ${multiCalendar.rows()}">
+                    <td>
+                        <a th:href="@{/admin/gites/{id}/availabilities(id=${row.giteId()})}"
+                           th:text="${row.giteName()}"
+                           class="fw-bold text-decoration-none">
+                        </a>
+                    </td>
+                    <td th:each="day : ${#numbers.sequence(1, multiCalendar.daysInMonth())}"
+                        class="text-center p-1">
+                        <!-- AVAILABLE -->
+                        <span th:if="${row.availabilities().get(day)?.name() == 'AVAILABLE'}"
+                              class="cal-day avail d-inline-block w-100"
+                              style="height: 18px;"
+                              title="Disponible">
+                        </span>
+
+                        <!-- RESERVED -->
+                        <span th:if="${row.availabilities().get(day)?.name() == 'RESERVED'}"
+                              class="cal-day unavail d-inline-block w-100"
+                              style="height: 18px;"
+                              title="Réservé">
+                        </span>
+
+                        <!-- UNAVAILABLE -->
+                        <span th:if="${row.availabilities().get(day)?.name() == 'UNAVAILABLE'}"
+                              class="cal-day unavail d-inline-block w-100"
+                              style="height: 18px;"
+                              title="Indisponible">
+                        </span>
+                        <span th:if="${row.availabilities().get(day) == null}"
+                              class="d-inline-block w-100"
+                              style="height: 18px;">
+                        </span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(multiCalendar.rows())}">
+                    <td th:colspan="${multiCalendar.daysInMonth() + 1}"
+                        class="text-center text-muted py-3">
+                        Aucun gîte pour le moment.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Légende -->
+        <div class="d-flex gap-3 mt-2" style="font-size: 0.75rem;">
+            <div class="cal-legend mt-2">
+                <span>
+                    <span class="dot" style="background:#97C459;"></span>
+                    Disponible
+                </span>
+                <span>
+                    <span class="dot" style="background:var(--ff-sable);"></span>
+                Réservé / Indisponible
+                </span>
+            </div>
+        </div>
+
+    </div>
 
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -30,6 +137,14 @@
                class="btn btn-outline-secondary btn-sm">
                 ⚙️ Infos de la fermette
             </a>
+            <a th:href="@{/admin/history}" class="btn btn-outline-secondary btn-sm">
+                📋 Historique
+            </a>
+            <form th:action="@{/admin/archive}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">
+                    🗄️ Archiver
+                </button>
+            </form>
             <form th:action="@{/admin/logout}" method="post">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">
                     Déconnexion

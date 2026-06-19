@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Historique des réservations')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/admin-navbar :: adminNavbar}"></nav>
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">Historique des réservations</h1>
+            <a th:href="@{/admin/dashboard}" class="text-muted small">
+                ← Retour au dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== Historique gîtes ===== -->
+    <h2 class="h5 mb-3">🏠 Historique gîtes</h2>
+
+    <div class="table-responsive mb-5">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Client</th>
+                <th>Gîte</th>
+                <th>Arrivée</th>
+                <th>Départ</th>
+                <th>Pers.</th>
+                <th>Statut</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="booking : ${giteHistory}">
+                <td>
+                    <strong th:text="${booking.firstName() + ' ' + booking.lastName()}"></strong>
+                    <br/>
+                    <small th:text="${booking.email()}"></small>
+                </td>
+                <td th:text="${booking.giteName()}"></td>
+                <td th:text="${booking.checkIn()}"></td>
+                <td th:text="${booking.checkOut()}"></td>
+                <td th:text="${booking.nbGuests()}"></td>
+                <td>
+                        <span th:if="${booking.status().name() == 'ACCEPTED'}"
+                              class="badge bg-success">Acceptée</span>
+                    <span th:if="${booking.status().name() == 'REJECTED'}"
+                          class="badge bg-danger">Refusée</span>
+                    <span th:if="${booking.status().name() == 'PENDING'}"
+                          class="badge bg-warning text-dark">Non traitée</span>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(giteHistory)}">
+                <td colspan="6" class="text-center text-muted py-4">
+                    Aucune réservation archivée pour le moment.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== Historique activités ===== -->
+    <h2 class="h5 mb-3">🐑 Historique activités</h2>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Client</th>
+                <th>Activité</th>
+                <th>Date</th>
+                <th>Heure</th>
+                <th>Pers.</th>
+                <th>Statut</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="booking : ${activityHistory}">
+                <td>
+                    <strong th:text="${booking.firstName() + ' ' + booking.lastName()}"></strong>
+                    <br/>
+                    <small th:text="${booking.email()}"></small>
+                </td>
+                <td th:text="${booking.activityName()}"></td>
+                <td th:text="${booking.activityDate()}"></td>
+                <td th:text="${booking.activityTime()}"></td>
+                <td th:text="${booking.nbGuests()}"></td>
+                <td>
+                        <span th:if="${booking.status().name() == 'ACCEPTED'}"
+                              class="badge bg-success">Acceptée</span>
+                    <span th:if="${booking.status().name() == 'REJECTED'}"
+                          class="badge bg-danger">Refusée</span>
+                    <span th:if="${booking.status().name() == 'PENDING'}"
+                          class="badge bg-warning text-dark">Non traitée</span>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(activityHistory)}">
+                <td colspan="6" class="text-center text-muted py-4">
+                    Aucune réservation archivée pour le moment.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>
