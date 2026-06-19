@@ -4,6 +4,7 @@ import com.yrog.fermettetroistilleuls.dto.GiteDto;
 import com.yrog.fermettetroistilleuls.dto.GiteForm;
 import com.yrog.fermettetroistilleuls.service.AvailabilityService;
 import com.yrog.fermettetroistilleuls.service.CalendarService;
+import com.yrog.fermettetroistilleuls.service.GitePhotoService;
 import com.yrog.fermettetroistilleuls.service.GiteService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -30,13 +31,15 @@ public class AdminGiteController {
     private final GiteService giteService;
     private final CalendarService calendarService;
     private final AvailabilityService availabilityService;
+    private final GitePhotoService gitePhotoService;
 
     public AdminGiteController(GiteService giteService,
                                CalendarService calendarService,
-                               AvailabilityService availabilityService) {
+                               AvailabilityService availabilityService, GitePhotoService gitePhotoService) {
         this.giteService = giteService;
         this.calendarService = calendarService;
         this.availabilityService = availabilityService;
+        this.gitePhotoService = gitePhotoService;
     }
 
     /**
@@ -80,6 +83,7 @@ public class AdminGiteController {
         model.addAttribute("giteForm", form);
         model.addAttribute("giteId", id);
         model.addAttribute("isEdit", true);
+        model.addAttribute("photos", gitePhotoService.findPhotos(id));
         return "admin/gite-form";
     }
 
@@ -183,6 +187,34 @@ public class AdminGiteController {
     public String showDeleteGiteConfirm(@PathVariable Long id, Model model) {
         model.addAttribute("gite", giteService.findById(id));
         return "admin/gite-delete-confirm";
+    }
+
+    /**
+     * Ajoute une photo à un gîte depuis le formulaire d'édition.
+     *
+     * @param id        identifiant du gîte
+     * @param photoUrl  URL de la photo à ajouter
+     * @return redirection vers le formulaire d'édition du gîte
+     */
+    @PostMapping("/{id}/photos/add")
+    public String addPhoto(@PathVariable Long id, @RequestParam String photoUrl) {
+        log.info("Ajout d'une photo pour le gîte id={}", id);
+        gitePhotoService.addPhoto(id, photoUrl);
+        return "redirect:/admin/gites/" + id + "/edit";
+    }
+
+    /**
+     * Supprime une photo d'un gîte.
+     *
+     * @param giteId  identifiant du gîte (pour la redirection)
+     * @param photoId identifiant de la photo à supprimer
+     * @return redirection vers le formulaire d'édition du gîte
+     */
+    @PostMapping("/{giteId}/photos/{photoId}/delete")
+    public String deletePhoto(@PathVariable Long giteId, @PathVariable Long photoId) {
+        log.info("Suppression de la photo id={} du gîte id={}", photoId, giteId);
+        gitePhotoService.deletePhoto(photoId);
+        return "redirect:/admin/gites/" + giteId + "/edit";
     }
 
 }

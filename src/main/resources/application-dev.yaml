@@ -12,8 +12,6 @@ spring:
     port: 1025
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
-
-
   jpa:
     hibernate:
       ddl-auto: update

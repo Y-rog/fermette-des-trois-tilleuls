@@ -3,6 +3,7 @@ package com.yrog.fermettetroistilleuls.controller;
 import com.yrog.fermettetroistilleuls.dto.GiteBookingForm;
 import com.yrog.fermettetroistilleuls.service.BookingService;
 import com.yrog.fermettetroistilleuls.service.CalendarService;
+import com.yrog.fermettetroistilleuls.service.GitePhotoService;
 import com.yrog.fermettetroistilleuls.service.GiteService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -33,13 +34,15 @@ public class GiteController {
     private final GiteService giteService;
     private final BookingService bookingService;
     private final CalendarService calendarService;
+    private final GitePhotoService gitePhotoService;
 
     public GiteController(GiteService giteService,
                           BookingService bookingService,
-                          CalendarService calendarService) {
+                          CalendarService calendarService, GitePhotoService gitePhotoService) {
         this.giteService = giteService;
         this.bookingService = bookingService;
         this.calendarService = calendarService;
+        this.gitePhotoService = gitePhotoService;
     }
 
     /**
@@ -57,7 +60,8 @@ public class GiteController {
 
     /**
      * Affiche le formulaire de réservation pour un gîte
-     * ainsi que son calendrier de disponibilités mensuel.
+     * ainsi que son calendrier de disponibilités mensuel
+     * et sa galerie de photos.
      * Par défaut affiche le mois courant.
      *
      * @param id    identifiant du gîte
@@ -69,16 +73,17 @@ public class GiteController {
      *         si le gîte n'existe pas
      */
     @GetMapping("/{id}")
-    public String getGiteBookingPage(
-            @PathVariable Long id,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Integer month,
-            Model model) {
+    public String getGiteBookingPage(@PathVariable Long id,
+                                     @RequestParam(required = false) Integer year,
+                                     @RequestParam(required = false) Integer month,
+                                     Model model) {
 
         int currentYear  = (year  != null) ? year  : LocalDate.now().getYear();
         int currentMonth = (month != null) ? month : LocalDate.now().getMonthValue();
 
+        log.info("Affichage du formulaire de réservation gîte id={}", id);
         model.addAttribute("gite", giteService.findById(id));
+        model.addAttribute("photos", gitePhotoService.findPhotos(id));
         model.addAttribute("calendar",
                 calendarService.buildGiteCalendar(id, currentYear, currentMonth));
         return "public/gite-booking";

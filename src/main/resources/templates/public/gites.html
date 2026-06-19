@@ -18,11 +18,17 @@
     <div class="row g-4">
         <div class="col-12 col-md-6" th:each="gite : ${gites}">
             <div class="card h-100">
-                <!-- Photo placeholder -->
-                <div class="img-card d-flex align-items-center
-                            justify-content-center text-muted">
-                    Photo à venir
-                </div>
+                <!-- Si la photo existe -->
+                <img th:if="${gite.photoUrl() != null and !gite.photoUrl().isEmpty()}"
+                     th:src="${gite.photoUrl()}"
+                     class="img-card"
+                     th:alt="${gite.name()}"/>
+
+                <!-- Sinon, le placeholder -->
+                <img th:unless="${gite.photoUrl() != null and !gite.photoUrl().isEmpty()}"
+                     th:src="@{/img/placeholder.svg}"
+                     class="img-card"
+                     th:alt="${gite.name()}"/>
                 <div class="card-body">
                     <h2 class="h5 mb-1" th:text="${gite.name()}">
                         Nom du gîte

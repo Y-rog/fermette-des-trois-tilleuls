@@ -17,6 +17,8 @@
     </div>
 
     <div class="card p-4">
+
+        <!-- ===== Formulaire ÉDITION ===== -->
         <form th:if="${isEdit}"
               th:action="@{/admin/gites/{id}/edit(id=${giteId})}"
               th:object="${giteForm}"
@@ -60,9 +62,10 @@
             </div>
 
             <div class="mb-4">
-                <label class="form-label fw-bold">URL photo (optionnel)</label>
+                <label class="form-label fw-bold">Photo vitrine (optionnel)</label>
                 <input type="text" class="form-control"
-                       th:field="*{photoUrl}"/>
+                       th:field="*{photoUrl}"
+                       placeholder="URL de la photo principale affichée sur la liste"/>
             </div>
 
             <button type="submit" class="btn btn-fermette w-100">
@@ -70,6 +73,47 @@
             </button>
         </form>
 
+        <!-- ===== Gestion des photos (uniquement en édition) ===== -->
+        <div th:if="${isEdit}" class="mt-4 pt-4" style="border-top: 1px solid var(--bs-border-color);">
+            <h3 class="h5 mb-3">Photos du gîte</h3>
+
+            <form th:action="@{/admin/gites/{id}/photos/add(id=${giteId})}"
+                  method="post" class="d-flex gap-2 mb-4">
+                <input type="text" class="form-control"
+                       name="photoUrl"
+                       placeholder="URL de la photo (ex: https://...)"
+                       required/>
+                <button type="submit" class="btn btn-fermette">
+                    Ajouter
+                </button>
+            </form>
+
+            <div class="row g-3" th:if="${not #lists.isEmpty(photos)}">
+                <div class="col-6 col-md-4" th:each="photo : ${photos}">
+                    <div class="position-relative">
+                        <img th:src="${photo.url()}" class="img-fluid rounded"
+                             style="height: 120px; width: 100%; object-fit: cover;"
+                             alt="Photo du gîte"/>
+                        <form th:action="@{/admin/gites/{giteId}/photos/{photoId}/delete(giteId=${giteId}, photoId=${photo.id()})}"
+                              method="post"
+                              class="position-absolute top-0 end-0 m-1">
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm"
+                                    style="padding: 2px 8px; font-size: 0.75rem;"
+                                    onclick="return confirm('Supprimer cette photo ?')">
+                                ✕
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <p th:if="${#lists.isEmpty(photos)}" class="text-muted small mb-0">
+                Aucune photo ajoutée pour le moment.
+            </p>
+        </div>
+
+        <!-- ===== Formulaire CRÉATION ===== -->
         <form th:unless="${isEdit}"
               th:action="@{/admin/gites/new}"
               th:object="${giteForm}"
@@ -113,19 +157,20 @@
             </div>
 
             <div class="mb-4">
-                <label class="form-label fw-bold">URL photo (optionnel)</label>
+                <label class="form-label fw-bold">Photo vitrine (optionnel)</label>
                 <input type="text" class="form-control"
-                       th:field="*{photoUrl}"/>
+                       th:field="*{photoUrl}"
+                       placeholder="URL de la photo principale affichée sur la liste"/>
             </div>
 
             <button type="submit" class="btn btn-fermette w-100">
                 Créer le gîte
             </button>
         </form>
+
     </div>
 
 </div>
-
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/main.js}"></script>
