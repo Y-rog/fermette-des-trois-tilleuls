@@ -3,9 +3,11 @@ package com.yrog.fermettetroistilleuls.service;
 import com.yrog.fermettetroistilleuls.dto.GiteAvailabilityDto;
 import com.yrog.fermettetroistilleuls.dto.GiteDto;
 import com.yrog.fermettetroistilleuls.dto.GiteForm;
+import com.yrog.fermettetroistilleuls.entity.BookingStatus;
 import com.yrog.fermettetroistilleuls.entity.Gite;
 import com.yrog.fermettetroistilleuls.exception.ResourceNotFoundException;
 import com.yrog.fermettetroistilleuls.repository.GiteAvailabilityRepository;
+import com.yrog.fermettetroistilleuls.repository.GiteBookingRepository;
 import com.yrog.fermettetroistilleuls.repository.GiteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +26,12 @@ public class GiteService {
 
     private final GiteRepository giteRepository;
     private final GiteAvailabilityRepository giteAvailabilityRepository;
+    private final GiteBookingRepository giteBookingRepository;
 
-    public GiteService(GiteRepository giteRepository, GiteAvailabilityRepository giteAvailabilityRepository) {
+    public GiteService(GiteRepository giteRepository, GiteAvailabilityRepository giteAvailabilityRepository, GiteBookingRepository giteBookingRepository) {
         this.giteRepository = giteRepository;
         this.giteAvailabilityRepository = giteAvailabilityRepository;
+        this.giteBookingRepository = giteBookingRepository;
     }
 
     /**
@@ -136,18 +140,34 @@ public class GiteService {
 
     /**
      * Supprime un gîte.
+     * Refuse la suppression si des réservations PENDING ou ACCEPTED
+     * sont en cours pour ce gîte, afin d'éviter de perdre
+     * l'historique d'une réservation active.
      *
      * @param id identifiant du gîte
      * @throws ResourceNotFoundException si le gîte n'existe pas
+     * @throws IllegalStateException     si des réservations sont en cours
      */
     @Transactional
     public void delete(Long id) {
         if (!giteRepository.existsById(id)) {
             throw new ResourceNotFoundException("Gîte introuvable : " + id);
         }
+
+        boolean hasActiveBookings = giteBookingRepository
+                .existsByGiteIdAndStatusIn(id, List.of(BookingStatus.PENDING, BookingStatus.ACCEPTED));
+
+        if (hasActiveBookings) {
+            throw new IllegalStateException(
+                    "Impossible de supprimer ce gîte : des réservations sont en cours");
+        }
+
+        // Supprimer d'abord les disponibilités liées (pas de contrainte métier ici,
+        // juste du nettoyage technique avant suppression)
+        giteAvailabilityRepository.deleteByGiteId(id);
+
         giteRepository.deleteById(id);
         log.info("Gîte {} supprimé", id);
     }
-
 
 }

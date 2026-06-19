@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head(${isEdit} ? 'Modifier activité' : 'Nouvelle activité')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+<div class="container py-4" style="max-width: 640px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0" th:text="${isEdit} ? 'Modifier l\'activité' : 'Nouvelle activité'"></h1>
+        <a th:href="@{/admin/activities}" class="btn btn-outline-secondary btn-sm">
+            ← Retour
+        </a>
+    </div>
+
+    <div class="card p-4">
+        <form th:if="${isEdit}"
+              th:action="@{/admin/activities/{id}/edit(id=${activityId})}"
+              th:object="${activityForm}"
+              method="post">
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nom</label>
+                <input type="text" class="form-control"
+                       th:field="*{name}" required/>
+                <div class="text-danger small"
+                     th:if="${#fields.hasErrors('name')}"
+                     th:errors="*{name}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Description</label>
+                <textarea class="form-control" rows="4"
+                          th:field="*{description}"></textarea>
+            </div>
+
+            <div class="row g-2 mb-4">
+                <div class="col-6">
+                    <label class="form-label fw-bold">Date</label>
+                    <input type="date" class="form-control"
+                           th:field="*{date}" required/>
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-bold">Heure</label>
+                    <input type="time" class="form-control"
+                           th:field="*{time}" required/>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-fermette w-100">
+                Enregistrer les modifications
+            </button>
+        </form>
+
+        <form th:unless="${isEdit}"
+              th:action="@{/admin/activities/new}"
+              th:object="${activityForm}"
+              method="post">
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nom</label>
+                <input type="text" class="form-control"
+                       th:field="*{name}" required/>
+                <div class="text-danger small"
+                     th:if="${#fields.hasErrors('name')}"
+                     th:errors="*{name}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Description</label>
+                <textarea class="form-control" rows="4"
+                          th:field="*{description}"></textarea>
+            </div>
+
+            <div class="row g-2 mb-4">
+                <div class="col-6">
+                    <label class="form-label fw-bold">Date</label>
+                    <input type="date" class="form-control"
+                           th:field="*{date}" required/>
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-bold">Heure</label>
+                    <input type="time" class="form-control"
+                           th:field="*{time}" required/>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-fermette w-100">
+                Créer l'activité
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

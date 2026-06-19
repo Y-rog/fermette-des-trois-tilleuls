@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Confirmer la suppression')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card p-5" style="max-width: 540px; width: 100%;">
+
+        <div class="mx-auto mb-3 d-flex align-items-center
+                    justify-content-center rounded-circle"
+             style="width:64px; height:64px;
+                    background:#F6DEDE; color:#A2453A;
+                    font-size:1.6rem;">
+            ⚠️
+        </div>
+
+        <h1 class="h4 text-center mb-2">Supprimer cette activité ?</h1>
+
+        <div class="alert alert-danger mb-4">
+            <strong>Attention !</strong> Cette action est irréversible.
+            Toutes les réservations liées à cette activité
+            seront également affectées.
+        </div>
+
+        <div class="card p-3 mb-4" style="background: var(--ff-sable);">
+            <p class="mb-1">
+                <strong>Nom :</strong>
+                <span th:text="${activity.name()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Date :</strong>
+                <span th:text="${activity.date()}"></span>
+            </p>
+            <p class="mb-0">
+                <strong>Heure :</strong>
+                <span th:text="${activity.time()}"></span>
+            </p>
+        </div>
+
+        <div class="d-flex gap-3 justify-content-center">
+            <a th:href="@{/admin/activities}" class="btn btn-outline-secondary">
+                Annuler
+            </a>
+            <form th:action="@{/admin/activities/{id}/delete(id=${activity.id()})}" method="post">
+                <button type="submit" class="btn btn-danger">
+                    Supprimer définitivement
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

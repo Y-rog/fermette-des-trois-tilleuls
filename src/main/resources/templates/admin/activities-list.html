@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/head :: head('Gestion des gîtes')}"></head>
+<head th:replace="~{fragments/head :: head('Gestion des activités')}"></head>
 
 <body>
 
@@ -16,38 +16,38 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-1">Gestion des gîtes</h1>
+            <h1 class="h3 mb-1">Gestion des activités</h1>
             <a th:href="@{/admin/dashboard}" class="text-muted small">
                 ← Retour au dashboard
             </a>
         </div>
-        <a th:href="@{/admin/gites/new}" class="btn btn-fermette">
-            + Ajouter un gîte
+        <a th:href="@{/admin/activities/new}" class="btn btn-fermette">
+            + Ajouter une activité
         </a>
     </div>
 
     <div class="row g-4">
-        <div class="col-12 col-md-6" th:each="gite : ${gites}">
+        <div class="col-12 col-md-6" th:each="activity : ${activities}">
             <div class="card p-3">
-                <h3 class="h5 mb-1" th:text="${gite.name()}"></h3>
+                <h3 class="h5 mb-1" th:text="${activity.name()}"></h3>
                 <p class="small text-muted mb-2">
-                    📍 <span th:text="${gite.location()}"></span>
-                    · <span th:text="${gite.capacity()}"></span> pers.
-                    · <span th:text="${gite.bedrooms()}"></span> chambres
+                    📅 <span th:text="${activity.date()}"></span>
+                    · 🕐 <span th:text="${activity.time()}"></span>
                 </p>
-                <p class="small mb-3" th:text="${gite.description()}"></p>
+                <p class="small mb-3" th:text="${activity.description()}"></p>
 
                 <div class="d-flex gap-2">
-                    <a th:href="@{/admin/gites/{id}/edit(id=${gite.id()})}"
+                    <a th:href="@{/admin/activities/{id}/edit(id=${activity.id()})}"
                        class="btn btn-outline-secondary btn-sm">
                         Modifier
                     </a>
-                    <a th:href="@{/admin/gites/{id}/availabilities(id=${gite.id()})}"
+                    <a th:href="@{/admin/activities/{id}/duplicate(id=${activity.id()})}"
                        class="btn btn-outline-secondary btn-sm">
-                        📅 Disponibilités
+                        📋 Dupliquer
                     </a>
-                    <form th:action="@{/admin/gites/{id}/delete(id=${gite.id()})}" method="post" class="d-inline">
-                        <a th:href="@{/admin/gites/{id}/delete-confirm(id=${gite.id()})}"
+                    <form th:action="@{/admin/activities/{id}/delete(id=${activity.id()})}"
+                          method="post" class="d-inline">
+                        <a th:href="@{/admin/activities/{id}/delete-confirm(id=${activity.id()})}"
                            class="btn btn-outline-danger btn-sm">
                             Supprimer
                         </a>
@@ -56,9 +56,9 @@
             </div>
         </div>
 
-        <div th:if="${#lists.isEmpty(gites)}" class="col-12">
+        <div th:if="${#lists.isEmpty(activities)}" class="col-12">
             <p class="text-muted text-center py-4">
-                Aucun gîte pour le moment.
+                Aucune activité pour le moment.
             </p>
         </div>
     </div>

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 
@@ -116,11 +117,23 @@ public class AdminGiteController {
 
     /**
      * Supprime un gîte.
+     * Si des réservations sont en cours pour ce gîte,
+     * la suppression est refusée et un message d'erreur
+     * est affiché sur la liste des gîtes.
+     *
+     * @param id                 identifiant du gîte
+     * @param redirectAttributes attributs pour le message flash
+     * @return redirection vers la liste des gîtes
      */
     @PostMapping("/{id}/delete")
-    public String deleteGite(@PathVariable Long id) {
-        log.info("Suppression du gîte id={}", id);
-        giteService.delete(id);
+    public String deleteGite(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            giteService.delete(id);
+            log.info("Suppression du gîte id={}", id);
+        } catch (IllegalStateException e) {
+            log.warn("Suppression refusée : {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/admin/gites";
     }
 
@@ -162,4 +175,14 @@ public class AdminGiteController {
 
         return "redirect:/admin/gites/" + id + "/availabilities?year=" + year + "&month=" + month;
     }
+
+    /**
+     * Affiche la page de confirmation avant suppression d'un gîte.
+     */
+    @GetMapping("/{id}/delete-confirm")
+    public String showDeleteGiteConfirm(@PathVariable Long id, Model model) {
+        model.addAttribute("gite", giteService.findById(id));
+        return "admin/gite-delete-confirm";
+    }
+
 }

@@ -1,10 +1,12 @@
 package com.yrog.fermettetroistilleuls.service;
 
-import com.yrog.fermettetroistilleuls.dto.ActivityBookingForm;
 import com.yrog.fermettetroistilleuls.dto.ActivityDto;
+import com.yrog.fermettetroistilleuls.dto.ActivityForm;
+import com.yrog.fermettetroistilleuls.entity.Activity;
+import com.yrog.fermettetroistilleuls.entity.BookingStatus;
 import com.yrog.fermettetroistilleuls.exception.ResourceNotFoundException;
+import com.yrog.fermettetroistilleuls.repository.ActivityBookingRepository;
 import com.yrog.fermettetroistilleuls.repository.ActivityRepository;
-import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,9 +24,11 @@ public class ActivityService {
     private static final Logger log = LoggerFactory.getLogger(ActivityService.class);
 
     private final ActivityRepository activityRepository;
+    private final ActivityBookingRepository activityBookingRepository;
 
-    public ActivityService(ActivityRepository activityRepository) {
+    public ActivityService(ActivityRepository activityRepository, ActivityBookingRepository activityBookingRepository) {
         this.activityRepository = activityRepository;
+        this.activityBookingRepository = activityBookingRepository;
     }
 
     /**
@@ -70,4 +74,72 @@ public class ActivityService {
                 );
     }
 
+    /**
+     * Crée une nouvelle activité.
+     *
+     * @param form formulaire rempli par l'admin
+     */
+    @Transactional
+    public void create(ActivityForm form) {
+        Activity activity = Activity.builder()
+                .name(form.getName())
+                .description(form.getDescription())
+                .date(form.getDate())
+                .time(form.getTime())
+                .active(true)
+                .build();
+
+        activityRepository.save(activity);
+        log.info("Nouvelle activité créée : {}", form.getName());
+    }
+
+    /**
+     * Met à jour une activité existante.
+     *
+     * @param id   identifiant de l'activité
+     * @param form formulaire rempli par l'admin
+     * @throws ResourceNotFoundException si l'activité n'existe pas
+     */
+    @Transactional
+    public void update(Long id, ActivityForm form) {
+        Activity activity = activityRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Activité introuvable : " + id));
+
+        activity.setName(form.getName());
+        activity.setDescription(form.getDescription());
+        activity.setDate(form.getDate());
+        activity.setTime(form.getTime());
+
+        activityRepository.save(activity);
+        log.info("Activité {} mise à jour", id);
+    }
+
+    /**
+     * Supprime une activité.
+     * Refuse la suppression si des réservations PENDING ou ACCEPTED
+     * sont en cours pour cette activité, afin d'éviter de perdre
+     * l'historique d'une réservation active.
+     *
+     * @param id identifiant de l'activité
+     * @throws ResourceNotFoundException si l'activité n'existe pas
+     * @throws IllegalStateException     si des réservations sont en cours
+     */
+    @Transactional
+    public void delete(Long id) {
+        if (!activityRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Activité introuvable : " + id);
+        }
+
+        boolean hasActiveBookings = activityBookingRepository
+                .existsByActivityIdAndStatusIn(id, List.of(BookingStatus.PENDING, BookingStatus.ACCEPTED));
+
+        if (hasActiveBookings) {
+            throw new IllegalStateException(
+                    "Impossible de supprimer cette activité : des réservations sont en cours");
+        }
+
+        activityRepository.deleteById(id);
+        log.info("Activité {} supprimée", id);
+    }
 }

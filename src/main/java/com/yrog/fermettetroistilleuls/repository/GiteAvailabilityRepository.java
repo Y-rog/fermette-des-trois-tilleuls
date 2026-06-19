@@ -20,4 +20,9 @@ public interface GiteAvailabilityRepository extends JpaRepository<GiteAvailabili
      * Recherche la disponibilité d'un gîte à une date donnée.
      */
     Optional<GiteAvailability> findByGiteIdAndDate(Long giteId, LocalDate date);
+
+    /**
+     * Supprime toutes les disponibilités d'un gîte.
+     */
+    void deleteByGiteId(Long giteId);
 }
