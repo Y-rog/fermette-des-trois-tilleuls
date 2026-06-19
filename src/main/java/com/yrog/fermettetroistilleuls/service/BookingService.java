@@ -4,17 +4,16 @@ import com.yrog.fermettetroistilleuls.dto.ActivityBookingForm;
 import com.yrog.fermettetroistilleuls.dto.GiteBookingForm;
 import com.yrog.fermettetroistilleuls.entity.*;
 import com.yrog.fermettetroistilleuls.exception.ResourceNotFoundException;
-import com.yrog.fermettetroistilleuls.repository.ActivityBookingRepository;
-import com.yrog.fermettetroistilleuls.repository.ActivityRepository;
-import com.yrog.fermettetroistilleuls.repository.GiteBookingRepository;
+import com.yrog.fermettetroistilleuls.repository.*;
 
-import com.yrog.fermettetroistilleuls.repository.GiteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * Service gérant la logique métier des réservations.
@@ -27,12 +26,14 @@ public class BookingService {
     private final GiteRepository giteRepository;
     private final ActivityRepository activityRepository;
     private final ActivityBookingRepository activityBookingRepository;
+    private final GiteAvailabilityRepository giteAvailabilityRepository;
 
-    public BookingService(GiteBookingRepository giteBookingRepository, GiteRepository giteRepository, ActivityRepository activityRepository, ActivityBookingRepository activityBookingRepository) {
+    public BookingService(GiteBookingRepository giteBookingRepository, GiteRepository giteRepository, ActivityRepository activityRepository, ActivityBookingRepository activityBookingRepository, GiteAvailabilityRepository giteAvailabilityRepository) {
         this.giteBookingRepository = giteBookingRepository;
         this.giteRepository = giteRepository;
         this.activityRepository = activityRepository;
         this.activityBookingRepository = activityBookingRepository;
+        this.giteAvailabilityRepository = giteAvailabilityRepository;
     }
 
     /**
@@ -49,6 +50,15 @@ public class BookingService {
         Gite gite = giteRepository.findById(form.getGiteId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Gîte introuvable"));
+
+        // Vérifier que checkOut est après checkIn
+        if (!form.getCheckOut().isAfter(form.getCheckIn())) {
+            throw new IllegalStateException(
+                    "La date de départ doit être après la date d'arrivée");
+        }
+
+        // Vérification des disponibilités avant de sauvegarder
+        checkAvailability(form.getGiteId(), form.getCheckIn(), form.getCheckOut());
 
         GiteBooking booking = GiteBooking.builder()
                 .gite(gite)
@@ -98,5 +108,38 @@ public class BookingService {
         activityBookingRepository.save(booking);
         log.info("Nouvelle réservation activité pour {}", form.getEmail());
     }
+
+    /**
+     * Vérifie que toutes les dates entre checkIn et checkOut
+     * sont disponibles pour ce gîte.
+     *
+     * @param giteId   identifiant du gîte
+     * @param checkIn  date d'arrivée
+     * @param checkOut date de départ
+     * @throws IllegalStateException si une date n'est pas disponible
+     */
+    private void checkAvailability(Long giteId, LocalDate checkIn, LocalDate checkOut) {
+
+        LocalDate current = checkIn;
+
+        while (!current.isAfter(checkOut)) {
+
+            GiteAvailability availability = giteAvailabilityRepository
+                    .findByGiteIdAndDate(giteId, current)
+                    .orElse(null);
+
+            boolean isAvailable = availability != null
+                    && availability.getStatus() == AvailabilityStatus.AVAILABLE;
+
+            if (!isAvailable) {
+                throw new IllegalStateException(
+                        "La date " + current + " n'est pas disponible pour ce gîte");
+            }
+
+            current = current.plusDays(1);
+        }
+    }
+
+
 
 }

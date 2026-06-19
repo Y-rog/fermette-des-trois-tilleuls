@@ -109,8 +109,22 @@ public class GiteController {
                             LocalDate.now().getMonthValue()));
             return "public/gite-booking";
         }
-        bookingService.saveGiteBooking(form);
-        log.info("Réservation gîte soumise pour {}", form.getEmail());
-        return "redirect:/confirmation";
+
+        try {
+            bookingService.saveGiteBooking(form);
+            log.info("Réservation gîte soumise pour {}", form.getEmail());
+            return "redirect:/confirmation";
+
+        } catch (IllegalStateException e) {
+            log.warn("Dates non disponibles pour la réservation : {}", e.getMessage());
+            model.addAttribute("gite", giteService.findById(form.getGiteId()));
+            model.addAttribute("calendar",
+                    calendarService.buildGiteCalendar(
+                            form.getGiteId(),
+                            LocalDate.now().getYear(),
+                            LocalDate.now().getMonthValue()));
+            model.addAttribute("errorMessage", e.getMessage());
+            return "public/gite-booking";
+        }
     }
 }

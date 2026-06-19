@@ -16,20 +16,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Service gérant la logique métier de l'espace admin.
- * Permet de consulter et traiter les demandes de réservation.
+ * Service gérant le cycle de vie des réservations
+ * depuis l'espace admin : consultation, acceptation,
+ * refus et remise en attente.
  */
 @Service
-public class AdminService {
+public class BookingManagementService {
 
-    private static final Logger log = LoggerFactory.getLogger(AdminService.class);
+    private static final Logger log = LoggerFactory.getLogger(BookingManagementService.class);
 
     private final GiteBookingRepository giteBookingRepository;
     private final ActivityBookingRepository activityBookingRepository;
     private final MailService mailService;
 
-    public AdminService(GiteBookingRepository giteBookingRepository,
-                        ActivityBookingRepository activityBookingRepository, MailService mailService) {
+    public BookingManagementService(GiteBookingRepository giteBookingRepository,
+                                    ActivityBookingRepository activityBookingRepository,
+                                    MailService mailService) {
         this.giteBookingRepository = giteBookingRepository;
         this.activityBookingRepository = activityBookingRepository;
         this.mailService = mailService;
@@ -94,78 +96,6 @@ public class AdminService {
     }
 
     /**
-     * Accepte une demande de réservation de gîte.
-     * Change le statut à ACCEPTED.
-     *
-     * @param id identifiant de la réservation
-     * @throws ResourceNotFoundException si la réservation n'existe pas
-     */
-    @Transactional
-    public void acceptGiteBooking(Long id) {
-        GiteBooking booking = giteBookingRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Réservation gîte introuvable : " + id));
-        booking.setStatus(BookingStatus.ACCEPTED);
-        giteBookingRepository.save(booking);
-        mailService.sendBookingConfirmation(booking.getEmail(), booking.getFirstName());
-        log.info("Réservation gîte {} acceptée", id);
-    }
-
-    /**
-     * Refuse une demande de réservation de gîte.
-     * Change le statut à REJECTED.
-     *
-     * @param id identifiant de la réservation
-     * @throws ResourceNotFoundException si la réservation n'existe pas
-     */
-    @Transactional
-    public void rejectGiteBooking(Long id) {
-        GiteBooking booking = giteBookingRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Réservation gîte introuvable : " + id));
-        booking.setStatus(BookingStatus.REJECTED);
-        giteBookingRepository.save(booking);
-        mailService.sendBookingRejection(booking.getEmail(), booking.getFirstName());
-        log.info("Réservation gîte {} refusée", id);
-    }
-
-    /**
-     * Accepte une demande de réservation d'activité.
-     * Change le statut à ACCEPTED.
-     *
-     * @param id identifiant de la réservation
-     * @throws ResourceNotFoundException si la réservation n'existe pas
-     */
-    @Transactional
-    public void acceptActivityBooking(Long id) {
-        ActivityBooking booking = activityBookingRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Réservation activité introuvable : " + id));
-        booking.setStatus(BookingStatus.ACCEPTED);
-        activityBookingRepository.save(booking);
-        mailService.sendBookingConfirmation(booking.getEmail(), booking.getFirstName());
-        log.info("Réservation activité {} acceptée", id);
-    }
-
-    /**
-     * Refuse une demande de réservation d'activité.
-     * Change le statut à REJECTED.
-     *
-     * @param id identifiant de la réservation
-     * @throws ResourceNotFoundException si la réservation n'existe pas
-     */
-    @Transactional
-    public void rejectActivityBooking(Long id) {
-        ActivityBooking booking = activityBookingRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Réservation activité introuvable : " + id));
-        booking.setStatus(BookingStatus.REJECTED);
-        activityBookingRepository.save(booking);
-        mailService.sendBookingRejection(booking.getEmail(), booking.getFirstName());
-        log.info("Réservation activité {} refusée", id);
-    }
-
-    /**
      * Retourne le détail d'une réservation de gîte par son id.
      *
      * @param id identifiant de la réservation
@@ -222,6 +152,42 @@ public class AdminService {
     }
 
     /**
+     * Accepte une demande de réservation de gîte.
+     * Change le statut à ACCEPTED et envoie un email de confirmation.
+     *
+     * @param id identifiant de la réservation
+     * @throws ResourceNotFoundException si la réservation n'existe pas
+     */
+    @Transactional
+    public void acceptGiteBooking(Long id) {
+        GiteBooking booking = giteBookingRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Réservation gîte introuvable : " + id));
+        booking.setStatus(BookingStatus.ACCEPTED);
+        giteBookingRepository.save(booking);
+        mailService.sendBookingConfirmation(booking.getEmail(), booking.getFirstName());
+        log.info("Réservation gîte {} acceptée", id);
+    }
+
+    /**
+     * Refuse une demande de réservation de gîte.
+     * Change le statut à REJECTED et envoie un email de refus.
+     *
+     * @param id identifiant de la réservation
+     * @throws ResourceNotFoundException si la réservation n'existe pas
+     */
+    @Transactional
+    public void rejectGiteBooking(Long id) {
+        GiteBooking booking = giteBookingRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Réservation gîte introuvable : " + id));
+        booking.setStatus(BookingStatus.REJECTED);
+        giteBookingRepository.save(booking);
+        mailService.sendBookingRejection(booking.getEmail(), booking.getFirstName());
+        log.info("Réservation gîte {} refusée", id);
+    }
+
+    /**
      * Remet une réservation de gîte en attente.
      * Change le statut à PENDING.
      *
@@ -236,6 +202,42 @@ public class AdminService {
         booking.setStatus(BookingStatus.PENDING);
         giteBookingRepository.save(booking);
         log.info("Réservation gîte {} remise en attente", id);
+    }
+
+    /**
+     * Accepte une demande de réservation d'activité.
+     * Change le statut à ACCEPTED et envoie un email de confirmation.
+     *
+     * @param id identifiant de la réservation
+     * @throws ResourceNotFoundException si la réservation n'existe pas
+     */
+    @Transactional
+    public void acceptActivityBooking(Long id) {
+        ActivityBooking booking = activityBookingRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Réservation activité introuvable : " + id));
+        booking.setStatus(BookingStatus.ACCEPTED);
+        activityBookingRepository.save(booking);
+        mailService.sendBookingConfirmation(booking.getEmail(), booking.getFirstName());
+        log.info("Réservation activité {} acceptée", id);
+    }
+
+    /**
+     * Refuse une demande de réservation d'activité.
+     * Change le statut à REJECTED et envoie un email de refus.
+     *
+     * @param id identifiant de la réservation
+     * @throws ResourceNotFoundException si la réservation n'existe pas
+     */
+    @Transactional
+    public void rejectActivityBooking(Long id) {
+        ActivityBooking booking = activityBookingRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Réservation activité introuvable : " + id));
+        booking.setStatus(BookingStatus.REJECTED);
+        activityBookingRepository.save(booking);
+        mailService.sendBookingRejection(booking.getEmail(), booking.getFirstName());
+        log.info("Réservation activité {} refusée", id);
     }
 
     /**

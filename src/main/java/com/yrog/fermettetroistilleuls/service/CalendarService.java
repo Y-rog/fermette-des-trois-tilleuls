@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,19 +43,32 @@ public class CalendarService {
     public GiteCalendarDto buildGiteCalendar(Long giteId, int year, int month) {
         log.info("Construction du calendrier gîte id={} {}/{}", giteId, month, year);
 
+        // 1. On calcule le 1er jour du mois demandé
+        // Exemple : LocalDate.of(2026, 7, 1) → 1er juillet 2026
         LocalDate firstDay = LocalDate.of(year, month, 1);
+
+        // 2. Combien de jours dans ce mois ?
         int daysInMonth = firstDay.lengthOfMonth();
+
+        // 3. Sur quel jour de la semaine tombe le 1er ?
+        // getDayOfWeek() retourne MONDAY, TUESDAY...
+        // .getValue() le convertit en nombre : 1=lundi, 2=mardi... 7=dimanche
+        // Si le 1er juillet 2026 est un mercredi → firstDayOfWeek = 3
         int firstDayOfWeek = firstDay.getDayOfWeek().getValue();
+
+        // 4. On calcule le dernier jour du mois
+        // 31 juillet 2026
         LocalDate lastDay = firstDay.withDayOfMonth(daysInMonth);
 
-        // Récupérer les dispos du mois
-        Map<Integer, AvailabilityStatus> availMap =
-                giteAvailabilityRepository.findByGiteIdOrderByDateAsc(giteId)
+        // 5. On va chercher en BDD toutes les dispos
+        //    ENTRE le 1er et le dernier jour du mois
+        // Résultat : {1: AVAILABLE, 2: AVAILABLE, 3: RESERVED, ...}
+        Map<Integer, AvailabilityStatus> availMap = giteAvailabilityRepository.findByGiteIdOrderByDateAsc(giteId)
                         .stream()
                         .filter(a -> !a.getDate().isBefore(firstDay)
                                 && !a.getDate().isAfter(lastDay))
                         .collect(Collectors.toMap(
-                                a -> a.getDate().getDayOfMonth(), // ← clé = jour du mois
+                                a -> a.getDate().getDayOfMonth(), // ← clé = le numéro du jour
                                 GiteAvailability::getStatus
                         ));
 

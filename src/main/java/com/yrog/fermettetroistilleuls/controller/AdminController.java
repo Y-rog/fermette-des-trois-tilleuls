@@ -1,7 +1,7 @@
 package com.yrog.fermettetroistilleuls.controller;
 
 import com.yrog.fermettetroistilleuls.entity.FermetteInfo;
-import com.yrog.fermettetroistilleuls.service.AdminService;
+import com.yrog.fermettetroistilleuls.service.BookingManagementService;
 import com.yrog.fermettetroistilleuls.service.FermetteInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
 
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
-    private final AdminService adminService;
+
+    private final BookingManagementService bookingManagementService;
     private final FermetteInfoService fermetteInfoService;
 
-    public AdminController(AdminService adminService, FermetteInfoService fermetteInfoService) {
-        this.adminService = adminService;
+    public AdminController(BookingManagementService bookingManagementService,
+                           FermetteInfoService fermetteInfoService) {
+        this.bookingManagementService = bookingManagementService;
         this.fermetteInfoService = fermetteInfoService;
     }
 
@@ -50,8 +52,8 @@ public class AdminController {
     @GetMapping("/dashboard")
     public String getDashboardPage(Model model) {
         log.info("Accès au dashboard admin");
-        model.addAttribute("giteBookings", adminService.findAllGiteBookings());
-        model.addAttribute("activityBookings", adminService.findAllActivityBookings());
+        model.addAttribute("giteBookings", bookingManagementService.findAllGiteBookings());
+        model.addAttribute("activityBookings", bookingManagementService.findAllActivityBookings());
         return "admin/dashboard";
     }
 
@@ -64,7 +66,7 @@ public class AdminController {
     @PostMapping("/gite-bookings/{id}/accept")
     public String acceptGiteBooking(@PathVariable Long id) {
         log.info("Acceptation de la réservation gîte id={}", id);
-        adminService.acceptGiteBooking(id);
+        bookingManagementService.acceptGiteBooking(id);
         return "redirect:/admin/dashboard";
     }
 
@@ -77,7 +79,7 @@ public class AdminController {
     @PostMapping("/gite-bookings/{id}/reject")
     public String rejectGiteBooking(@PathVariable Long id) {
         log.info("Refus de la réservation gîte id={}", id);
-        adminService.rejectGiteBooking(id);
+        bookingManagementService.rejectGiteBooking(id);
         return "redirect:/admin/dashboard";
     }
 
@@ -90,7 +92,7 @@ public class AdminController {
     @PostMapping("/gite-bookings/{id}/pending")
     public String pendingGiteBooking(@PathVariable Long id) {
         log.info("Remise en attente de la réservation gîte id={}", id);
-        adminService.pendingGiteBooking(id);
+        bookingManagementService.pendingGiteBooking(id);
         return "redirect:/admin/dashboard";
     }
 
@@ -105,7 +107,7 @@ public class AdminController {
     @GetMapping("/gite-bookings/{id}/pending-confirm")
     public String showGitePendingConfirm(@PathVariable Long id, Model model) {
         log.info("Accès à la page de confirmation remise en attente gîte id={}", id);
-        model.addAttribute("booking", adminService.findGiteBookingById(id));
+        model.addAttribute("booking", bookingManagementService.findGiteBookingById(id));
         model.addAttribute("type", "gite");
         return "admin/pending-confirm";
     }
@@ -119,7 +121,7 @@ public class AdminController {
     @PostMapping("/activity-bookings/{id}/accept")
     public String acceptActivityBooking(@PathVariable Long id) {
         log.info("Acceptation de la réservation activité id={}", id);
-        adminService.acceptActivityBooking(id);
+        bookingManagementService.acceptActivityBooking(id);
         return "redirect:/admin/dashboard";
     }
 
@@ -132,7 +134,7 @@ public class AdminController {
     @PostMapping("/activity-bookings/{id}/reject")
     public String rejectActivityBooking(@PathVariable Long id) {
         log.info("Refus de la réservation activité id={}", id);
-        adminService.rejectActivityBooking(id);
+        bookingManagementService.rejectActivityBooking(id);
         return "redirect:/admin/dashboard";
     }
 
@@ -145,7 +147,7 @@ public class AdminController {
     @PostMapping("/activity-bookings/{id}/pending")
     public String pendingActivityBooking(@PathVariable Long id) {
         log.info("Remise en attente de la réservation activité id={}", id);
-        adminService.pendingActivityBooking(id);
+        bookingManagementService.pendingActivityBooking(id);
         return "redirect:/admin/dashboard";
     }
 
@@ -160,7 +162,7 @@ public class AdminController {
     @GetMapping("/activity-bookings/{id}/pending-confirm")
     public String showActivityPendingConfirm(@PathVariable Long id, Model model) {
         log.info("Accès à la page de confirmation remise en attente activité id={}", id);
-        model.addAttribute("booking", adminService.findActivityBookingById(id));
+        model.addAttribute("booking", bookingManagementService.findActivityBookingById(id));
         model.addAttribute("type", "activity");
         return "admin/pending-confirm";
     }

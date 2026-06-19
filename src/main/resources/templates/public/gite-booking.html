@@ -119,6 +119,12 @@
 
         <!-- Formulaire réservation -->
         <div class="col-12 col-lg-5">
+            <!-- Message d'erreur si dates indisponibles -->
+            <div th:if="${errorMessage}" class="alert alert-danger mb-3">
+                <span th:text="${errorMessage}"></span>
+            </div>
+
+            <form th:action="@{/gites/booking}" method="post">
             <div class="card p-4">
                 <h3 class="h5 mb-3">Demande de réservation</h3>
                 <form th:action="@{/gites/booking}" method="post">

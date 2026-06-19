@@ -2,6 +2,8 @@ package com.yrog.fermettetroistilleuls.service;
 
 import com.yrog.fermettetroistilleuls.dto.GiteAvailabilityDto;
 import com.yrog.fermettetroistilleuls.dto.GiteDto;
+import com.yrog.fermettetroistilleuls.dto.GiteForm;
+import com.yrog.fermettetroistilleuls.entity.Gite;
 import com.yrog.fermettetroistilleuls.exception.ResourceNotFoundException;
 import com.yrog.fermettetroistilleuls.repository.GiteAvailabilityRepository;
 import com.yrog.fermettetroistilleuls.repository.GiteRepository;
@@ -85,6 +87,66 @@ public class GiteService {
                         a.getStatus()
                 ))
                 .toList();
+    }
+
+    /**
+     * Crée un nouveau gîte.
+     *
+     * @param form formulaire rempli par l'admin
+     */
+    @Transactional
+    public void create(GiteForm form) {
+        Gite gite = Gite.builder()
+                .name(form.getName())
+                .location(form.getLocation())
+                .description(form.getDescription())
+                .capacity(form.getCapacity())
+                .bedrooms(form.getBedrooms())
+                .photoUrl(form.getPhotoUrl())
+                .active(true)
+                .build();
+
+        giteRepository.save(gite);
+        log.info("Nouveau gîte créé : {}", form.getName());
+    }
+
+    /**
+     * Met à jour un gîte existant.
+     *
+     * @param id   identifiant du gîte
+     * @param form formulaire rempli par l'admin
+     * @throws ResourceNotFoundException si le gîte n'existe pas
+     */
+    @Transactional
+    public void update(Long id, GiteForm form) {
+        Gite gite = giteRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Gîte introuvable : " + id));
+
+        gite.setName(form.getName());
+        gite.setLocation(form.getLocation());
+        gite.setDescription(form.getDescription());
+        gite.setCapacity(form.getCapacity());
+        gite.setBedrooms(form.getBedrooms());
+        gite.setPhotoUrl(form.getPhotoUrl());
+
+        giteRepository.save(gite);
+        log.info("Gîte {} mis à jour", id);
+    }
+
+    /**
+     * Supprime un gîte.
+     *
+     * @param id identifiant du gîte
+     * @throws ResourceNotFoundException si le gîte n'existe pas
+     */
+    @Transactional
+    public void delete(Long id) {
+        if (!giteRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Gîte introuvable : " + id);
+        }
+        giteRepository.deleteById(id);
+        log.info("Gîte {} supprimé", id);
     }
 
 

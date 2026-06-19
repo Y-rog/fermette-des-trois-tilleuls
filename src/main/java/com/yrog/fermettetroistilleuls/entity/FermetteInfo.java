@@ -34,4 +34,7 @@ public class FermetteInfo {
 
     @Column
     private String horairesBoutique;
+
+    @Column
+    private String ecolodgeUrl;
 }
