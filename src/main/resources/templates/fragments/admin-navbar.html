@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="adminNavbar" class="navbar navbar-expand-lg navbar-dark"
+     style="background-color: var(--ff-sauge-dark);">
+    <div class="container">
+
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">
+            🌿 Espace admin
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#adminNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="adminNavMenu">
+            <ul class="navbar-nav ms-auto gap-lg-2">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">
+                        Tableau de bord
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/gites}">
+                        Gîtes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/activities}">
+                        Activités
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/infos}">
+                        Infos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <form th:action="@{/admin/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-light btn-sm">
+                            Déconnexion
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+
+</body>
+</html>
