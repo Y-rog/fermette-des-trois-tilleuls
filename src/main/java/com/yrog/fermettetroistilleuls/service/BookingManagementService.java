@@ -219,6 +219,37 @@ public class BookingManagementService {
     }
 
     /**
+     * Libère toutes les dates entre checkIn et checkOut
+     * en les remettant à AVAILABLE, suite à un refus
+     * ou une remise en attente d'une réservation
+     * précédemment acceptée.
+     *
+     * @param giteId   identifiant du gîte
+     * @param checkIn  date d'arrivée
+     * @param checkOut date de départ
+     */
+    private void releaseDates(Long giteId, LocalDate checkIn, LocalDate checkOut) {
+
+        LocalDate current = checkIn;
+
+        while (!current.isAfter(checkOut)) {
+
+            giteAvailabilityRepository
+                    .findByGiteIdAndDate(giteId, current)
+                    .ifPresent(availability -> {
+                        if (availability.getStatus() == AvailabilityStatus.RESERVED) {
+                            availability.setStatus(AvailabilityStatus.AVAILABLE);
+                            giteAvailabilityRepository.save(availability);
+                        }
+                    });
+
+            current = current.plusDays(1);
+        }
+
+        log.info("Dates libérées pour gîte {} du {} au {}", giteId, checkIn, checkOut);
+    }
+
+    /**
      * Refuse une demande de réservation de gîte.
      * Change le statut à REJECTED et envoie un email de refus.
      *
@@ -230,6 +261,12 @@ public class BookingManagementService {
         GiteBooking booking = giteBookingRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Réservation gîte introuvable : " + id));
+
+        // Si on refuse une réservation qui était acceptée → libérer les dates
+        if (booking.getStatus() == BookingStatus.ACCEPTED) {
+            releaseDates(booking.getGite().getId(), booking.getCheckIn(), booking.getCheckOut());
+        }
+
         booking.setStatus(BookingStatus.REJECTED);
         giteBookingRepository.save(booking);
         mailService.sendBookingRejection(booking.getEmail(), booking.getFirstName());
@@ -248,6 +285,12 @@ public class BookingManagementService {
         GiteBooking booking = giteBookingRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Réservation gîte introuvable : " + id));
+
+        // Si on remet en pending une réservation acceptée → libérer les dates
+        if (booking.getStatus() == BookingStatus.ACCEPTED) {
+            releaseDates(booking.getGite().getId(), booking.getCheckIn(), booking.getCheckOut());
+        }
+
         booking.setStatus(BookingStatus.PENDING);
         giteBookingRepository.save(booking);
         log.info("Réservation gîte {} remise en attente", id);
