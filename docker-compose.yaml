@@ -1,5 +1,4 @@
 services:
-
   # ── Application Spring Boot ──────────────────
   app:
     build: .
@@ -13,11 +12,11 @@ services:
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
       MAIL_FROM: ${MAIL_FROM}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
     restart: always
-
   # ── PostgreSQL ───────────────────────────────
   db:
     image: postgres:16-alpine
@@ -33,6 +32,5 @@ services:
       timeout: 5s
       retries: 5
     restart: always
-
 volumes:
   postgres_data:
