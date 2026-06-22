@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
@@ -31,15 +32,17 @@ public class AdminGiteController {
     private final AvailabilityService availabilityService;
     private final GitePhotoService gitePhotoService;
     private final BookingService bookingService;
+    private final FileUploadService fileUploadService;
 
     public AdminGiteController(GiteService giteService,
                                CalendarService calendarService,
-                               AvailabilityService availabilityService, GitePhotoService gitePhotoService, BookingService bookingService) {
+                               AvailabilityService availabilityService, GitePhotoService gitePhotoService, BookingService bookingService, FileUploadService fileUploadService) {
         this.giteService = giteService;
         this.calendarService = calendarService;
         this.availabilityService = availabilityService;
         this.gitePhotoService = gitePhotoService;
         this.bookingService = bookingService;
+        this.fileUploadService = fileUploadService;
     }
 
     /**
@@ -244,6 +247,34 @@ public class AdminGiteController {
         form.setGiteId(id);
         bookingService.saveGiteBooking(form);
         return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Upload une photo depuis le formulaire d'édition
+     * et la sauvegarde sur le serveur.
+     *
+     * @param id   identifiant du gîte
+     * @param file fichier image uploadé
+     * @param redirectAttributes attributs pour le message flash
+     * @return redirection vers le formulaire d'édition
+     */
+    @PostMapping("/{id}/photos/upload")
+    public String uploadPhoto(@PathVariable Long id,
+                              @RequestParam("file") MultipartFile file,
+                              RedirectAttributes redirectAttributes) {
+        log.info("Upload photo pour le gîte id={}", id);
+        try {
+            String url = fileUploadService.saveGitePhoto(file);
+            gitePhotoService.addPhoto(id, url);
+            redirectAttributes.addFlashAttribute("success", "Photo ajoutée avec succès !");
+        } catch (IllegalArgumentException e) {
+            log.warn("Upload refusé : {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            log.error("Erreur upload photo", e);
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de l'upload.");
+        }
+        return "redirect:/admin/gites/" + id + "/edit";
     }
 
 }

@@ -4,6 +4,11 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    spring:
+      servlet:
+        multipart:
+          max-file-size: 10MB
+          max-request-size: 10MB
 
   jpa:
     hibernate:
@@ -34,3 +39,6 @@ logging:
 
 server:
   forward-headers-strategy: framework
+
+upload:
+  dir: /var/www/fermette/uploads/gites

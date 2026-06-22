@@ -20,3 +20,6 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+upload:
+  dir: src/main/resources/static/uploads/gites

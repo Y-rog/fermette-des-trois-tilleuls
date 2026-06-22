@@ -77,17 +77,29 @@
         <div th:if="${isEdit}" class="mt-4 pt-4" style="border-top: 1px solid var(--bs-border-color);">
             <h3 class="h5 mb-3">Photos du gîte</h3>
 
-            <form th:action="@{/admin/gites/{id}/photos/add(id=${giteId})}"
-                  method="post" class="d-flex gap-2 mb-4">
-                <input type="text" class="form-control"
-                       name="photoUrl"
-                       placeholder="URL de la photo (ex: https://...)"
+            <!-- Messages succès/erreur -->
+            <div th:if="${success}" class="alert alert-success mb-3">
+                <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger mb-3">
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- Formulaire upload fichier -->
+            <form th:action="@{/admin/gites/{id}/photos/upload(id=${giteId})}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="d-flex gap-2 mb-4">
+                <input type="file" class="form-control"
+                       name="file"
+                       accept="image/jpeg,image/png,image/webp,image/gif"
                        required/>
                 <button type="submit" class="btn btn-fermette">
                     Ajouter
                 </button>
             </form>
 
+            <!-- Galerie des photos existantes -->
             <div class="row g-3" th:if="${not #lists.isEmpty(photos)}">
                 <div class="col-6 col-md-4" th:each="photo : ${photos}">
                     <div class="position-relative">
@@ -99,8 +111,7 @@
                               class="position-absolute top-0 end-0 m-1">
                             <button type="submit"
                                     class="btn btn-danger btn-sm"
-                                    style="padding: 2px 8px; font-size: 0.75rem;"
-                                    onclick="return confirm('Supprimer cette photo ?')">
+                                    style="padding: 2px 8px; font-size: 0.75rem;">
                                 ✕
                             </button>
                         </form>
