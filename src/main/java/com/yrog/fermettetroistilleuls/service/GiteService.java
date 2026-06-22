@@ -94,12 +94,13 @@ public class GiteService {
     }
 
     /**
-     * Crée un nouveau gîte.
+     * Crée un nouveau gîte et retourne son identifiant.
      *
      * @param form formulaire rempli par l'admin
+     * @return l'identifiant du gîte créé
      */
     @Transactional
-    public void create(GiteForm form) {
+    public Long create(GiteForm form) {
         Gite gite = Gite.builder()
                 .name(form.getName())
                 .location(form.getLocation())
@@ -110,8 +111,9 @@ public class GiteService {
                 .active(true)
                 .build();
 
-        giteRepository.save(gite);
+        Gite saved = giteRepository.save(gite);
         log.info("Nouveau gîte créé : {}", form.getName());
+        return saved.getId();
     }
 
     /**

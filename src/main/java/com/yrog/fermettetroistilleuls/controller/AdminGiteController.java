@@ -126,18 +126,24 @@ public class AdminGiteController {
             model.addAttribute("isEdit", false);
             return "admin/gite-form";
         }
+
+        // Créer le gîte d'abord pour obtenir l'id
+        Long giteId = giteService.create(form);
+
         // Upload photo vitrine si fournie
         if (photoVitrine != null && !photoVitrine.isEmpty()) {
             try {
                 String url = fileUploadService.saveGitePhoto(photoVitrine);
                 form.setPhotoUrl(url);
+                giteService.update(giteId, form);
             } catch (Exception e) {
                 log.warn("Erreur upload photo vitrine : {}", e.getMessage());
             }
         }
-        giteService.create(form);
+
         log.info("Gîte créé : {}", form.getName());
-        return "redirect:/admin/gites";
+        // Rediriger vers l'édition pour ajouter les photos de galerie
+        return "redirect:/admin/gites/" + giteId + "/edit";
     }
 
     /**
