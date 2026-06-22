@@ -41,4 +41,4 @@ server:
   forward-headers-strategy: framework
 
 upload:
-  dir: /var/www/fermette/uploads/gites
+  dir: ${UPLOAD_DIR}

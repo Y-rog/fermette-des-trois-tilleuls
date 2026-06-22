@@ -13,6 +13,9 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD}
       MAIL_FROM: ${MAIL_FROM}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      UPLOAD_DIR: /uploads/gites
+    volumes:
+      - /var/www/fermette/uploads:/uploads
     depends_on:
       db:
         condition: service_healthy
