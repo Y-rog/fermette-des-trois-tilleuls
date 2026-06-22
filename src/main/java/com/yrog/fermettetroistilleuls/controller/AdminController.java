@@ -5,6 +5,7 @@ import com.yrog.fermettetroistilleuls.service.ArchiveService;
 import com.yrog.fermettetroistilleuls.service.BookingManagementService;
 import com.yrog.fermettetroistilleuls.service.BookingService;
 import com.yrog.fermettetroistilleuls.service.CalendarService;
+import com.yrog.fermettetroistilleuls.service.GiteService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,8 @@ import java.time.LocalDate;
  * Contrôleur principal de l'espace administrateur.
  * Gère l'authentification et le tableau de bord.
  * Le reste de la gestion admin est réparti dans :
- * AdminBookingController, AdminGiteController, AdminInfoController.
+ * AdminBookingController, AdminGiteController,
+ * AdminAvailabilityController, AdminInfoController.
  */
 @Controller
 @RequestMapping("/admin")
@@ -35,12 +37,18 @@ public class AdminController {
     private final CalendarService calendarService;
     private final ArchiveService archiveService;
     private final BookingService bookingService;
+    private final GiteService giteService;
 
-    public AdminController(BookingManagementService bookingManagementService, CalendarService calendarService, ArchiveService archiveService, BookingService bookingService) {
+    public AdminController(BookingManagementService bookingManagementService,
+                           CalendarService calendarService,
+                           ArchiveService archiveService,
+                           BookingService bookingService,
+                           GiteService giteService) {
         this.bookingManagementService = bookingManagementService;
         this.calendarService = calendarService;
         this.archiveService = archiveService;
         this.bookingService = bookingService;
+        this.giteService = giteService;
     }
 
     /**
@@ -53,8 +61,8 @@ public class AdminController {
     }
 
     /**
-     * Affiche le tableau de bord admin avec toutes les réservations
-     * et le calendrier multi-gîtes du mois courant.
+     * Affiche le tableau de bord admin avec toutes les réservations,
+     * le calendrier multi-gîtes et le formulaire de réservation téléphonique.
      *
      * @param year  année du calendrier (optionnel, mois courant par défaut)
      * @param month mois du calendrier (optionnel, mois courant par défaut)
@@ -74,6 +82,7 @@ public class AdminController {
         model.addAttribute("giteBookings", bookingManagementService.findAllGiteBookings());
         model.addAttribute("activityBookings", bookingManagementService.findAllActivityBookings());
         model.addAttribute("multiCalendar", calendarService.buildMultiGiteCalendar(currentYear, currentMonth));
+        model.addAttribute("gites", giteService.findAll());
         return "admin/dashboard";
     }
 
@@ -118,6 +127,7 @@ public class AdminController {
      * Le statut est PENDING — à valider après l'appel.
      *
      * @param form               formulaire de réservation
+     * @param result             résultat de la validation
      * @param redirectAttributes attributs pour le message flash
      * @return redirection vers le dashboard
      */
