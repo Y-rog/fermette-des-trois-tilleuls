@@ -5,139 +5,46 @@
 
 <body>
 
-<nav th:replace="~{fragments/admin-navbar :: adminNavbar}"></nav>
+<nav th:replace="~{fragments/admin/admin-navbar :: adminNavbar}"></nav>
 
 <div class="container py-4">
-    <!-- Message de succès (ex: archivage effectué) -->
+
+    <!-- ===== Messages flash (succès / erreur) ===== -->
     <div th:if="${success}" class="alert alert-success mb-3">
         <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger mb-3">
+        <span th:text="${error}"></span>
     </div>
 
     <!-- ===== Calendrier multi-gîtes ===== -->
     <h2 class="h5 mb-3">📅 Vue d'ensemble des disponibilités</h2>
+    <div th:replace="~{fragments/admin/calendar :: calendar(${multiCalendar})}"></div>
 
-    <div class="card p-3 mb-5">
+    <!-- ===== Nouvelle réservation téléphonique ===== -->
+    <div th:replace="~{fragments/admin/gite-form :: phoneBooking(${gites})}"></div>
 
-        <!-- Navigation mois -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <a class="btn btn-outline-secondary btn-sm"
-               th:href="@{/admin/dashboard(
-                     year=${multiCalendar.month() == 1 ? multiCalendar.year() - 1 : multiCalendar.year()},
-                     month=${multiCalendar.month() == 1 ? 12 : multiCalendar.month() - 1})}">
-                ‹
-            </a>
-            <strong th:text="${multiCalendar.monthName() + ' ' + multiCalendar.year()}"></strong>
-            <a class="btn btn-outline-secondary btn-sm"
-               th:href="@{/admin/dashboard(
-                     year=${multiCalendar.month() == 12 ? multiCalendar.year() + 1 : multiCalendar.year()},
-                     month=${multiCalendar.month() == 12 ? 1 : multiCalendar.month() + 1})}">
-                ›
-            </a>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-sm align-middle mb-2" style="font-size: 0.78rem;">
-                <thead>
-                <tr>
-                    <th style="min-width: 130px;"></th>
-                    <th th:each="letter : ${multiCalendar.dayLetters()}"
-                        class="text-center text-muted"
-                        style="min-width: 28px; font-weight: 400; font-size: 0.65rem;"
-                        th:text="${letter}">
-                    </th>
-                </tr>
-                <tr>
-                    <th style="min-width: 130px;">Gîte</th>
-                    <th th:each="day : ${#numbers.sequence(1, multiCalendar.daysInMonth())}"
-                        class="text-center" style="min-width: 28px;"
-                        th:text="${day}">
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="row : ${multiCalendar.rows()}">
-                    <td>
-                        <a th:href="@{/admin/gites/{id}/availabilities(id=${row.giteId()})}"
-                           th:text="${row.giteName()}"
-                           class="fw-bold text-decoration-none">
-                        </a>
-                    </td>
-                    <td th:each="day : ${#numbers.sequence(1, multiCalendar.daysInMonth())}"
-                        class="text-center p-1">
-                        <!-- AVAILABLE -->
-                        <span th:if="${row.availabilities().get(day)?.name() == 'AVAILABLE'}"
-                              class="cal-day avail d-inline-block w-100"
-                              style="height: 18px;"
-                              title="Disponible">
-                        </span>
-
-                        <!-- RESERVED -->
-                        <span th:if="${row.availabilities().get(day)?.name() == 'RESERVED'}"
-                              class="cal-day unavail d-inline-block w-100"
-                              style="height: 18px;"
-                              title="Réservé">
-                        </span>
-
-                        <!-- UNAVAILABLE -->
-                        <span th:if="${row.availabilities().get(day)?.name() == 'UNAVAILABLE'}"
-                              class="cal-day unavail d-inline-block w-100"
-                              style="height: 18px;"
-                              title="Indisponible">
-                        </span>
-                        <span th:if="${row.availabilities().get(day) == null}"
-                              class="d-inline-block w-100"
-                              style="height: 18px;">
-                        </span>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(multiCalendar.rows())}">
-                    <td th:colspan="${multiCalendar.daysInMonth() + 1}"
-                        class="text-center text-muted py-3">
-                        Aucun gîte pour le moment.
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Légende -->
-        <div class="d-flex gap-3 mt-2" style="font-size: 0.75rem;">
-            <div class="cal-legend mt-2">
-                <span>
-                    <span class="dot" style="background:#97C459;"></span>
-                    Disponible
-                </span>
-                <span>
-                    <span class="dot" style="background:var(--ff-sable);"></span>
-                Réservé / Indisponible
-                </span>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-1">Tableau de bord</h1>
-            <p class="text-muted mb-0">
-                Gérez les demandes de réservation de la fermette.
-            </p>
-        </div>
-        <div class="d-flex gap-2">
+    <!-- ===== Navigation admin ===== -->
+    <div class="mb-4">
+        <h1 class="h3 mb-2">Tableau de bord</h1>
+        <p class="text-muted mb-3">
+            Gérez les demandes de réservation de la fermette.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
             <a th:href="@{/admin/activities}"
                class="btn btn-outline-secondary btn-sm">
-                🐑 Gérer les activités
+                🐑 Activités
             </a>
             <a th:href="@{/admin/gites}"
                class="btn btn-outline-secondary btn-sm">
-                🏠 Gérer les gîtes
+                🏠 Gîtes
             </a>
             <a th:href="@{/admin/infos}"
                class="btn btn-outline-secondary btn-sm">
-                ⚙️ Infos de la fermette
+                ⚙️ Infos
             </a>
-            <a th:href="@{/admin/history}" class="btn btn-outline-secondary btn-sm">
+            <a th:href="@{/admin/history}"
+               class="btn btn-outline-secondary btn-sm">
                 📋 Historique
             </a>
             <form th:action="@{/admin/archive}" method="post" class="d-inline">
@@ -145,7 +52,7 @@
                     🗄️ Archiver
                 </button>
             </form>
-            <form th:action="@{/admin/logout}" method="post">
+            <form th:action="@{/admin/logout}" method="post" class="d-inline">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">
                     Déconnexion
                 </button>
@@ -153,155 +60,13 @@
         </div>
     </div>
 
-
     <!-- ===== Réservations gîtes ===== -->
-    <h2 class="h5 mb-3">🏠 Réservations gîtes</h2>
-
-    <div class="table-responsive mb-5">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-            <tr>
-                <th>Client</th>
-                <th>Téléphone</th>
-                <th>Gîte</th>
-                <th>Arrivée</th>
-                <th>Départ</th>
-                <th>Pers.</th>
-                <th>Message</th>
-                <th>Statut</th>
-                <th>Date demande</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="booking : ${giteBookings}"
-                th:classappend="${booking.status().name() != 'PENDING'} ? 'text-muted'">
-                <td>
-                    <strong th:text="${booking.firstName() + ' ' + booking.lastName()}"></strong>
-                    <br/>
-                    <small th:text="${booking.email()}"></small>
-                </td>
-                <td th:text="${booking.phone()}"></td>
-                <td th:text="${booking.giteName()}"></td>
-                <td th:text="${booking.checkIn()}"></td>
-                <td th:text="${booking.checkOut()}"></td>
-                <td th:text="${booking.nbGuests()}"></td>
-                <td>
-                    <small th:text="${booking.message()}"></small>
-                </td>
-                <td>
-                        <span th:if="${booking.status().name() == 'PENDING'}"
-                              class="badge bg-warning text-dark">En attente</span>
-                    <span th:if="${booking.status().name() == 'ACCEPTED'}"
-                          class="badge bg-success">Acceptée</span>
-                    <span th:if="${booking.status().name() == 'REJECTED'}"
-                          class="badge bg-danger">Refusée</span>
-                </td>
-                <td th:text="${#temporals.format(booking.createdAt(), 'dd/MM/yyyy HH:mm')}"></td>
-                <td th:if="${booking.status().name() == 'PENDING'}">
-                    <!-- Accepter gîte -->
-                    <form th:action="@{/admin/gite-bookings/{id}/accept(id=${booking.id()})}"
-                          method="post" class="d-inline">
-                        <button type="submit" class="btn btn-success btn-sm">✓</button>
-                    </form>
-                    <!-- Refuser gîte -->
-                    <form th:action="@{/admin/gite-bookings/{id}/reject(id=${booking.id()})}"
-                          method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger btn-sm">✕</button>
-                    </form>
-                </td>
-                <td th:unless="${booking.status().name() == 'PENDING'}">
-                    <span class="text-muted small d-block">Traitée</span>
-                    <a th:href="@{/admin/gite-bookings/{id}/pending-confirm(id=${booking.id()})}"
-                       class="text-muted small">
-                        ↩ Remettre en attente
-                    </a>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(giteBookings)}">
-                <td colspan="10" class="text-center text-muted py-4">
-                    Aucune réservation de gîte pour le moment.
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <div th:replace="~{fragments/admin/gite-bookings :: giteBookings(${giteBookings})}"></div>
 
     <!-- ===== Réservations activités ===== -->
-    <h2 class="h5 mb-3">🐑 Réservations activités</h2>
-
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-            <tr>
-                <th>Client</th>
-                <th>Téléphone</th>
-                <th>Activité</th>
-                <th>Date</th>
-                <th>Heure</th>
-                <th>Pers.</th>
-                <th>Message</th>
-                <th>Statut</th>
-                <th>Date demande</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="booking : ${activityBookings}"
-                th:classappend="${booking.status().name() != 'PENDING'} ? 'text-muted'">
-                <td>
-                    <strong th:text="${booking.firstName() + ' ' + booking.lastName()}"></strong>
-                    <br/>
-                    <small th:text="${booking.email()}"></small>
-                </td>
-                <td th:text="${booking.phone()}"></td>
-                <td th:text="${booking.activityName()}"></td>
-                <td th:text="${booking.activityDate()}"></td>
-                <td th:text="${booking.activityTime()}"></td>
-                <td th:text="${booking.nbGuests()}"></td>
-                <td>
-                    <small th:text="${booking.message()}"></small>
-                </td>
-                <td>
-                        <span th:if="${booking.status().name() == 'PENDING'}"
-                              class="badge bg-warning text-dark">En attente</span>
-                    <span th:if="${booking.status().name() == 'ACCEPTED'}"
-                          class="badge bg-success">Acceptée</span>
-                    <span th:if="${booking.status().name() == 'REJECTED'}"
-                          class="badge bg-danger">Refusée</span>
-                </td>
-                <td th:text="${#temporals.format(booking.createdAt(), 'dd/MM/yyyy HH:mm')}"></td>
-                <td th:if="${booking.status().name() == 'PENDING'}">
-                    <!-- Accepter activité -->
-                    <form th:action="@{/admin/activity-bookings/{id}/accept(id=${booking.id()})}"
-                          method="post" class="d-inline">
-                        <button type="submit" class="btn btn-success btn-sm">✓</button>
-                    </form>
-                    <!-- Refuser activité -->
-                    <form th:action="@{/admin/activity-bookings/{id}/reject(id=${booking.id()})}"
-                          method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger btn-sm">✕</button>
-                    </form>
-                </td>
-                <td th:unless="${booking.status().name() == 'PENDING'}">
-                    <span class="text-muted small d-block">Traitée</span>
-                    <a th:href="@{/admin/activity-bookings/{id}/pending-confirm(id=${booking.id()})}"
-                       class="text-muted small">
-                        ↩ Remettre en attente
-                    </a>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(activityBookings)}">
-                <td colspan="10" class="text-center text-muted py-4">
-                    Aucune réservation d'activité pour le moment.
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <div th:replace="~{fragments/admin/activity-bookings :: activityBookings(${activityBookings})}"></div>
 
 </div>
-
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/main.js}"></script>

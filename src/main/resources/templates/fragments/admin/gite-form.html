@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="phoneBooking(gites)" class="card p-3 mb-4">
+    <h2 class="h5 mb-3">📞 Nouvelle réservation téléphonique</h2>
+    <form th:action="@{/admin/bookings/new}" method="post">
+        <div class="row g-2">
+            <div class="col-6 col-md-3">
+                <input type="text" class="form-control form-control-sm"
+                       name="firstName" placeholder="Nom *" required/>
+            </div>
+            <div class="col-6 col-md-3">
+                <input type="text" class="form-control form-control-sm"
+                       name="lastName" placeholder="Prénom *" required/>
+            </div>
+            <div class="col-6 col-md-3">
+                <input type="email" class="form-control form-control-sm"
+                       name="email" placeholder="Email *" required/>
+            </div>
+            <div class="col-6 col-md-3">
+                <input type="tel" class="form-control form-control-sm"
+                       name="phone" placeholder="Téléphone"/>
+            </div>
+            <div class="col-6 col-md-3">
+                <select class="form-select form-select-sm" name="giteId" required>
+                    <option value="">Gîte *</option>
+                    <option th:each="gite : ${gites}"
+                            th:value="${gite.id()}"
+                            th:text="${gite.name()}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <input type="date" class="form-control form-control-sm"
+                       name="checkIn" required/>
+            </div>
+            <div class="col-6 col-md-2">
+                <input type="date" class="form-control form-control-sm"
+                       name="checkOut" required/>
+            </div>
+            <div class="col-3 col-md-1">
+                <input type="number" class="form-control form-control-sm"
+                       name="nbGuests" min="1" value="2" required/>
+            </div>
+            <div class="col-9 col-md-3">
+                <input type="text" class="form-control form-control-sm"
+                       name="message" placeholder="Notes..."/>
+            </div>
+            <div class="col-12 col-md-1">
+                <button type="submit" class="btn btn-fermette btn-sm w-100">✓</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

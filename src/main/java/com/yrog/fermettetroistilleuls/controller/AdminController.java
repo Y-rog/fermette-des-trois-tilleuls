@@ -1,12 +1,16 @@
 package com.yrog.fermettetroistilleuls.controller;
 
+import com.yrog.fermettetroistilleuls.dto.GiteBookingForm;
 import com.yrog.fermettetroistilleuls.service.ArchiveService;
 import com.yrog.fermettetroistilleuls.service.BookingManagementService;
+import com.yrog.fermettetroistilleuls.service.BookingService;
 import com.yrog.fermettetroistilleuls.service.CalendarService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,11 +34,13 @@ public class AdminController {
     private final BookingManagementService bookingManagementService;
     private final CalendarService calendarService;
     private final ArchiveService archiveService;
+    private final BookingService bookingService;
 
-    public AdminController(BookingManagementService bookingManagementService, CalendarService calendarService, ArchiveService archiveService) {
+    public AdminController(BookingManagementService bookingManagementService, CalendarService calendarService, ArchiveService archiveService, BookingService bookingService) {
         this.bookingManagementService = bookingManagementService;
         this.calendarService = calendarService;
         this.archiveService = archiveService;
+        this.bookingService = bookingService;
     }
 
     /**
@@ -104,5 +110,33 @@ public class AdminController {
         model.addAttribute("giteHistory", archiveService.findGiteBookingsHistory());
         model.addAttribute("activityHistory", archiveService.findActivityBookingsHistory());
         return "admin/history";
+    }
+
+    /**
+     * Traite le formulaire de réservation téléphonique
+     * créée directement depuis le dashboard admin.
+     * Le statut est PENDING — à valider après l'appel.
+     *
+     * @param form               formulaire de réservation
+     * @param redirectAttributes attributs pour le message flash
+     * @return redirection vers le dashboard
+     */
+    @PostMapping("/bookings/new")
+    public String createPhoneBooking(@Valid GiteBookingForm form,
+                                     BindingResult result,
+                                     RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Formulaire invalide — vérifiez les champs obligatoires.");
+            return "redirect:/admin/dashboard";
+        }
+        try {
+            bookingService.saveGiteBooking(form);
+            redirectAttributes.addFlashAttribute("success",
+                    "Réservation téléphonique créée avec succès !");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/dashboard";
     }
 }

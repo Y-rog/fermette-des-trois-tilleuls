@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="calendar(multiCalendar)" class="card p-3 mb-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a class="btn btn-outline-secondary btn-sm"
+           th:href="@{/admin/dashboard(
+                 year=${multiCalendar.month() == 1 ? multiCalendar.year() - 1 : multiCalendar.year()},
+                 month=${multiCalendar.month() == 1 ? 12 : multiCalendar.month() - 1})}">
+            ‹
+        </a>
+        <strong th:text="${multiCalendar.monthName() + ' ' + multiCalendar.year()}"></strong>
+        <a class="btn btn-outline-secondary btn-sm"
+           th:href="@{/admin/dashboard(
+                 year=${multiCalendar.month() == 12 ? multiCalendar.year() + 1 : multiCalendar.year()},
+                 month=${multiCalendar.month() == 12 ? 1 : multiCalendar.month() + 1})}">
+            ›
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-sm align-middle mb-2 table-admin">
+            <thead>
+            <tr>
+                <th class="gite-name-col"></th>
+                <th th:each="letter : ${multiCalendar.dayLetters()}"
+                    class="text-center text-muted day-col day-letter"
+                    th:text="${letter}">
+                </th>
+            </tr>
+            <tr>
+                <th class="gite-name-col">Gîte</th>
+                <th th:each="day : ${#numbers.sequence(1, multiCalendar.daysInMonth())}"
+                    class="text-center day-col"
+                    th:text="${day}">
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row : ${multiCalendar.rows()}">
+                <td class="gite-name-col">
+                    <a th:href="@{/admin/gites/{id}/availabilities(id=${row.giteId()})}"
+                       th:text="${row.giteName()}"
+                       class="fw-bold text-decoration-none">
+                    </a>
+                </td>
+                <td th:each="day : ${#numbers.sequence(1, multiCalendar.daysInMonth())}"
+                    class="text-center p-1">
+                        <span th:if="${row.availabilities().get(day)?.name() == 'AVAILABLE'}"
+                              class="cal-day avail d-inline-block w-100 cal-cell"
+                              title="Disponible"></span>
+                    <span th:if="${row.availabilities().get(day)?.name() == 'RESERVED'}"
+                          class="cal-day unavail d-inline-block w-100 cal-cell"
+                          title="Réservé"></span>
+                    <span th:if="${row.availabilities().get(day)?.name() == 'UNAVAILABLE'}"
+                          class="cal-day unavail d-inline-block w-100 cal-cell"
+                          title="Indisponible"></span>
+                    <span th:if="${row.availabilities().get(day) == null}"
+                          class="d-inline-block w-100 cal-cell"></span>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(multiCalendar.rows())}">
+                <td th:colspan="${multiCalendar.daysInMonth() + 1}"
+                    class="text-center text-muted py-3">
+                    Aucun gîte pour le moment.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="cal-legend mt-2">
+        <span><span class="dot" style="background:#C0DD97;"></span>Disponible</span>
+        <span><span class="dot" style="background:#F0997B;"></span>Réservé / Indisponible</span>
+    </div>
+</div>
+</body>
+</html>

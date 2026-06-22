@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Confirmer la réservation')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/admin/admin-navbar :: adminNavbar}"></nav>
+
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card p-5" style="max-width: 540px; width: 100%;">
+
+        <!-- Icône selon l'action -->
+        <div class="text-center mb-4">
+            <span th:if="${action == 'accept'}" style="font-size: 2.5rem;">✅</span>
+            <span th:if="${action == 'reject'}" style="font-size: 2.5rem;">❌</span>
+        </div>
+
+        <!-- Titre -->
+        <h1 class="h4 text-center mb-4"
+            th:text="${action == 'accept'} ? 'Accepter cette réservation ?' : 'Refuser cette réservation ?'">
+        </h1>
+
+        <!-- Infos réservation gîte -->
+        <div th:if="${type == 'gite'}" class="card p-3 mb-4 section-sable">
+            <p class="mb-1">
+                <strong>Client :</strong>
+                <span th:text="${booking.firstName() + ' ' + booking.lastName()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Email :</strong>
+                <span th:text="${booking.email()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Gîte :</strong>
+                <span th:text="${booking.giteName()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Arrivée :</strong>
+                <span th:text="${#temporals.format(booking.checkIn(), 'dd/MM/yyyy')}"></span>
+            </p>
+            <p class="mb-0">
+                <strong>Départ :</strong>
+                <span th:text="${#temporals.format(booking.checkOut(), 'dd/MM/yyyy')}"></span>
+            </p>
+        </div>
+
+        <!-- Infos réservation activité -->
+        <div th:if="${type == 'activity'}" class="card p-3 mb-4 section-sable">
+            <p class="mb-1">
+                <strong>Client :</strong>
+                <span th:text="${booking.firstName() + ' ' + booking.lastName()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Email :</strong>
+                <span th:text="${booking.email()}"></span>
+            </p>
+            <p class="mb-1">
+                <strong>Activité :</strong>
+                <span th:text="${booking.activityName()}"></span>
+            </p>
+            <p class="mb-0">
+                <strong>Date :</strong>
+                <span th:text="${#temporals.format(booking.activityDate(), 'dd/MM/yyyy')}"></span>
+                à <span th:text="${#temporals.format(booking.activityTime(), 'HH:mm')}"></span>
+            </p>
+        </div>
+
+        <!-- Info email -->
+        <div th:if="${action == 'accept'}" class="alert alert-success mb-4">
+            Un email de confirmation sera envoyé au client.
+        </div>
+        <div th:if="${action == 'reject'}" class="alert alert-danger mb-4">
+            Un email de refus sera envoyé au client.
+        </div>
+
+        <!-- Boutons -->
+        <div class="d-flex gap-3 justify-content-center">
+            <a th:href="@{/admin/dashboard}" class="btn btn-outline-secondary">
+                Annuler
+            </a>
+
+            <!-- Gîte accept -->
+            <form th:if="${type == 'gite' and action == 'accept'}"
+                  th:action="@{/admin/gite-bookings/{id}/accept(id=${booking.id()})}"
+                  method="post">
+                <button type="submit" class="btn btn-success">
+                    ✓ Confirmer l'acceptation
+                </button>
+            </form>
+
+            <!-- Gîte reject -->
+            <form th:if="${type == 'gite' and action == 'reject'}"
+                  th:action="@{/admin/gite-bookings/{id}/reject(id=${booking.id()})}"
+                  method="post">
+                <button type="submit" class="btn btn-danger">
+                    ✕ Confirmer le refus
+                </button>
+            </form>
+
+            <!-- Activité accept -->
+            <form th:if="${type == 'activity' and action == 'accept'}"
+                  th:action="@{/admin/activity-bookings/{id}/accept(id=${booking.id()})}"
+                  method="post">
+                <button type="submit" class="btn btn-success">
+                    ✓ Confirmer l'acceptation
+                </button>
+            </form>
+
+            <!-- Activité reject -->
+            <form th:if="${type == 'activity' and action == 'reject'}"
+                  th:action="@{/admin/activity-bookings/{id}/reject(id=${booking.id()})}"
+                  method="post">
+                <button type="submit" class="btn btn-danger">
+                    ✕ Confirmer le refus
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

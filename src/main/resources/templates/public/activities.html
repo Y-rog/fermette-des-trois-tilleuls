@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="~{fragments/head :: head('Activités')}"></head>
-
 <body>
-
 <nav th:replace="~{fragments/navbar :: navbar('activities')}"></nav>
 
-<div class="container py-4">
-    <span class="section-tag">Nos activités</span>
-    <h1 class="mb-2">Balades en alpagas</h1>
-    <p class="mb-4" style="max-width: 560px;">
-        Choisissez une date et une heure, votre demande sera
-        validée par notre équipe. Paiement sur place.
-    </p>
+<!-- ===== Hero ===== -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-12 col-md-6">
+                <span class="section-tag">Nos activités</span>
+                <p class="mb-4" style="max-width: 560px;">
+                    Choisissez une activité, votre demande sera
+                    validée par notre équipe. Paiement sur place.
+                </p>
+            </div>
+            <div class="col-12 col-md-6">
+                <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?w=800&auto=format"
+                     class="img-fluid rounded img-histoire"
+                     alt="Balade en alpagas à la fermette"/>
+            </div>
+        </div>
+    </div>
+</section>
 
+<div class="container py-4">
     <div class="row g-4">
         <div class="col-12 col-md-4" th:each="activity : ${activities}">
             <div class="card h-100">
-                <div class="img-card d-flex align-items-center
-                            justify-content-center text-muted">
-                    Photo à venir
-                </div>
                 <div class="card-body">
                     <h2 class="h5 mb-1" th:text="${activity.name()}">
                         Nom activité
@@ -40,13 +46,17 @@
                 </div>
             </div>
         </div>
+
+        <div th:if="${#lists.isEmpty(activities)}" class="col-12">
+            <p class="text-muted text-center py-4">
+                Aucune activité disponible pour le moment.
+            </p>
+        </div>
     </div>
 </div>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
-
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/main.js}"></script>
-
 </body>
 </html>

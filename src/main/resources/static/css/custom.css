@@ -302,3 +302,40 @@ body {
     margin-right: 6px;
     vertical-align: -1px;
 }
+
+/* ----- Dashboard admin — calendrier ===== */
+.cal-cell {
+    height: 18px;
+}
+
+/* ----- Dashboard admin — cellules gîte ===== */
+.gite-name-col {
+    min-width: 130px;
+}
+
+.day-col {
+    min-width: 28px;
+}
+
+.day-letter {
+    font-weight: 400;
+    font-size: 0.65rem;
+}
+
+/* ----- Dashboard admin — tableau réservations ===== */
+.table-admin {
+    font-size: 0.9rem;
+}
+
+/* ----- Dashboard admin — cards mobile réservations ===== */
+.booking-card-mobile {
+    border-left: 4px solid var(--ff-terracotta);
+}
+
+.booking-card-mobile.accepted {
+    border-left-color: #198754;
+}
+
+.booking-card-mobile.rejected {
+    border-left-color: #dc3545;
+}

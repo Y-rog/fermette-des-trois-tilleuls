@@ -5,3 +5,8 @@ spring:
     active: dev
   jpa:
     open-in-view: false
+
+server:
+  servlet:
+    session:
+      timeout: 30m

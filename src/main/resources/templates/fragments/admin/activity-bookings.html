@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="activityBookings(activityBookings)">
+
+    <h2 class="h5 mb-3">🐑 Réservations activités</h2>
+
+    <!-- ===== Version DESKTOP — tableau complet ===== -->
+    <div class="d-none d-md-block table-responsive">
+        <table class="table table-hover align-middle table-admin">
+            <thead class="table-light">
+            <tr>
+                <th>Client</th>
+                <th>Téléphone</th>
+                <th>Activité</th>
+                <th>Date</th>
+                <th>Heure</th>
+                <th>Pers.</th>
+                <th>Message</th>
+                <th>Statut</th>
+                <th>Date demande</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="booking : ${activityBookings}"
+                th:classappend="${booking.status().name() != 'PENDING'} ? 'text-muted'">
+                <td>
+                    <strong th:text="${booking.firstName() + ' ' + booking.lastName()}"></strong>
+                    <br/>
+                    <small th:text="${booking.email()}"></small>
+                </td>
+                <td th:text="${booking.phone()}"></td>
+                <td th:text="${booking.activityName()}"></td>
+                <td th:text="${#temporals.format(booking.activityDate(), 'dd/MM/yyyy')}"></td>
+                <td th:text="${#temporals.format(booking.activityTime(), 'HH:mm')}"></td>
+                <td th:text="${booking.nbGuests()}"></td>
+                <td><small th:text="${booking.message()}"></small></td>
+                <td>
+                        <span th:if="${booking.status().name() == 'PENDING'}"
+                              class="badge bg-warning text-dark">En attente</span>
+                    <span th:if="${booking.status().name() == 'ACCEPTED'}"
+                          class="badge bg-success">Acceptée</span>
+                    <span th:if="${booking.status().name() == 'REJECTED'}"
+                          class="badge bg-danger">Refusée</span>
+                </td>
+                <td th:text="${#temporals.format(booking.createdAt(), 'dd/MM/yyyy HH:mm')}"></td>
+                <!-- Actions selon le statut -->
+                <td th:if="${booking.status().name() == 'PENDING'}">
+                    <!-- Lien vers page de confirmation acceptation -->
+                    <a th:href="@{/admin/activity-bookings/{id}/accept-confirm(id=${booking.id()})}"
+                       class="btn btn-success btn-sm">✓</a>
+                    <!-- Lien vers page de confirmation refus -->
+                    <a th:href="@{/admin/activity-bookings/{id}/reject-confirm(id=${booking.id()})}"
+                       class="btn btn-danger btn-sm">✕</a>
+                </td>
+                <td th:unless="${booking.status().name() == 'PENDING'}">
+                    <span class="text-muted small d-block">Traitée</span>
+                    <a th:href="@{/admin/activity-bookings/{id}/pending-confirm(id=${booking.id()})}"
+                       class="text-muted small">↩ Remettre en attente</a>
+                </td>
+            </tr>
+            <!-- Message si aucune réservation -->
+            <tr th:if="${#lists.isEmpty(activityBookings)}">
+                <td colspan="10" class="text-center text-muted py-4">
+                    Aucune réservation d'activité pour le moment.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== Version MOBILE — cards ===== -->
+    <div class="d-block d-md-none">
+        <div th:each="booking : ${activityBookings}"
+             th:classappend="${booking.status().name() == 'ACCEPTED'} ? 'accepted' : (${booking.status().name() == 'REJECTED'} ? 'rejected' : '')"
+             class="card booking-card-mobile p-3 mb-3">
+
+            <!-- En-tête : nom + statut -->
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <strong th:text="${booking.firstName() + ' ' + booking.lastName()}"></strong>
+                    <br/>
+                    <small class="text-muted" th:text="${booking.email()}"></small>
+                </div>
+                <span th:if="${booking.status().name() == 'PENDING'}"
+                      class="badge bg-warning text-dark">En attente</span>
+                <span th:if="${booking.status().name() == 'ACCEPTED'}"
+                      class="badge bg-success">Acceptée</span>
+                <span th:if="${booking.status().name() == 'REJECTED'}"
+                      class="badge bg-danger">Refusée</span>
+            </div>
+
+            <!-- Infos activité -->
+            <p class="small mb-1">
+                🐑 <span th:text="${booking.activityName()}"></span>
+            </p>
+            <p class="small mb-1">
+                📅 <span th:text="${#temporals.format(booking.activityDate(), 'dd/MM/yyyy')}"></span>
+                · 🕐 <span th:text="${#temporals.format(booking.activityTime(), 'HH:mm')}"></span>
+            </p>
+            <p class="small mb-2">
+                👥 <span th:text="${booking.nbGuests()}"></span> pers.
+                <span th:if="${booking.phone()}">
+                    · 📞 <span th:text="${booking.phone()}"></span>
+                </span>
+            </p>
+            <p th:if="${booking.message()}" class="small text-muted mb-2"
+               th:text="${booking.message()}"></p>
+
+            <!-- Actions PENDING : liens vers pages de confirmation -->
+            <div th:if="${booking.status().name() == 'PENDING'}"
+                 class="d-flex gap-2">
+                <a th:href="@{/admin/activity-bookings/{id}/accept-confirm(id=${booking.id()})}"
+                   class="btn btn-success btn-sm flex-grow-1">
+                    ✓ Accepter
+                </a>
+                <a th:href="@{/admin/activity-bookings/{id}/reject-confirm(id=${booking.id()})}"
+                   class="btn btn-danger btn-sm flex-grow-1">
+                    ✕ Refuser
+                </a>
+            </div>
+
+            <!-- Actions TRAITÉE : remettre en attente -->
+            <div th:unless="${booking.status().name() == 'PENDING'}">
+                <a th:href="@{/admin/activity-bookings/{id}/pending-confirm(id=${booking.id()})}"
+                   class="text-muted small">↩ Remettre en attente</a>
+            </div>
+        </div>
+
+        <!-- Message si aucune réservation -->
+        <p th:if="${#lists.isEmpty(activityBookings)}"
+           class="text-muted text-center py-4">
+            Aucune réservation d'activité pour le moment.
+        </p>
+    </div>
+
+</div>
+</body>
+</html>

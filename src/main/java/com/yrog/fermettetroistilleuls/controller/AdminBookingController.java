@@ -110,4 +110,56 @@ public class AdminBookingController {
         model.addAttribute("type", "activity");
         return "admin/pending-confirm";
     }
+
+    /**
+     * Affiche la page de confirmation avant
+     * d'accepter une réservation de gîte.
+     */
+    @GetMapping("/gite-bookings/{id}/accept-confirm")
+    public String showGiteAcceptConfirm(@PathVariable Long id, Model model) {
+        log.info("Confirmation acceptation réservation gîte id={}", id);
+        model.addAttribute("booking", bookingManagementService.findGiteBookingById(id));
+        model.addAttribute("type", "gite");
+        model.addAttribute("action", "accept");
+        return "admin/booking-confirm";
+    }
+
+    /**
+     * Affiche la page de confirmation avant
+     * de refuser une réservation de gîte.
+     */
+    @GetMapping("/gite-bookings/{id}/reject-confirm")
+    public String showGiteRejectConfirm(@PathVariable Long id, Model model) {
+        log.info("Confirmation refus réservation gîte id={}", id);
+        model.addAttribute("booking", bookingManagementService.findGiteBookingById(id));
+        model.addAttribute("type", "gite");
+        model.addAttribute("action", "reject");
+        return "admin/booking-confirm";
+    }
+
+    /**
+     * Affiche la page de confirmation avant
+     * d'accepter une réservation d'activité.
+     */
+    @GetMapping("/activity-bookings/{id}/accept-confirm")
+    public String showActivityAcceptConfirm(@PathVariable Long id, Model model) {
+        log.info("Confirmation acceptation réservation activité id={}", id);
+        model.addAttribute("booking", bookingManagementService.findActivityBookingById(id));
+        model.addAttribute("type", "activity");
+        model.addAttribute("action", "accept");
+        return "admin/booking-confirm";
+    }
+
+    /**
+     * Affiche la page de confirmation avant
+     * de refuser une réservation d'activité.
+     */
+    @GetMapping("/activity-bookings/{id}/reject-confirm")
+    public String showActivityRejectConfirm(@PathVariable Long id, Model model) {
+        log.info("Confirmation refus réservation activité id={}", id);
+        model.addAttribute("booking", bookingManagementService.findActivityBookingById(id));
+        model.addAttribute("type", "activity");
+        model.addAttribute("action", "reject");
+        return "admin/booking-confirm";
+    }
 }

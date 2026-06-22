@@ -1,11 +1,9 @@
 package com.yrog.fermettetroistilleuls.controller;
 
+import com.yrog.fermettetroistilleuls.dto.GiteBookingForm;
 import com.yrog.fermettetroistilleuls.dto.GiteDto;
 import com.yrog.fermettetroistilleuls.dto.GiteForm;
-import com.yrog.fermettetroistilleuls.service.AvailabilityService;
-import com.yrog.fermettetroistilleuls.service.CalendarService;
-import com.yrog.fermettetroistilleuls.service.GitePhotoService;
-import com.yrog.fermettetroistilleuls.service.GiteService;
+import com.yrog.fermettetroistilleuls.service.*;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,14 +30,16 @@ public class AdminGiteController {
     private final CalendarService calendarService;
     private final AvailabilityService availabilityService;
     private final GitePhotoService gitePhotoService;
+    private final BookingService bookingService;
 
     public AdminGiteController(GiteService giteService,
                                CalendarService calendarService,
-                               AvailabilityService availabilityService, GitePhotoService gitePhotoService) {
+                               AvailabilityService availabilityService, GitePhotoService gitePhotoService, BookingService bookingService) {
         this.giteService = giteService;
         this.calendarService = calendarService;
         this.availabilityService = availabilityService;
         this.gitePhotoService = gitePhotoService;
+        this.bookingService = bookingService;
     }
 
     /**
@@ -215,6 +215,35 @@ public class AdminGiteController {
         log.info("Suppression de la photo id={} du gîte id={}", photoId, giteId);
         gitePhotoService.deletePhoto(photoId);
         return "redirect:/admin/gites/" + giteId + "/edit";
+    }
+
+    /**
+     * Affiche le formulaire de création d'une réservation
+     * téléphonique pour un gîte.
+     */
+    @GetMapping("/{id}/bookings/new")
+    public String showCreateBookingForm(@PathVariable Long id, Model model) {
+        model.addAttribute("gite", giteService.findById(id));
+        model.addAttribute("bookingForm", new GiteBookingForm());
+        return "admin/gite-booking-form";
+    }
+
+    /**
+     * Traite le formulaire de création d'une réservation
+     * téléphonique. Statut PENDING — à valider après l'appel.
+     */
+    @PostMapping("/{id}/bookings/new")
+    public String createBooking(@PathVariable Long id,
+                                @Valid GiteBookingForm form,
+                                BindingResult result,
+                                Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("gite", giteService.findById(id));
+            return "admin/gite-booking-form";
+        }
+        form.setGiteId(id);
+        bookingService.saveGiteBooking(form);
+        return "redirect:/admin/dashboard";
     }
 
 }
