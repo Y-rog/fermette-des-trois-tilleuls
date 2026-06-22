@@ -34,7 +34,9 @@ public class BookingManagementService {
 
     public BookingManagementService(GiteBookingRepository giteBookingRepository,
                                     ActivityBookingRepository activityBookingRepository,
-                                    MailService mailService, GiteRepository giteRepository, GiteAvailabilityRepository giteAvailabilityRepository) {
+                                    MailService mailService,
+                                    GiteRepository giteRepository,
+                                    GiteAvailabilityRepository giteAvailabilityRepository) {
         this.giteBookingRepository = giteBookingRepository;
         this.activityBookingRepository = activityBookingRepository;
         this.mailService = mailService;
@@ -44,8 +46,7 @@ public class BookingManagementService {
 
     /**
      * Retourne toutes les réservations de gîtes triées par statut
-     * (PENDING en premier, pour traitement prioritaire) puis par
-     * date d'arrivée croissante (les prochaines arrivées en premier).
+     * (PENDING en premier) puis par date d'arrivée croissante.
      *
      * @return liste de GiteBookingDetailDto
      */
@@ -54,6 +55,7 @@ public class BookingManagementService {
         log.info("Récupération de toutes les réservations de gîtes");
         return giteBookingRepository.findAllByOrderByStatusAscCheckInAsc()
                 .stream()
+                .filter(booking -> !booking.getCheckOut().isBefore(LocalDate.now()))
                 .map(booking -> new GiteBookingDetailDto(
                         booking.getId(),
                         booking.getFirstName(),
@@ -72,9 +74,8 @@ public class BookingManagementService {
     }
 
     /**
-     * Retourne toutes les réservations d'activités
-     * triées par statut (PENDING en premier)
-     * puis par date de création décroissante.
+     * Retourne toutes les réservations d'activités triées par statut
+     * (PENDING en premier) puis par date de création décroissante.
      *
      * @return liste de ActivityBookingDetailDto
      */
@@ -158,7 +159,8 @@ public class BookingManagementService {
 
     /**
      * Accepte une demande de réservation de gîte.
-     * Change le statut à ACCEPTED et envoie un email de confirmation.
+     * Change le statut à ACCEPTED, marque les dates comme RESERVED
+     * et envoie un email de confirmation avec les détails du séjour.
      *
      * @param id identifiant de la réservation
      * @throws ResourceNotFoundException si la réservation n'existe pas
@@ -171,31 +173,32 @@ public class BookingManagementService {
         booking.setStatus(BookingStatus.ACCEPTED);
         giteBookingRepository.save(booking);
 
-        // Marquer les dates comme RESERVED dans le calendrier
         markDatesAsReserved(booking.getGite().getId(), booking.getCheckIn(), booking.getCheckOut());
 
-        mailService.sendBookingConfirmation(booking.getEmail(), booking.getFirstName());
+        mailService.sendBookingConfirmation(
+                booking.getEmail(),
+                booking.getFirstName(),
+                booking.getGite().getName(),
+                booking.getCheckIn(),
+                booking.getCheckOut()
+        );
         log.info("Réservation gîte {} acceptée", id);
     }
 
     /**
      * Marque toutes les dates entre checkIn et checkOut
-     * comme RESERVED pour ce gîte, suite à l'acceptation
-     * d'une réservation.
+     * comme RESERVED pour ce gîte.
      *
      * @param giteId   identifiant du gîte
      * @param checkIn  date d'arrivée
      * @param checkOut date de départ
      */
     private void markDatesAsReserved(Long giteId, LocalDate checkIn, LocalDate checkOut) {
-
         Gite gite = giteRepository.findById(giteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Gîte introuvable"));
 
         LocalDate current = checkIn;
-
         while (!current.isAfter(checkOut)) {
-
             GiteAvailability availability = giteAvailabilityRepository
                     .findByGiteIdAndDate(giteId, current)
                     .orElse(null);
@@ -204,36 +207,30 @@ public class BookingManagementService {
                 availability.setStatus(AvailabilityStatus.RESERVED);
                 giteAvailabilityRepository.save(availability);
             } else {
-                GiteAvailability newAvailability = GiteAvailability.builder()
-                        .gite(gite)
-                        .date(current)
-                        .status(AvailabilityStatus.RESERVED)
-                        .build();
-                giteAvailabilityRepository.save(newAvailability);
+                giteAvailabilityRepository.save(
+                        GiteAvailability.builder()
+                                .gite(gite)
+                                .date(current)
+                                .status(AvailabilityStatus.RESERVED)
+                                .build()
+                );
             }
-
             current = current.plusDays(1);
         }
-
         log.info("Dates marquées RESERVED pour gîte {} du {} au {}", giteId, checkIn, checkOut);
     }
 
     /**
      * Libère toutes les dates entre checkIn et checkOut
-     * en les remettant à AVAILABLE, suite à un refus
-     * ou une remise en attente d'une réservation
-     * précédemment acceptée.
+     * en les remettant à AVAILABLE.
      *
      * @param giteId   identifiant du gîte
      * @param checkIn  date d'arrivée
      * @param checkOut date de départ
      */
     private void releaseDates(Long giteId, LocalDate checkIn, LocalDate checkOut) {
-
         LocalDate current = checkIn;
-
         while (!current.isAfter(checkOut)) {
-
             giteAvailabilityRepository
                     .findByGiteIdAndDate(giteId, current)
                     .ifPresent(availability -> {
@@ -242,16 +239,15 @@ public class BookingManagementService {
                             giteAvailabilityRepository.save(availability);
                         }
                     });
-
             current = current.plusDays(1);
         }
-
         log.info("Dates libérées pour gîte {} du {} au {}", giteId, checkIn, checkOut);
     }
 
     /**
      * Refuse une demande de réservation de gîte.
-     * Change le statut à REJECTED et envoie un email de refus.
+     * Libère les dates si la réservation était acceptée
+     * et envoie un email de refus avec les détails du séjour.
      *
      * @param id identifiant de la réservation
      * @throws ResourceNotFoundException si la réservation n'existe pas
@@ -262,20 +258,26 @@ public class BookingManagementService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Réservation gîte introuvable : " + id));
 
-        // Si on refuse une réservation qui était acceptée → libérer les dates
         if (booking.getStatus() == BookingStatus.ACCEPTED) {
             releaseDates(booking.getGite().getId(), booking.getCheckIn(), booking.getCheckOut());
         }
 
         booking.setStatus(BookingStatus.REJECTED);
         giteBookingRepository.save(booking);
-        mailService.sendBookingRejection(booking.getEmail(), booking.getFirstName());
+
+        mailService.sendBookingRejection(
+                booking.getEmail(),
+                booking.getFirstName(),
+                booking.getGite().getName(),
+                booking.getCheckIn(),
+                booking.getCheckOut()
+        );
         log.info("Réservation gîte {} refusée", id);
     }
 
     /**
      * Remet une réservation de gîte en attente.
-     * Change le statut à PENDING.
+     * Libère les dates si la réservation était acceptée.
      *
      * @param id identifiant de la réservation
      * @throws ResourceNotFoundException si la réservation n'existe pas
@@ -286,7 +288,6 @@ public class BookingManagementService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Réservation gîte introuvable : " + id));
 
-        // Si on remet en pending une réservation acceptée → libérer les dates
         if (booking.getStatus() == BookingStatus.ACCEPTED) {
             releaseDates(booking.getGite().getId(), booking.getCheckIn(), booking.getCheckOut());
         }
@@ -298,7 +299,8 @@ public class BookingManagementService {
 
     /**
      * Accepte une demande de réservation d'activité.
-     * Change le statut à ACCEPTED et envoie un email de confirmation.
+     * Change le statut à ACCEPTED et envoie un email de confirmation
+     * avec les détails de l'activité.
      *
      * @param id identifiant de la réservation
      * @throws ResourceNotFoundException si la réservation n'existe pas
@@ -310,13 +312,21 @@ public class BookingManagementService {
                         new ResourceNotFoundException("Réservation activité introuvable : " + id));
         booking.setStatus(BookingStatus.ACCEPTED);
         activityBookingRepository.save(booking);
-        mailService.sendBookingConfirmation(booking.getEmail(), booking.getFirstName());
+
+        mailService.sendBookingConfirmation(
+                booking.getEmail(),
+                booking.getFirstName(),
+                booking.getActivity().getName(),
+                booking.getActivity().getDate(),
+                booking.getActivity().getDate()
+        );
         log.info("Réservation activité {} acceptée", id);
     }
 
     /**
      * Refuse une demande de réservation d'activité.
-     * Change le statut à REJECTED et envoie un email de refus.
+     * Change le statut à REJECTED et envoie un email de refus
+     * avec les détails de l'activité.
      *
      * @param id identifiant de la réservation
      * @throws ResourceNotFoundException si la réservation n'existe pas
@@ -328,7 +338,14 @@ public class BookingManagementService {
                         new ResourceNotFoundException("Réservation activité introuvable : " + id));
         booking.setStatus(BookingStatus.REJECTED);
         activityBookingRepository.save(booking);
-        mailService.sendBookingRejection(booking.getEmail(), booking.getFirstName());
+
+        mailService.sendBookingRejection(
+                booking.getEmail(),
+                booking.getFirstName(),
+                booking.getActivity().getName(),
+                booking.getActivity().getDate(),
+                booking.getActivity().getDate()
+        );
         log.info("Réservation activité {} refusée", id);
     }
 
