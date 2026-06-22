@@ -382,3 +382,8 @@ main {
         max-width: 100%;
     }
 }
+
+/* Iframe Google Maps */
+iframe.img-section {
+    border: none;
+}
