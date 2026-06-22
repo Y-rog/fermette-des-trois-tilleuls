@@ -3,7 +3,9 @@
    Palette : vert sauge, terracotta, crème, brun
    ================================================ */
 
-/* ----- Variables de couleurs ----- */
+/* ─────────────────────────────────────────────────
+   1. Variables
+   ───────────────────────────────────────────────── */
 :root {
     --ff-sauge:           #4A5D3F;
     --ff-sauge-dark:      #38462F;
@@ -14,16 +16,35 @@
     --ff-brun:            #3A332A;
     --ff-brun-light:      #6B6052;
     --ff-mousse:          #A9BD8E;
+
+    /* Calendrier */
+    --cal-avail:          #C0DD97;
+    --cal-avail-text:     #173404;
+    --cal-unavail:        #F0997B;
+    --cal-unavail-text:   #4A1B0C;
+    --cal-selected:       var(--ff-terracotta);
+    --cal-range:          #F6DDD5;
 }
 
-/* ----- Global ----- */
+/* ─────────────────────────────────────────────────
+   2. Layout global
+   ───────────────────────────────────────────────── */
 body {
     background-color: var(--ff-creme);
     color: var(--ff-brun);
     font-family: 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* ----- Navbar ----- */
+main {
+    flex: 1;
+}
+
+/* ─────────────────────────────────────────────────
+   3. Navbar
+   ───────────────────────────────────────────────── */
 .navbar {
     background-color: var(--ff-sauge-dark);
     border-bottom: 3px solid var(--ff-terracotta);
@@ -41,7 +62,9 @@ body {
     color: var(--ff-terracotta);
 }
 
-/* ----- Hero ----- */
+/* ─────────────────────────────────────────────────
+   4. Hero
+   ───────────────────────────────────────────────── */
 .hero-section {
     background: linear-gradient(135deg,
     var(--ff-sauge) 0%,
@@ -51,14 +74,13 @@ body {
     display: flex;
     align-items: center;
 }
-.hero-section h1 {
+.hero-section h1,
+.hero-section p {
     color: var(--ff-creme);
 }
 .hero-section p {
-    color: rgba(246,241,231,0.85);
+    opacity: 0.85;
 }
-
-/* ----- Hero eyebrow ----- */
 .hero-eyebrow {
     display: inline-block;
     background: rgba(255,255,255,0.12);
@@ -72,7 +94,9 @@ body {
     margin-bottom: 1rem;
 }
 
-/* ----- Section tag ----- */
+/* ─────────────────────────────────────────────────
+   5. Typographie & sections
+   ───────────────────────────────────────────────── */
 .section-tag {
     display: inline-block;
     font-size: 0.8rem;
@@ -82,27 +106,23 @@ body {
     color: var(--ff-terracotta-dark);
     margin-bottom: 0.5rem;
 }
-
-/* ----- Section subtitle ----- */
-.section-subtitle {
-    color: var(--ff-brun-light);
-    margin-bottom: 2rem;
-    max-width: 560px;
-}
-
-/* ----- Section title ----- */
 .section-title {
     color: var(--ff-sauge-dark);
     font-weight: bold;
     margin-bottom: 1rem;
 }
-
-/* ----- Sections ----- */
+.section-subtitle {
+    color: var(--ff-brun-light);
+    margin-bottom: 2rem;
+    max-width: 560px;
+}
 .section-sable {
     background-color: var(--ff-sable);
 }
 
-/* ----- Boutons personnalisés ----- */
+/* ─────────────────────────────────────────────────
+   6. Boutons
+   ───────────────────────────────────────────────── */
 .btn-fermette {
     background-color: var(--ff-terracotta);
     border-color: var(--ff-terracotta);
@@ -129,7 +149,9 @@ body {
     color: var(--ff-creme);
 }
 
-/* ----- Cards ----- */
+/* ─────────────────────────────────────────────────
+   7. Cards
+   ───────────────────────────────────────────────── */
 .card {
     border: 1px solid rgba(58,51,42,0.12);
     border-radius: 14px;
@@ -152,13 +174,13 @@ body {
     align-items: center;
     flex: 1;
 }
-
-/* Bouton toujours en bas de la card */
 .card-body .btn-fermette {
     margin-top: auto;
 }
 
-/* ----- Badges ----- */
+/* ─────────────────────────────────────────────────
+   8. Badges
+   ───────────────────────────────────────────────── */
 .badge-fermette-success {
     background-color: #E3ECDB;
     color: var(--ff-sauge-dark);
@@ -178,7 +200,9 @@ body {
     display: inline-block;
 }
 
-/* ----- Images ----- */
+/* ─────────────────────────────────────────────────
+   9. Images
+   ───────────────────────────────────────────────── */
 .img-card {
     height: 200px;
     object-fit: cover;
@@ -198,14 +222,18 @@ body {
     border-radius: 14px;
 }
 
-/* ----- Formulaires ----- */
+/* ─────────────────────────────────────────────────
+   10. Formulaires
+   ───────────────────────────────────────────────── */
 .form-control:focus,
 .form-select:focus {
     border-color: var(--ff-terracotta);
     box-shadow: 0 0 0 0.2rem rgba(193,122,77,0.15);
 }
 
-/* ----- Footer ----- */
+/* ─────────────────────────────────────────────────
+   11. Footer
+   ───────────────────────────────────────────────── */
 .footer-fermette {
     background-color: var(--ff-sauge-dark);
     color: rgba(246,241,231,0.8);
@@ -223,7 +251,6 @@ body {
 .footer-fermette hr {
     border-color: rgba(246,241,231,0.15);
 }
-/* ----- Lien espace réservé footer ----- */
 .footer-admin-link {
     color: rgba(246,241,231,0.2);
     font-size: 0.75rem;
@@ -232,30 +259,9 @@ body {
     color: rgba(246,241,231,0.5);
 }
 
-/* ----- Responsive mobile ----- */
-@media (max-width: 576px) {
-    .hero-section {
-        min-height: 300px;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-    .btn-fermette,
-    .btn-fermette-outline {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    .card {
-        margin-bottom: 1rem;
-    }
-    .img-histoire {
-        height: 200px;
-    }
-    .section-subtitle {
-        max-width: 100%;
-    }
-}
-
-/* ----- Calendrier de disponibilités ----- */
+/* ─────────────────────────────────────────────────
+   12. Calendrier public
+   ───────────────────────────────────────────────── */
 .cal-grid {
     display: grid !important;
     grid-template-columns: repeat(7, 1fr);
@@ -279,13 +285,13 @@ body {
     text-align: center;
 }
 .cal-day.avail {
-    background: #C0DD97;
-    color: #173404;
+    background: var(--cal-avail);
+    color: var(--cal-avail-text);
     font-weight: 600;
 }
 .cal-day.unavail {
-    background: #F0997B;
-    color: #4A1B0C;
+    background: var(--cal-unavail);
+    color: var(--cal-unavail-text);
     text-decoration: line-through;
     cursor: not-allowed;
 }
@@ -310,49 +316,69 @@ body {
     vertical-align: -1px;
 }
 
-/* ----- Dashboard admin — calendrier ===== */
+/* Sélection de période */
+.cal-day-start,
+.cal-day-end {
+    background: var(--cal-selected) !important;
+    color: white !important;
+    font-weight: 700;
+}
+.cal-day-range {
+    background: var(--cal-range) !important;
+    color: var(--ff-brun) !important;
+    border-radius: 0;
+}
+
+/* ─────────────────────────────────────────────────
+   13. Dashboard admin
+   ───────────────────────────────────────────────── */
 .cal-cell {
     height: 18px;
 }
-
-/* ----- Dashboard admin — cellules gîte ===== */
 .gite-name-col {
     min-width: 130px;
 }
-
 .day-col {
     min-width: 28px;
 }
-
 .day-letter {
     font-weight: 400;
     font-size: 0.65rem;
 }
-
-/* ----- Dashboard admin — tableau réservations ===== */
 .table-admin {
     font-size: 0.9rem;
 }
-
-/* ----- Dashboard admin — cards mobile réservations ===== */
 .booking-card-mobile {
     border-left: 4px solid var(--ff-terracotta);
 }
-
 .booking-card-mobile.accepted {
     border-left-color: #198754;
 }
-
 .booking-card-mobile.rejected {
     border-left-color: #dc3545;
 }
 
-body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-main {
-    flex: 1;
+/* ─────────────────────────────────────────────────
+   14. Responsive mobile
+   ───────────────────────────────────────────────── */
+@media (max-width: 576px) {
+    .hero-section {
+        min-height: 300px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    .btn-fermette,
+    .btn-fermette-outline {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    .card {
+        margin-bottom: 1rem;
+    }
+    .img-section {
+        height: 200px;
+    }
+    .section-subtitle {
+        max-width: 100%;
+    }
 }

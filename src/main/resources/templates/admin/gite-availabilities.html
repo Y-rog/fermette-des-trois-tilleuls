@@ -39,6 +39,28 @@
             </a>
         </div>
 
+        <!-- Boutons actions sur le mois entier -->
+        <div class="d-flex gap-2 mb-3">
+            <form th:action="@{/admin/gites/{id}/availabilities/month-available(id=${gite.id()})}"
+                  method="post" class="flex-grow-1">
+                <input type="hidden" name="year" th:value="${calendar.year()}"/>
+                <input type="hidden" name="month" th:value="${calendar.month()}"/>
+                <button type="submit" class="btn btn-sm w-100"
+                        style="background:#C0DD97; color:#173404; font-weight:600;">
+                    ✓ Tout rendre disponible
+                </button>
+            </form>
+            <form th:action="@{/admin/gites/{id}/availabilities/month-unavailable(id=${gite.id()})}"
+                  method="post" class="flex-grow-1">
+                <input type="hidden" name="year" th:value="${calendar.year()}"/>
+                <input type="hidden" name="month" th:value="${calendar.month()}"/>
+                <button type="submit" class="btn btn-sm w-100"
+                        style="background:#F0997B; color:#4A1B0C; font-weight:600;">
+                    ✕ Tout bloquer
+                </button>
+            </form>
+        </div>
+
         <!-- Jours de la semaine -->
         <div class="cal-grid mb-1">
             <div class="dow">Lun</div>

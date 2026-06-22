@@ -81,4 +81,89 @@ public class AvailabilityService {
 
         log.info("Disponibilité gîte {} pour {} mise à jour", giteId, date);
     }
+
+    /**
+     * Marque toutes les dates du mois comme AVAILABLE.
+     *
+     * @param giteId identifiant du gîte
+     * @param year   année
+     * @param month  mois (1-12)
+     */
+    @Transactional
+    public void setMonthAvailable(Long giteId, int year, int month) {
+        log.info("Mise en disponible du mois {}/{} pour gîte id={}", month, year, giteId);
+        Gite gite = giteRepository.findById(giteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Gîte introuvable"));
+
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+
+        LocalDate current = firstDay;
+        while (!current.isAfter(lastDay)) {
+            final LocalDate date = current;
+            GiteAvailability availability = giteAvailabilityRepository
+                    .findByGiteIdAndDate(giteId, date)
+                    .orElse(null);
+
+            if (availability != null) {
+                // Ne pas toucher aux dates RESERVED
+                if (availability.getStatus() != AvailabilityStatus.RESERVED) {
+                    availability.setStatus(AvailabilityStatus.AVAILABLE);
+                    giteAvailabilityRepository.save(availability);
+                }
+            } else {
+                giteAvailabilityRepository.save(
+                        GiteAvailability.builder()
+                                .gite(gite)
+                                .date(date)
+                                .status(AvailabilityStatus.AVAILABLE)
+                                .build()
+                );
+            }
+            current = current.plusDays(1);
+        }
+    }
+
+    /**
+     * Marque toutes les dates du mois comme UNAVAILABLE.
+     * Les dates RESERVED ne sont pas modifiées.
+     *
+     * @param giteId identifiant du gîte
+     * @param year   année
+     * @param month  mois (1-12)
+     */
+    @Transactional
+    public void setMonthUnavailable(Long giteId, int year, int month) {
+        log.info("Blocage du mois {}/{} pour gîte id={}", month, year, giteId);
+        Gite gite = giteRepository.findById(giteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Gîte introuvable"));
+
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+
+        LocalDate current = firstDay;
+        while (!current.isAfter(lastDay)) {
+            final LocalDate date = current;
+            GiteAvailability availability = giteAvailabilityRepository
+                    .findByGiteIdAndDate(giteId, date)
+                    .orElse(null);
+
+            if (availability != null) {
+                // Ne pas toucher aux dates RESERVED
+                if (availability.getStatus() != AvailabilityStatus.RESERVED) {
+                    availability.setStatus(AvailabilityStatus.UNAVAILABLE);
+                    giteAvailabilityRepository.save(availability);
+                }
+            } else {
+                giteAvailabilityRepository.save(
+                        GiteAvailability.builder()
+                                .gite(gite)
+                                .date(date)
+                                .status(AvailabilityStatus.UNAVAILABLE)
+                                .build()
+                );
+            }
+            current = current.plusDays(1);
+        }
+    }
 }

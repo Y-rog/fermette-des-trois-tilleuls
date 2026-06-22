@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
-
 /**
  * Contrôleur admin pour la gestion des gîtes :
- * CRUD complet, gestion des disponibilités et des photos.
+ * CRUD complet, photos et réservations téléphoniques.
+ * Les disponibilités sont gérées dans AdminAvailabilityController.
  * Toutes les routes sont protégées par Spring Security.
  */
 @Controller
@@ -28,21 +27,15 @@ public class AdminGiteController {
     private static final Logger log = LoggerFactory.getLogger(AdminGiteController.class);
 
     private final GiteService giteService;
-    private final CalendarService calendarService;
-    private final AvailabilityService availabilityService;
     private final GitePhotoService gitePhotoService;
     private final BookingService bookingService;
     private final FileUploadService fileUploadService;
 
     public AdminGiteController(GiteService giteService,
-                               CalendarService calendarService,
-                               AvailabilityService availabilityService,
                                GitePhotoService gitePhotoService,
                                BookingService bookingService,
                                FileUploadService fileUploadService) {
         this.giteService = giteService;
-        this.calendarService = calendarService;
-        this.availabilityService = availabilityService;
         this.gitePhotoService = gitePhotoService;
         this.bookingService = bookingService;
         this.fileUploadService = fileUploadService;
@@ -109,12 +102,13 @@ public class AdminGiteController {
      * Traite le formulaire de création d'un gîte.
      * Si une photo vitrine est fournie, elle est uploadée
      * et son URL est enregistrée dans le formulaire.
+     * Redirige vers l'édition pour permettre l'ajout de photos.
      *
-     * @param form          formulaire rempli par l'admin
-     * @param result        résultat de la validation
-     * @param photoVitrine  fichier image optionnel pour la photo vitrine
-     * @param model         modèle Thymeleaf
-     * @return redirection vers la liste des gîtes ou retour au formulaire
+     * @param form         formulaire rempli par l'admin
+     * @param result       résultat de la validation
+     * @param photoVitrine fichier image optionnel pour la photo vitrine
+     * @param model        modèle Thymeleaf
+     * @return redirection vers le formulaire d'édition du gîte créé
      */
     @PostMapping("/new")
     public String createGite(@Valid GiteForm form,
@@ -127,10 +121,8 @@ public class AdminGiteController {
             return "admin/gite-form";
         }
 
-        // Créer le gîte d'abord pour obtenir l'id
         Long giteId = giteService.create(form);
 
-        // Upload photo vitrine si fournie
         if (photoVitrine != null && !photoVitrine.isEmpty()) {
             try {
                 String url = fileUploadService.saveGitePhoto(photoVitrine);
@@ -142,20 +134,18 @@ public class AdminGiteController {
         }
 
         log.info("Gîte créé : {}", form.getName());
-        // Rediriger vers l'édition pour ajouter les photos de galerie
         return "redirect:/admin/gites/" + giteId + "/edit";
     }
 
     /**
      * Traite le formulaire d'édition d'un gîte.
-     * Si une nouvelle photo vitrine est fournie, elle remplace
-     * la précédente.
+     * Si une nouvelle photo vitrine est fournie, elle remplace la précédente.
      *
-     * @param id            identifiant du gîte
-     * @param form          formulaire rempli par l'admin
-     * @param result        résultat de la validation
-     * @param photoVitrine  fichier image optionnel pour la photo vitrine
-     * @param model         modèle Thymeleaf
+     * @param id           identifiant du gîte
+     * @param form         formulaire rempli par l'admin
+     * @param result       résultat de la validation
+     * @param photoVitrine fichier image optionnel pour la photo vitrine
+     * @param model        modèle Thymeleaf
      * @return redirection vers la liste des gîtes ou retour au formulaire
      */
     @PostMapping("/{id}/edit")
@@ -170,7 +160,6 @@ public class AdminGiteController {
             model.addAttribute("isEdit", true);
             return "admin/gite-form";
         }
-        // Upload photo vitrine si fournie
         if (photoVitrine != null && !photoVitrine.isEmpty()) {
             try {
                 String url = fileUploadService.saveGitePhoto(photoVitrine);
@@ -186,9 +175,7 @@ public class AdminGiteController {
 
     /**
      * Supprime un gîte.
-     * Si des réservations sont en cours pour ce gîte,
-     * la suppression est refusée et un message d'erreur
-     * est affiché sur la liste des gîtes.
+     * Si des réservations sont en cours, la suppression est refusée.
      *
      * @param id                 identifiant du gîte
      * @param redirectAttributes attributs pour le message flash
@@ -221,60 +208,7 @@ public class AdminGiteController {
     }
 
     /**
-     * Affiche le calendrier de disponibilités d'un gîte
-     * pour que l'admin puisse le gérer.
-     *
-     * @param id    identifiant du gîte
-     * @param year  année du calendrier (défaut : année courante)
-     * @param month mois du calendrier (défaut : mois courant)
-     * @param model modèle Thymeleaf
-     * @return la vue du calendrier de disponibilités
-     */
-    @GetMapping("/{id}/availabilities")
-    public String getGiteAvailabilitiesPage(
-            @PathVariable Long id,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Integer month,
-            Model model) {
-
-        int currentYear  = (year  != null) ? year  : LocalDate.now().getYear();
-        int currentMonth = (month != null) ? month : LocalDate.now().getMonthValue();
-
-        log.info("Accès au calendrier admin du gîte id={} {}/{}", id, currentMonth, currentYear);
-
-        model.addAttribute("gite", giteService.findById(id));
-        model.addAttribute("calendar",
-                calendarService.buildGiteCalendar(id, currentYear, currentMonth));
-        return "admin/gite-availabilities";
-    }
-
-    /**
-     * Bascule la disponibilité d'un gîte pour une date donnée.
-     * Les dates RESERVED ne peuvent pas être modifiées.
-     *
-     * @param id    identifiant du gîte
-     * @param year  année de la date à basculer
-     * @param month mois de la date à basculer
-     * @param day   jour de la date à basculer
-     * @return redirection vers le calendrier du même mois
-     */
-    @PostMapping("/{id}/availabilities/toggle")
-    public String toggleAvailability(
-            @PathVariable Long id,
-            @RequestParam int year,
-            @RequestParam int month,
-            @RequestParam int day) {
-
-        LocalDate date = LocalDate.of(year, month, day);
-        log.info("Bascule de la disponibilité gîte id={} pour {}", id, date);
-        availabilityService.toggleAvailability(id, date);
-
-        return "redirect:/admin/gites/" + id + "/availabilities?year=" + year + "&month=" + month;
-    }
-
-    /**
-     * Upload une photo de galerie depuis le formulaire d'édition
-     * et la sauvegarde sur le serveur.
+     * Upload une photo de galerie depuis le formulaire d'édition.
      * Valide le type MIME et la taille avant sauvegarde.
      *
      * @param id                 identifiant du gîte
@@ -316,8 +250,7 @@ public class AdminGiteController {
     }
 
     /**
-     * Affiche le formulaire de création d'une réservation
-     * téléphonique pour un gîte.
+     * Affiche le formulaire de création d'une réservation téléphonique.
      *
      * @param id    identifiant du gîte
      * @param model modèle Thymeleaf
