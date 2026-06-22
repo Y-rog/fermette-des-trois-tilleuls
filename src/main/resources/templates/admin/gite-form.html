@@ -22,7 +22,8 @@
         <form th:if="${isEdit}"
               th:action="@{/admin/gites/{id}/edit(id=${giteId})}"
               th:object="${giteForm}"
-              method="post">
+              method="post"
+              enctype="multipart/form-data">
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Nom</label>
@@ -61,11 +62,20 @@
                 </div>
             </div>
 
+            <!-- Photo vitrine -->
             <div class="mb-4">
                 <label class="form-label fw-bold">Photo vitrine (optionnel)</label>
-                <input type="text" class="form-control"
-                       th:field="*{photoUrl}"
-                       placeholder="URL de la photo principale affichée sur la liste"/>
+                <input type="file" class="form-control"
+                       name="photoVitrine"
+                       accept="image/jpeg,image/png,image/webp,image/gif"/>
+                <!-- Affiche la photo actuelle si elle existe -->
+                <div th:if="${giteForm.photoUrl != null and !giteForm.photoUrl.isEmpty()}"
+                     class="mt-2">
+                    <img th:src="${giteForm.photoUrl}" class="img-thumbnail"
+                         style="height: 80px; object-fit: cover;"
+                         alt="Photo vitrine actuelle"/>
+                    <small class="text-muted d-block">Photo actuelle</small>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-fermette w-100">
@@ -128,7 +138,8 @@
         <form th:unless="${isEdit}"
               th:action="@{/admin/gites/new}"
               th:object="${giteForm}"
-              method="post">
+              method="post"
+              enctype="multipart/form-data">
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Nom</label>
@@ -167,11 +178,12 @@
                 </div>
             </div>
 
+            <!-- Photo vitrine -->
             <div class="mb-4">
                 <label class="form-label fw-bold">Photo vitrine (optionnel)</label>
-                <input type="text" class="form-control"
-                       th:field="*{photoUrl}"
-                       placeholder="URL de la photo principale affichée sur la liste"/>
+                <input type="file" class="form-control"
+                       name="photoVitrine"
+                       accept="image/jpeg,image/png,image/webp,image/gif"/>
             </div>
 
             <button type="submit" class="btn btn-fermette w-100">
