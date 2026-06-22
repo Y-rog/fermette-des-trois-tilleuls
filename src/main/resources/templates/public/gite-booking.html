@@ -7,219 +7,222 @@
 
 <nav th:replace="~{fragments/navbar :: navbar('gites')}"></nav>
 
-<div class="container py-4">
 
-    <!-- Fil d'ariane -->
-    <p class="small mb-3">
-        <a th:href="@{/gites}">Nos gîtes</a>
-        &nbsp;/&nbsp;
-        <strong th:text="${gite.name()}">Nom du gîte</strong>
-    </p>
+<main>
+    <div class="container py-4">
 
-    <div class="row g-4 align-items-start">
+        <!-- Fil d'ariane -->
+        <p class="small mb-3">
+            <a th:href="@{/gites}">Nos gîtes</a>
+            &nbsp;/&nbsp;
+            <strong th:text="${gite.name()}">Nom du gîte</strong>
+        </p>
 
-        <!-- Infos gîte + Calendrier -->
-        <div class="col-12 col-lg-7">
+        <div class="row g-4 align-items-start">
 
-            <!-- ===== Galerie photos (carousel) ===== -->
-            <div th:if="${not #lists.isEmpty(photos)}"
-                 id="giteCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <!-- Infos gîte + Calendrier -->
+            <div class="col-12 col-lg-7">
 
-                <div class="carousel-indicators" th:if="${photos.size() > 1}">
-                    <button th:each="photo, iterStat : ${photos}"
-                            type="button"
-                            data-bs-target="#giteCarousel"
-                            th:data-bs-slide-to="${iterStat.index}"
-                            th:class="${iterStat.first} ? 'active' : ''">
-                    </button>
-                </div>
+                <!-- ===== Galerie photos (carousel) ===== -->
+                <div th:if="${not #lists.isEmpty(photos)}"
+                     id="giteCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
 
-                <div class="carousel-inner" style="border-radius: 14px; overflow: hidden;">
-                    <div th:each="photo, iterStat : ${photos}"
-                         th:class="${iterStat.first} ? 'carousel-item active' : 'carousel-item'">
-                        <img th:src="${photo.url()}" class="d-block w-100"
-                             style="height: 320px; object-fit: cover;"
-                             alt="Photo du gîte"/>
+                    <div class="carousel-indicators" th:if="${photos.size() > 1}">
+                        <button th:each="photo, iterStat : ${photos}"
+                                type="button"
+                                data-bs-target="#giteCarousel"
+                                th:data-bs-slide-to="${iterStat.index}"
+                                th:class="${iterStat.first} ? 'active' : ''">
+                        </button>
                     </div>
+
+                    <div class="carousel-inner" style="border-radius: 14px; overflow: hidden;">
+                        <div th:each="photo, iterStat : ${photos}"
+                             th:class="${iterStat.first} ? 'carousel-item active' : 'carousel-item'">
+                            <img th:src="${photo.url()}" class="d-block w-100"
+                                 style="height: 320px; object-fit: cover;"
+                                 alt="Photo du gîte"/>
+                        </div>
+                    </div>
+
+                    <button th:if="${photos.size() > 1}" class="carousel-control-prev" type="button"
+                            data-bs-target="#giteCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button th:if="${photos.size() > 1}" class="carousel-control-next" type="button"
+                            data-bs-target="#giteCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+
                 </div>
 
-                <button th:if="${photos.size() > 1}" class="carousel-control-prev" type="button"
-                        data-bs-target="#giteCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button th:if="${photos.size() > 1}" class="carousel-control-next" type="button"
-                        data-bs-target="#giteCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
-
-            </div>
-
-            <!-- Si aucune photo -->
-            <div th:if="${#lists.isEmpty(photos)}"
-                 class="img-card d-flex align-items-center
+                <!-- Si aucune photo -->
+                <div th:if="${#lists.isEmpty(photos)}"
+                     class="img-card d-flex align-items-center
             justify-content-center text-muted mb-4"
-                 style="height: 320px; border-radius: 14px;">
-                Photo à venir
-            </div>
+                     style="height: 320px; border-radius: 14px;">
+                    Photo à venir
+                </div>
 
-            <h1 class="mb-1" th:text="${gite.name()}">Nom du gîte</h1>
-            <p class="small text-muted mb-3">
-                📍 <span th:text="${gite.location()}"></span>
-                · jusqu'à <span th:text="${gite.capacity()}"></span> pers.
-                · <span th:text="${gite.bedrooms()}"></span> chambres
-            </p>
-            <p class="mb-4" th:text="${gite.description()}"></p>
+                <h1 class="mb-1" th:text="${gite.name()}">Nom du gîte</h1>
+                <p class="small text-muted mb-3">
+                    📍 <span th:text="${gite.location()}"></span>
+                    · jusqu'à <span th:text="${gite.capacity()}"></span> pers.
+                    · <span th:text="${gite.bedrooms()}"></span> chambres
+                </p>
+                <p class="mb-4" th:text="${gite.description()}"></p>
 
-            <!-- ===== Calendrier ===== -->
-            <h2 class="h5 mb-3">Disponibilités</h2>
+                <!-- ===== Calendrier ===== -->
+                <h2 class="h5 mb-3">Disponibilités</h2>
 
-            <!-- Navigation mois -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <a class="btn btn-outline-secondary btn-sm"
-                   th:href="@{/gites/{id}(id=${gite.id()},
+                <!-- Navigation mois -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <a class="btn btn-outline-secondary btn-sm"
+                       th:href="@{/gites/{id}(id=${gite.id()},
                              year=${calendar.month() == 1
                                     ? calendar.year() - 1
                                     : calendar.year()},
                              month=${calendar.month() == 1
                                      ? 12
                                      : calendar.month() - 1})}">
-                    ‹
-                </a>
-                <strong th:text="${calendar.monthName() + ' ' + calendar.year()}">
-                </strong>
-                <a class="btn btn-outline-secondary btn-sm"
-                   th:href="@{/gites/{id}(id=${gite.id()},
+                        ‹
+                    </a>
+                    <strong th:text="${calendar.monthName() + ' ' + calendar.year()}">
+                    </strong>
+                    <a class="btn btn-outline-secondary btn-sm"
+                       th:href="@{/gites/{id}(id=${gite.id()},
                              year=${calendar.month() == 12
                                     ? calendar.year() + 1
                                     : calendar.year()},
                              month=${calendar.month() == 12
                                      ? 1
                                      : calendar.month() + 1})}">
-                    ›
-                </a>
-            </div>
+                        ›
+                    </a>
+                </div>
 
-            <!-- Jours de la semaine -->
-            <div class="cal-grid mb-1">
-                <div class="dow">Lun</div>
-                <div class="dow">Mar</div>
-                <div class="dow">Mer</div>
-                <div class="dow">Jeu</div>
-                <div class="dow">Ven</div>
-                <div class="dow">Sam</div>
-                <div class="dow">Dim</div>
-            </div>
+                <!-- Jours de la semaine -->
+                <div class="cal-grid mb-1">
+                    <div class="dow">Lun</div>
+                    <div class="dow">Mar</div>
+                    <div class="dow">Mer</div>
+                    <div class="dow">Jeu</div>
+                    <div class="dow">Ven</div>
+                    <div class="dow">Sam</div>
+                    <div class="dow">Dim</div>
+                </div>
 
-            <!-- Grille des jours -->
-            <div class="cal-grid mb-3">
+                <!-- Grille des jours -->
+                <div class="cal-grid mb-3">
 
-                <!-- Cases vides avant le 1er jour -->
-                <div th:each="i : ${#numbers.sequence(1, calendar.firstDayOfWeek() - 1)}"
-                     class="cal-day empty"></div>
+                    <!-- Cases vides avant le 1er jour -->
+                    <div th:each="i : ${#numbers.sequence(1, calendar.firstDayOfWeek() - 1)}"
+                         class="cal-day empty"></div>
 
-                <!-- Jours du mois -->
-                <th:block th:each="day : ${#numbers.sequence(1, calendar.daysInMonth())}">
-                    <button th:if="${calendar.availabilities().get(day)?.name() == 'AVAILABLE'}"
-                            class="cal-day avail"
-                            th:text="${day}">
-                    </button>
-                    <button th:if="${calendar.availabilities().get(day)?.name() == 'RESERVED'
+                    <!-- Jours du mois -->
+                    <th:block th:each="day : ${#numbers.sequence(1, calendar.daysInMonth())}">
+                        <button th:if="${calendar.availabilities().get(day)?.name() == 'AVAILABLE'}"
+                                class="cal-day avail"
+                                th:text="${day}">
+                        </button>
+                        <button th:if="${calendar.availabilities().get(day)?.name() == 'RESERVED'
                                  or calendar.availabilities().get(day)?.name() == 'UNAVAILABLE'}"
-                            class="cal-day unavail"
-                            th:text="${day}"
-                            disabled>
-                    </button>
-                    <button th:if="${calendar.availabilities().get(day) == null}"
-                            class="cal-day empty"
-                            th:text="${day}"
-                            disabled>
-                    </button>
-                </th:block>
+                                class="cal-day unavail"
+                                th:text="${day}"
+                                disabled>
+                        </button>
+                        <button th:if="${calendar.availabilities().get(day) == null}"
+                                class="cal-day empty"
+                                th:text="${day}"
+                                disabled>
+                        </button>
+                    </th:block>
 
-            </div>
+                </div>
 
-            <!-- Légende -->
-            <div class="cal-legend mb-4">
+                <!-- Légende -->
+                <div class="cal-legend mb-4">
                 <span>
                     <span class="dot" style="background:#E3ECDB;"></span>
                     Disponible
                 </span>
-                <span>
+                    <span>
                     <span class="dot" style="background:#EFE7D8;"></span>
                     Réservé / Indisponible
                 </span>
+                </div>
+
             </div>
 
-        </div>
+            <!-- Formulaire réservation -->
+            <div class="col-12 col-lg-5">
+                <!-- Message d'erreur si dates indisponibles -->
+                <div th:if="${errorMessage}" class="alert alert-danger mb-3">
+                    <span th:text="${errorMessage}"></span>
+                </div>
 
-        <!-- Formulaire réservation -->
-        <div class="col-12 col-lg-5">
-            <!-- Message d'erreur si dates indisponibles -->
-            <div th:if="${errorMessage}" class="alert alert-danger mb-3">
-                <span th:text="${errorMessage}"></span>
-            </div>
-
-            <form th:action="@{/gites/booking}" method="post">
-            <div class="card p-4">
-                <h3 class="h5 mb-3">Demande de réservation</h3>
                 <form th:action="@{/gites/booking}" method="post">
-                    <input type="hidden" name="giteId"
-                           th:value="${gite.id()}"/>
+                    <div class="card p-4">
+                        <h3 class="h5 mb-3">Demande de réservation</h3>
+                        <form th:action="@{/gites/booking}" method="post">
+                            <input type="hidden" name="giteId"
+                                   th:value="${gite.id()}"/>
 
-                    <div class="mb-3">
-                        <label class="form-label">Nom</label>
-                        <input type="text" class="form-control"
-                               name="firstName" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Prénom</label>
-                        <input type="text" class="form-control"
-                               name="lastName" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control"
-                               name="email" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Téléphone</label>
-                        <input type="tel" class="form-control"
-                               name="phone"/>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label">Arrivée</label>
-                            <input type="date" class="form-control"
-                                   name="checkIn" required/>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">Départ</label>
-                            <input type="date" class="form-control"
-                                   name="checkOut" required/>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nombre de personnes</label>
-                        <input type="number" class="form-control"
-                               name="nbGuests" min="1"
-                               th:max="${gite.capacity()}"
-                               value="2" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Message (optionnel)</label>
-                        <textarea class="form-control" name="message"
-                                  rows="3"></textarea>
-                    </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nom</label>
+                                <input type="text" class="form-control"
+                                       name="firstName" required/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Prénom</label>
+                                <input type="text" class="form-control"
+                                       name="lastName" required/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control"
+                                       name="email" required/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Téléphone</label>
+                                <input type="tel" class="form-control"
+                                       name="phone"/>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label">Arrivée</label>
+                                    <input type="date" class="form-control"
+                                           name="checkIn" required/>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Départ</label>
+                                    <input type="date" class="form-control"
+                                           name="checkOut" required/>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nombre de personnes</label>
+                                <input type="number" class="form-control"
+                                       name="nbGuests" min="1"
+                                       th:max="${gite.capacity()}"
+                                       value="2" required/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Message (optionnel)</label>
+                                <textarea class="form-control" name="message"
+                                          rows="3"></textarea>
+                            </div>
 
-                    <button type="submit" class="btn btn-fermette w-100">
-                        Envoyer la demande
-                    </button>
-                </form>
+                            <button type="submit" class="btn btn-fermette w-100">
+                                Envoyer la demande
+                            </button>
+                        </form>
+                    </div>
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
+</main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 

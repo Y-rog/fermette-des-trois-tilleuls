@@ -7,50 +7,54 @@
 
 <nav th:replace="~{fragments/navbar :: navbar('gites')}"></nav>
 
-<div class="container py-4">
-    <span class="section-tag">Nos gîtes</span>
-    <h1 class="mb-2">Séjournez dans nos gîtes</h1>
-    <p class="mb-4 section-subtitle">
-        Consultez les disponibilités en direct et envoyez votre demande
-        de réservation — nous la validons rapidement.
-    </p>
+<main>
 
-    <div class="row g-4">
-        <div class="col-12 col-md-6" th:each="gite : ${gites}">
-            <div class="card h-100">
-                <!-- Si la photo existe -->
-                <img th:if="${gite.photoUrl() != null and !gite.photoUrl().isEmpty()}"
-                     th:src="${gite.photoUrl()}"
-                     class="img-card"
-                     th:alt="${gite.name()}"/>
+    <div class="container py-4">
+        <span class="section-tag">Nos gîtes</span>
+        <h1 class="mb-2">Séjournez dans nos gîtes</h1>
+        <p class="mb-4 section-subtitle">
+            Consultez les disponibilités en direct et envoyez votre demande
+            de réservation — nous la validons rapidement.
+        </p>
 
-                <!-- Sinon, le placeholder -->
-                <img th:unless="${gite.photoUrl() != null and !gite.photoUrl().isEmpty()}"
-                     th:src="@{/img/placeholder.svg}"
-                     class="img-card"
-                     th:alt="${gite.name()}"/>
-                <div class="card-body">
-                    <h2 class="h5 mb-1" th:text="${gite.name()}">
-                        Nom du gîte
-                    </h2>
-                    <p class="small text-muted mb-2">
-                        📍 <span th:text="${gite.location()}">Localisation</span>
-                        · jusqu'à
-                        <span th:text="${gite.capacity()}">0</span> pers.
-                        · <span th:text="${gite.bedrooms()}">0</span> chambres
-                    </p>
-                    <p class="small mb-3" th:text="${gite.description()}">
-                        Description
-                    </p>
-                    <a class="btn btn-fermette btn-sm"
-                       th:href="@{/gites/{id}(id=${gite.id()})}">
-                        Voir le calendrier
-                    </a>
+        <div class="row g-4">
+            <div class="col-12 col-md-6" th:each="gite : ${gites}">
+                <div class="card h-100">
+                    <!-- Si la photo existe -->
+                    <img th:if="${gite.photoUrl() != null and !gite.photoUrl().isEmpty()}"
+                         th:src="${gite.photoUrl()}"
+                         class="img-card"
+                         th:alt="${gite.name()}"/>
+
+                    <!-- Sinon, le placeholder -->
+                    <img th:unless="${gite.photoUrl() != null and !gite.photoUrl().isEmpty()}"
+                         th:src="@{/img/placeholder.svg}"
+                         class="img-card"
+                         th:alt="${gite.name()}"/>
+                    <div class="card-body">
+                        <h2 class="h5 mb-1" th:text="${gite.name()}">
+                            Nom du gîte
+                        </h2>
+                        <p class="small text-muted mb-2">
+                            📍 <span th:text="${gite.location()}">Localisation</span>
+                            · jusqu'à
+                            <span th:text="${gite.capacity()}">0</span> pers.
+                            · <span th:text="${gite.bedrooms()}">0</span> chambres
+                        </p>
+                        <p class="small mb-3" th:text="${gite.description()}">
+                            Description
+                        </p>
+                        <a class="btn btn-fermette btn-sm"
+                           th:href="@{/gites/{id}(id=${gite.id()})}">
+                            Voir le calendrier
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
+
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 

@@ -7,47 +7,50 @@
 
 <nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
 
-<div class="container py-5 d-flex justify-content-center">
-    <div class="card p-5 text-center" style="max-width: 540px;">
+<main>
+    <div class="container py-5 d-flex justify-content-center">
+        <div class="card p-5 text-center" style="max-width: 540px;">
 
-        <!-- Icône succès -->
-        <div class="mx-auto mb-3 d-flex align-items-center
+            <!-- Icône succès -->
+            <div class="mx-auto mb-3 d-flex align-items-center
                     justify-content-center rounded-circle"
-             style="width:64px; height:64px;
+                 style="width:64px; height:64px;
                     background:#E3ECDB; color:#4A5D3F;
                     font-size:1.6rem;">
-            ✓
-        </div>
+                ✓
+            </div>
 
-        <h1 class="h3 mb-3">Demande envoyée !</h1>
+            <h1 class="h3 mb-3">Demande envoyée !</h1>
 
-        <p class="mb-4">
-            Votre demande de réservation a bien été transmise
-            à la fermette. Vous recevrez une confirmation
-            par email dès qu'elle sera traitée.
-        </p>
-
-        <div class="card p-3 mb-4 text-start"
-             style="background: var(--ff-sable);">
-            <p class="small mb-1"><strong>Que se passe-t-il maintenant ?</strong></p>
-            <p class="small mb-0">
-                1. La fermette reçoit votre demande.<br/>
-                2. Elle valide ou refuse selon les disponibilités.<br/>
-                3. Vous recevez un email de confirmation.
+            <p class="mb-4">
+                Votre demande de réservation a bien été transmise
+                à la fermette. Vous recevrez une confirmation
+                par email dès qu'elle sera traitée.
             </p>
-        </div>
 
-        <div class="d-flex justify-content-center gap-3">
-            <a th:href="@{/}" class="btn btn-outline-secondary">
-                Retour à l'accueil
-            </a>
-            <a th:href="@{/gites}" class="btn btn-fermette">
-                Voir nos gîtes
-            </a>
-        </div>
+            <div class="card p-3 mb-4 text-start"
+                 style="background: var(--ff-sable);">
+                <p class="small mb-1"><strong>Que se passe-t-il maintenant ?</strong></p>
+                <p class="small mb-0">
+                    1. La fermette reçoit votre demande.<br/>
+                    2. Elle valide ou refuse selon les disponibilités.<br/>
+                    3. Vous recevez un email de confirmation.
+                </p>
+            </div>
 
+            <div class="d-flex justify-content-center gap-3">
+                <a th:href="@{/}" class="btn btn-outline-secondary">
+                    Retour à l'accueil
+                </a>
+                <a th:href="@{/gites}" class="btn btn-fermette">
+                    Voir nos gîtes
+                </a>
+            </div>
+
+        </div>
     </div>
-</div>
+</main>
+
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 

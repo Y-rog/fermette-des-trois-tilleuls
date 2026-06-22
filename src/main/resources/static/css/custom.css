@@ -185,10 +185,17 @@ body {
     width: 100%;
     border-radius: 14px 14px 0 0;
 }
-.img-histoire {
-    height: 300px;
+.img-hero {
     width: 100%;
+    height: 400px;
     object-fit: cover;
+    border-radius: 14px;
+}
+.img-section {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 14px;
 }
 
 /* ----- Formulaires ----- */
@@ -338,4 +345,14 @@ body {
 
 .booking-card-mobile.rejected {
     border-left-color: #dc3545;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
 }

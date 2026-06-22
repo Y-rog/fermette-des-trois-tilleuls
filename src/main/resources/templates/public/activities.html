@@ -4,56 +4,59 @@
 <body>
 <nav th:replace="~{fragments/navbar :: navbar('activities')}"></nav>
 
-<!-- ===== Hero ===== -->
-<section class="py-4">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-12 col-md-6">
-                <span class="section-tag">Nos activités</span>
-                <p class="mb-4" style="max-width: 560px;">
-                    Choisissez une activité, votre demande sera
-                    validée par notre équipe. Paiement sur place.
-                </p>
-            </div>
-            <div class="col-12 col-md-6">
-                <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?w=800&auto=format"
-                     class="img-fluid rounded img-histoire"
-                     alt="Balade en alpagas à la fermette"/>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="container py-4">
-    <div class="row g-4">
-        <div class="col-12 col-md-4" th:each="activity : ${activities}">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h2 class="h5 mb-1" th:text="${activity.name()}">
-                        Nom activité
-                    </h2>
-                    <p class="small text-muted mb-1">
-                        📅 <span th:text="${activity.date()}">Date</span>
-                        · 🕐 <span th:text="${activity.time()}">Heure</span>
+<main>
+    <!-- ===== Hero ===== -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-12 col-md-6">
+                    <span class="section-tag">Nos activités</span>
+                    <p class="mb-4" style="max-width: 560px;">
+                        Choisissez une activité, votre demande sera
+                        validée par notre équipe. Paiement sur place.
                     </p>
-                    <p class="small mb-3" th:text="${activity.description()}">
-                        Description
-                    </p>
-                    <a class="btn btn-fermette btn-sm"
-                       th:href="@{/activities/{id}(id=${activity.id()})}">
-                        Réserver
-                    </a>
+                </div>
+                <div class="col-12 col-md-6">
+                    <img th:src="@{/img/activities/alpaga-tete-gros-plan.jpg}"
+                         class="img-fluid rounded img-section"
+                         alt="Balade en alpagas à la fermette"/>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div th:if="${#lists.isEmpty(activities)}" class="col-12">
-            <p class="text-muted text-center py-4">
-                Aucune activité disponible pour le moment.
-            </p>
+    <div class="container py-4">
+        <div class="row g-4">
+            <div class="col-12 col-md-4" th:each="activity : ${activities}">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="h5 mb-1" th:text="${activity.name()}">
+                            Nom activité
+                        </h2>
+                        <p class="small text-muted mb-1">
+                            📅 <span th:text="${activity.date()}">Date</span>
+                            · 🕐 <span th:text="${activity.time()}">Heure</span>
+                        </p>
+                        <p class="small mb-3" th:text="${activity.description()}">
+                            Description
+                        </p>
+                        <a class="btn btn-fermette btn-sm"
+                           th:href="@{/activities/{id}(id=${activity.id()})}">
+                            Réserver
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(activities)}" class="col-12">
+                <p class="text-muted text-center py-4">
+                    Aucune activité disponible pour le moment.
+                </p>
+            </div>
         </div>
     </div>
-</div>
+</main>
+
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
