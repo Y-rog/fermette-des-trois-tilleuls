@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-
 <footer th:fragment="footer" class="footer-fermette mt-5 py-4">
     <div class="container">
         <div class="row gy-4">
@@ -37,18 +36,30 @@
 
         </div>
         <hr/>
-        <!-- Copyright -->
-        <p class="text-center mb-0">
+
+        <!-- Copyright + Liens légaux -->
+        <p class="text-center mb-1">
             &copy; 2026 Fermette des Trois Tilleuls
             — Tous droits réservés
+        </p>
+        <p class="text-center mb-1" style="font-size: 0.8rem;">
+            <a th:href="@{/mentions-legales}" class="footer-admin-link me-3">
+                Mentions légales
+            </a>
+            <a th:href="@{/confidentialite}" class="footer-admin-link me-3">
+                Politique de confidentialité
+            </a>
+            <a th:href="@{/cgv}" class="footer-admin-link">
+                CGV
+            </a>
         </p>
         <p class="text-center mt-1">
             <a th:href="@{/admin/login}" class="footer-admin-link">
                 Espace réservé
             </a>
         </p>
+
     </div>
 </footer>
-
 </body>
 </html>

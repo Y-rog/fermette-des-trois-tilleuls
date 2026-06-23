@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Politique de confidentialité')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+<main>
+    <div class="container py-5" style="max-width: 800px;">
+
+        <h1 class="mb-4">Politique de confidentialité</h1>
+
+        <p class="text-muted small mb-4">
+            Dernière mise à jour : juin 2026
+        </p>
+
+        <!-- ===== Responsable ===== -->
+        <h2 class="h4 mb-3">Responsable du traitement</h2>
+        <p>
+            <strong>Fermette des Trois Tilleuls</strong><br/>
+            <span th:text="${fermette.adresse}"></span><br/>
+            <span th:text="${fermette.email}"></span>
+        </p>
+
+        <!-- ===== Données collectées ===== -->
+        <h2 class="h4 mb-3 mt-4">Données collectées</h2>
+        <p>Dans le cadre de votre réservation ou de votre message de contact, nous collectons :</p>
+        <ul>
+            <li>Nom et prénom</li>
+            <li>Adresse email</li>
+            <li>Numéro de téléphone</li>
+            <li>Dates de séjour souhaitées</li>
+            <li>Message libre (optionnel)</li>
+        </ul>
+
+        <!-- ===== Finalité ===== -->
+        <h2 class="h4 mb-3 mt-4">Finalité du traitement</h2>
+        <p>Vos données sont collectées uniquement pour :</p>
+        <ul>
+            <li>Traiter votre demande de réservation</li>
+            <li>Vous contacter pour confirmer ou refuser votre réservation</li>
+            <li>Répondre à vos messages de contact</li>
+        </ul>
+        <p>
+            Vos données ne sont pas vendues, ni transmises à des tiers,
+            ni utilisées à des fins commerciales.
+        </p>
+
+        <!-- ===== Durée de conservation ===== -->
+        <h2 class="h4 mb-3 mt-4">Durée de conservation</h2>
+        <p>
+            Vos données sont conservées pendant la durée nécessaire
+            au traitement de votre réservation, puis archivées
+            pendant <strong>3 ans</strong> à des fins comptables,
+            conformément à la législation en vigueur.
+        </p>
+
+        <!-- ===== Vos droits ===== -->
+        <h2 class="h4 mb-3 mt-4">Vos droits</h2>
+        <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+        <ul>
+            <li><strong>Droit d'accès</strong> — consulter vos données personnelles</li>
+            <li><strong>Droit de rectification</strong> — corriger vos données</li>
+            <li><strong>Droit à l'effacement</strong> — demander la suppression de vos données</li>
+            <li><strong>Droit d'opposition</strong> — vous opposer au traitement</li>
+        </ul>
+        <p>
+            Pour exercer ces droits, contactez-nous à :
+            <a th:href="'mailto:' + ${fermette.email}"
+               th:text="${fermette.email}">
+            </a>
+        </p>
+
+        <!-- ===== Cookies ===== -->
+        <h2 class="h4 mb-3 mt-4">Cookies</h2>
+        <p>
+            Ce site utilise uniquement un cookie de session technique,
+            nécessaire au bon fonctionnement du site.
+            Ce cookie ne collecte aucune donnée personnelle et
+            est exempté de consentement conformément aux recommandations de la CNIL.
+        </p>
+
+        <!-- ===== Réclamation ===== -->
+        <h2 class="h4 mb-3 mt-4">Réclamation</h2>
+        <p>
+            Si vous estimez que vos droits ne sont pas respectés,
+            vous pouvez introduire une réclamation auprès de la
+            <a href="https://www.cnil.fr" target="_blank">CNIL</a>.
+        </p>
+
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

@@ -87,4 +87,42 @@ public class FileUploadService {
         }
         return filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
     }
+
+    /**
+     * Sauvegarde un document PDF uploadé.
+     * Toujours sauvegardé sous le même nom pour
+     * que le lien public ne change jamais.
+     *
+     * @param file le fichier PDF uploadé
+     * @return l'URL publique du document
+     * @throws IllegalArgumentException si le fichier n'est pas un PDF
+     * @throws IOException si la sauvegarde échoue
+     */
+    public String saveTarifsPdf(MultipartFile file) throws IOException {
+
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Fichier vide");
+        }
+
+        String contentType = file.getContentType();
+        if (!"application/pdf".equals(contentType)) {
+            throw new IllegalArgumentException(
+                    "Format non autorisé. Seuls les PDF sont acceptés.");
+        }
+
+        // Créer le dossier si nécessaire
+        Path uploadPath = Paths.get(uploadDir).getParent().resolve("documents");
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // Toujours le même nom → lien public permanent
+        Path filePath = uploadPath.resolve("tarifs.pdf");
+        Files.copy(file.getInputStream(), filePath,
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+        log.info("Grille tarifaire mise à jour");
+        return "/uploads/documents/tarifs.pdf";
+    }
+
 }

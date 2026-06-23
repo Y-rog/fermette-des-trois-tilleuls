@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Mentions légales')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+<main>
+    <div class="container py-5" style="max-width: 800px;">
+
+        <h1 class="mb-4">Mentions légales</h1>
+
+        <!-- ===== Éditeur du site ===== -->
+        <h2 class="h4 mb-3">Éditeur du site</h2>
+        <p>
+            <strong>Dénomination :</strong> Fermette des Trois Tilleuls<br/>
+            <strong>Propriétaire :</strong> [NOM PRÉNOM À REMPLACER]<br/>
+            <strong>Adresse :</strong> <span th:text="${fermette.adresse}"></span><br/>
+            <strong>Téléphone :</strong> <span th:text="${fermette.telephone}"></span><br/>
+            <strong>Email :</strong> <span th:text="${fermette.email}"></span><br/>
+            <strong>SIRET :</strong> [NUMÉRO SIRET À REMPLACER]
+        </p>
+
+        <!-- ===== Hébergeur ===== -->
+        <h2 class="h4 mb-3 mt-4">Hébergeur</h2>
+        <p>
+            <strong>Société :</strong> Hostinger International Ltd<br/>
+            <strong>Adresse :</strong> 61 Lordou Vironos Street, 6023 Larnaca, Chypre<br/>
+            <strong>Site web :</strong>
+            <a href="https://www.hostinger.fr" target="_blank">www.hostinger.fr</a>
+        </p>
+
+        <!-- ===== Propriété intellectuelle ===== -->
+        <h2 class="h4 mb-3 mt-4">Propriété intellectuelle</h2>
+        <p>
+            L'ensemble du contenu de ce site (textes, images, photos)
+            est la propriété exclusive de la Fermette des Trois Tilleuls.
+            Toute reproduction, même partielle, est interdite sans autorisation préalable.
+        </p>
+
+        <!-- ===== Responsabilité ===== -->
+        <h2 class="h4 mb-3 mt-4">Limitation de responsabilité</h2>
+        <p>
+            La Fermette des Trois Tilleuls s'efforce de maintenir les informations
+            de ce site à jour. Toutefois, elle ne peut garantir l'exactitude,
+            la complétude ou l'actualité des informations diffusées.
+        </p>
+
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

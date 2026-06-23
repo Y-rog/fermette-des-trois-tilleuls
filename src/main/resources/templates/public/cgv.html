@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Conditions Générales de Vente')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+<main>
+    <div class="container py-5" style="max-width: 800px;">
+
+        <h1 class="mb-4">Conditions Générales de Vente</h1>
+
+        <p class="text-muted small mb-4">
+            Dernière mise à jour : juin 2026
+        </p>
+
+        <!-- ===== À REMPLACER ===== -->
+        <div class="alert alert-warning">
+            ⚠️ Ce contenu est à remplacer par vos vraies CGV.
+        </div>
+
+        <h2 class="h4 mb-3">1. Objet</h2>
+        <p>[À REMPLACER — Description de l'activité et des prestations proposées]</p>
+
+        <h2 class="h4 mb-3 mt-4">2. Réservation</h2>
+        <p>[À REMPLACER — Modalités de réservation, confirmation, acompte éventuel]</p>
+
+        <h2 class="h4 mb-3 mt-4">3. Tarifs et paiement</h2>
+        <p>[À REMPLACER — Tarifs en vigueur, modalités de paiement sur place]</p>
+
+        <h2 class="h4 mb-3 mt-4">4. Annulation</h2>
+        <p>[À REMPLACER — Politique d'annulation, délais, remboursement éventuel]</p>
+
+        <h2 class="h4 mb-3 mt-4">5. Obligations des parties</h2>
+        <p>[À REMPLACER — Règlement intérieur, animaux, fumeurs, responsabilités]</p>
+
+        <h2 class="h4 mb-3 mt-4">6. Litiges</h2>
+        <p>
+            En cas de litige, une solution amiable sera recherchée avant
+            tout recours judiciaire. À défaut d'accord amiable, le litige
+            sera porté devant les tribunaux compétents.
+        </p>
+
+        <h2 class="h4 mb-3 mt-4">7. Contact</h2>
+        <p>
+            Pour toute question relative aux présentes CGV :<br/>
+            <span th:text="${fermette.email}"></span><br/>
+            <span th:text="${fermette.telephone}"></span>
+        </p>
+
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

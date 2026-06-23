@@ -11,13 +11,22 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Informations de la fermette</h1>
-        <a th:href="@{/admin/dashboard}"
-           class="btn btn-outline-secondary btn-sm">
+        <a th:href="@{/admin/dashboard}" class="btn btn-outline-secondary btn-sm">
             ← Retour
         </a>
     </div>
 
-    <div class="card p-4">
+    <!-- Messages flash -->
+    <div th:if="${success}" class="alert alert-success mb-3">
+        <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger mb-3">
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- ===== Informations générales ===== -->
+    <div class="card p-4 mb-4">
+        <h3 class="h5 mb-3">⚙️ Informations générales</h3>
         <form th:action="@{/admin/infos}" method="post">
 
             <div class="mb-3">
@@ -59,7 +68,7 @@
                        th:value="${infos.horairesBoutique}"/>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label fw-bold">Lien réservation écolodges</label>
                 <input type="url" class="form-control"
                        name="ecolodgeUrl"
@@ -72,12 +81,41 @@
             <button type="submit" class="btn btn-fermette w-100">
                 Enregistrer
             </button>
-
         </form>
     </div>
 
-</div>
+    <!-- ===== Grille tarifaire ===== -->
+    <div class="card p-4">
+        <h3 class="h5 mb-3">📄 Grille tarifaire</h3>
 
+        <!-- Lien vers le PDF actuel -->
+        <p class="mb-3">
+            <a href="/uploads/documents/tarifs.pdf"
+               target="_blank"
+               class="btn btn-outline-secondary btn-sm">
+                📄 Voir la grille tarifaire actuelle
+            </a>
+        </p>
+
+        <!-- Formulaire upload -->
+        <form th:action="@{/admin/infos/tarifs/upload}"
+              method="post"
+              enctype="multipart/form-data"
+              class="d-flex gap-2">
+            <input type="file" class="form-control form-control-sm"
+                   name="file"
+                   accept="application/pdf"
+                   required/>
+            <button type="submit" class="btn btn-fermette btn-sm">
+                Mettre à jour
+            </button>
+        </form>
+        <small class="text-muted mt-2 d-block">
+            Format accepté : PDF uniquement
+        </small>
+    </div>
+
+</div>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/main.js}"></script>
