@@ -101,23 +101,23 @@ public class SmtpMailService implements MailService {
     private String buildConfirmationEmail(String firstName, String giteName,
                                           LocalDate checkIn, LocalDate checkOut) {
         return """
-                <html>
-                <body style="font-family: Arial, sans-serif; color: #3A332A;
-                             max-width: 600px; margin: 0 auto;">
+            <html>
+            <body style="font-family: Arial, sans-serif; color: #3A332A;
+                         max-width: 600px; margin: 0 auto;">
 
-                    <div style="background-color: #38462F; padding: 24px;
-                                border-radius: 8px 8px 0 0;">
-                        <h1 style="color: #F6F1E7; margin: 0; font-size: 1.4rem;">
-                            🌿 Fermette des Trois Tilleuls
-                        </h1>
-                    </div>
+                <div style="background-color: #38462F; padding: 24px;
+                            border-radius: 8px 8px 0 0; text-align: center;">
+                    <img src="https://fermette.y-rog.com/img/logo-fermette.png"
+                         alt="Fermette des Trois Tilleuls"
+                         style="height: 80px; width: auto;"/>
+                </div>
 
-                    <div style="background-color: white; padding: 32px;
-                                border: 1px solid #EFE7D8; border-top: none;">
+                <div style="background-color: white; padding: 32px;
+                            border: 1px solid #EFE7D8; border-top: none;">
 
-                        <h2 style="color: #38462F;">
-                            Bonjour %s,
-                        </h2>
+                    <h2 style="color: #38462F;">
+                        Bonjour %s,
+                    </h2>
 
                         <p>
                             Nous avons le plaisir de vous confirmer votre réservation
@@ -164,23 +164,23 @@ public class SmtpMailService implements MailService {
     private String buildRejectionEmail(String firstName, String giteName,
                                        LocalDate checkIn, LocalDate checkOut) {
         return """
-                <html>
-                <body style="font-family: Arial, sans-serif; color: #3A332A;
-                             max-width: 600px; margin: 0 auto;">
+            <html>
+            <body style="font-family: Arial, sans-serif; color: #3A332A;
+                         max-width: 600px; margin: 0 auto;">
 
-                    <div style="background-color: #38462F; padding: 24px;
-                                border-radius: 8px 8px 0 0;">
-                        <h1 style="color: #F6F1E7; margin: 0; font-size: 1.4rem;">
-                            🌿 Fermette des Trois Tilleuls
-                        </h1>
-                    </div>
+                <div style="background-color: #38462F; padding: 24px;
+                            border-radius: 8px 8px 0 0; text-align: center;">
+                    <img src="https://fermette.y-rog.com/img/logo-fermette.png"
+                         alt="Fermette des Trois Tilleuls"
+                         style="height: 80px; width: auto;"/>
+                </div>
 
-                    <div style="background-color: white; padding: 32px;
-                                border: 1px solid #EFE7D8; border-top: none;">
+                <div style="background-color: white; padding: 32px;
+                            border: 1px solid #EFE7D8; border-top: none;">
 
-                        <h2 style="color: #38462F;">
-                            Bonjour %s,
-                        </h2>
+                    <h2 style="color: #38462F;">
+                        Bonjour %s,
+                    </h2>
 
                         <p>
                             Nous vous remercions de l'intérêt que vous portez

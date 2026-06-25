@@ -1,58 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="~{fragments/head :: head('Nos hébergements')}"></head>
-
 <body>
-
 <nav th:replace="~{fragments/navbar :: navbar('accommodations')}"></nav>
-
 <main>
     <div class="container py-5">
-
         <span class="section-tag">Nos hébergements</span>
         <h1 class="mb-2">Où séjourner à la fermette</h1>
         <p class="mb-5" style="max-width: 560px;">
-            Deux façons de dormir au cœur de la nature : nos gîtes
-            traditionnels ou nos écolodges insolites en partenariat
-            avec Un Lit au Pré.
+            Deux façons de dormir au cœur de la nature : nos écolodges
+            insolites en partenariat avec Un Lit au Pré, ou nos gîtes
+            traditionnels — le gîte de la Hétraie se trouve à 1km de la fermette.
         </p>
-
         <div class="row g-4">
 
-            <!-- Card Gîtes -->
-            <div class="col-12 col-md-6">
-                <div class="card h-100">
-                    <img th:src="@{/img/accommodations/gite-hetraie-facade-1.jpg}"
-                         class="img-card"
-                         alt="Nos gîtes"/>
-                    <div class="card-body text-center p-4">
-                    <span class="badge-fermette-success mb-2 d-inline-block">
-                        Réservation directe
-                    </span>
-                        <h2 class="card-title mt-2">Nos gîtes</h2>
-                        <p class="card-text">
-                            Maisons entières pour vos séjours en famille,
-                            jusqu'à 6 personnes. Consultez les disponibilités
-                            et réservez directement auprès de nous.
-                        </p>
-                        <a th:href="@{/gites}" class="btn btn-fermette">
-                            Voir nos gîtes
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card Écolodges -->
+            <!-- Card Écolodges — EN PREMIER -->
             <div class="col-12 col-md-6">
                 <div class="card h-100">
                     <img th:src="@{/img/accommodations/ecolodge-exterieur-2.jpg}"
                          class="img-card"
                          alt="Nos écolodges"/>
                     <div class="card-body text-center p-4">
-                    <span class="badge-fermette-warning mb-2 d-inline-block">
-                        Partenaire Un Lit au Pré
-                    </span>
+                        <span class="badge-fermette-warning mb-2 d-inline-block">
+                            Partenaire Un Lit au Pré
+                        </span>
                         <h2 class="card-title mt-2">Nos écolodges</h2>
                         <p class="card-text">
                             Six écolodges nichés au cœur d'une vallée paisible,
@@ -69,15 +40,35 @@
                 </div>
             </div>
 
+            <!-- Card Gîtes — À 1KM -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <img th:src="@{/img/accommodations/gite-hetraie-facade-1.jpg}"
+                         class="img-card"
+                         alt="Nos gîtes"/>
+                    <div class="card-body text-center p-4">
+                        <span class="badge-fermette-success mb-2 d-inline-block">
+                            Réservation directe
+                        </span>
+                        <h2 class="card-title mt-2">Nos gîtes</h2>
+                        <p class="card-text">
+                            Maisons entières pour vos séjours en famille,
+                            jusqu'à 6 personnes, à 1km de la fermette.
+                            Consultez les disponibilités et réservez
+                            directement auprès de nous.
+                        </p>
+                        <a th:href="@{/gites}" class="btn btn-fermette">
+                            Voir nos gîtes
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </main>
-
-
 <footer th:replace="~{fragments/footer :: footer}"></footer>
-
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/main.js}"></script>
-
 </body>
 </html>

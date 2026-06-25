@@ -48,11 +48,17 @@ main {
 .navbar {
     background-color: var(--ff-sauge-dark);
     border-bottom: 3px solid var(--ff-terracotta);
+    height: 70px;
 }
 .navbar-brand {
     font-weight: bold;
     font-size: 1.3rem;
     color: var(--ff-creme);
+}
+.navbar-brand img {
+    max-height: 55px;
+    width: auto;
+    object-fit: contain;
 }
 .nav-link {
     color: rgba(246,241,231,0.85);
@@ -386,4 +392,16 @@ main {
 /* Iframe Google Maps */
 iframe.img-section {
     border: none;
+}
+
+.navbar {
+    background-color: var(--ff-sauge-dark);
+    border-bottom: 3px solid var(--ff-terracotta);
+    height: 70px;
+}
+
+.navbar-brand img {
+    max-height: 70px;
+    width: auto;
+    object-fit: contain;
 }
