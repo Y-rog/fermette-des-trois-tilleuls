@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  mail:
+    host: localhost
+    port: 25
+
+mail:
+  from: test@test.com
+
+upload:
+  dir: /tmp/fermette-test/uploads
+
+admin:
+  password: TestPassword123
+
+logging:
+  level:
+    com.yrog.fermettetroistilleuls: WARN

@@ -13,7 +13,7 @@ import java.time.LocalDate;
  * Aucune configuration SMTP nécessaire en dev.
  */
 @Service
-@Profile("dev")
+@Profile({"dev", "test"})
 public class FakeMailService implements MailService {
 
     private static final Logger log = LoggerFactory.getLogger(FakeMailService.class);
